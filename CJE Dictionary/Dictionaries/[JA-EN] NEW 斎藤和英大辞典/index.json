@@ -1,0 +1,7 @@
+{
+    "title": "NEW斎藤和英大辞典",
+    "revision": "saitoje.2023.03.26.1",
+    "sequenced": true,
+    "format": 3,
+    "description": "Tip: use custom CSS to control how many example sentences are displayed\n\n[data-dictionary=\"NEW斎藤和英大辞典\"] ul.gloss-sc-ul>li:nth-child(n+5) {\n  display: none;\n}"
+}
