@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct CJE_DictionaryApp: App {
+    init() {
+        createDictionaryIfNotPresent()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
