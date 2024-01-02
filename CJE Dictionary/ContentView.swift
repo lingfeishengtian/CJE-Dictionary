@@ -39,7 +39,7 @@ struct ContentView: View {
         .searchable(text: $searchText)
     }
     
-    var searchResults: Results<Wort> {
+    var searchResults: [Wort] {
         return CJE_Dictionary.searchText(searchString: searchText)
     }
 }
