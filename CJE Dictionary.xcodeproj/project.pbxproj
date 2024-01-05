@@ -21,8 +21,18 @@
 		9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9612428E2B4262FE009D6E05 /* ZIPFoundation */; };
 		961242922B428091009D6E05 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 961242912B428091009D6E05 /* SwiftSoup */; };
 		964394B02B43A22E009D377E /* Shogakukanjcv3DB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */; };
-		964394B22B43A24A009D377E /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 964394B12B43A24A009D377E /* jitendexDB.zip */; };
 		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
+		964394B92B454734009D377E /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 964394B82B454734009D377E /* jitendexDB.zip */; };
+		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
+		96AE7E2F2B480B0900862861 /* types.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2A2B480B0900862861 /* types.csv */; };
+		96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2B2B480B0900862861 /* conjo_notes.csv */; };
+		96AE7E312B480B0900862861 /* conotes.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2C2B480B0900862861 /* conotes.csv */; };
+		96AE7E322B480B0900862861 /* conj.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2D2B480B0900862861 /* conj.csv */; };
+		96AE7E342B480B2D00862861 /* ConjugationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AE7E332B480B2D00862861 /* ConjugationManager.swift */; };
+		96AE7E372B4839EC00862861 /* CharacterFilter in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E362B4839EC00862861 /* CharacterFilter */; };
+		96AE7E392B4839EC00862861 /* IPADic in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E382B4839EC00862861 /* IPADic */; };
+		96AE7E3B2B4839EC00862861 /* Mecab-Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E3A2B4839EC00862861 /* Mecab-Swift */; };
+		96AE7E3D2B4839EC00862861 /* StringTools in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E3C2B4839EC00862861 /* StringTools */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +47,13 @@
 		961242792B414A53009D6E05 /* SearchDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDictionary.swift; sourceTree = "<group>"; };
 		961242872B4250A0009D6E05 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
 		964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
-		964394B12B43A24A009D377E /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
+		964394B82B454734009D377E /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
+		96AE7E292B480B0900862861 /* conjo.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo.csv; sourceTree = "<group>"; };
+		96AE7E2A2B480B0900862861 /* types.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = types.csv; sourceTree = "<group>"; };
+		96AE7E2B2B480B0900862861 /* conjo_notes.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo_notes.csv; sourceTree = "<group>"; };
+		96AE7E2C2B480B0900862861 /* conotes.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conotes.csv; sourceTree = "<group>"; };
+		96AE7E2D2B480B0900862861 /* conj.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conj.csv; sourceTree = "<group>"; };
+		96AE7E332B480B2D00862861 /* ConjugationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConjugationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,11 +61,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96AE7E392B4839EC00862861 /* IPADic in Frameworks */,
+				96AE7E372B4839EC00862861 /* CharacterFilter in Frameworks */,
 				964394B52B43A827009D377E /* SQLite in Frameworks */,
 				961242732B4130E6009D6E05 /* RealmSwift in Frameworks */,
 				961242922B428091009D6E05 /* SwiftSoup in Frameworks */,
+				96AE7E3B2B4839EC00862861 /* Mecab-Swift in Frameworks */,
 				961242712B4130E6009D6E05 /* Realm in Frameworks */,
 				9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */,
+				96AE7E3D2B4839EC00862861 /* StringTools in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,10 +96,12 @@
 		9612425F2B412A46009D6E05 /* CJE Dictionary */ = {
 			isa = PBXGroup;
 			children = (
+				96AE7E282B480AED00862861 /* ConjugationResources */,
 				9612427B2B414BC6009D6E05 /* Dictionaries */,
 				961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */,
 				961242622B412A46009D6E05 /* ContentView.swift */,
 				961242792B414A53009D6E05 /* SearchDictionary.swift */,
+				96AE7E332B480B2D00862861 /* ConjugationManager.swift */,
 				961242742B413DB6009D6E05 /* HistoryManager.swift */,
 				961242872B4250A0009D6E05 /* DictionaryManager.swift */,
 				961242642B412A47009D6E05 /* Assets.xcassets */,
@@ -107,11 +129,23 @@
 		9612427B2B414BC6009D6E05 /* Dictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				964394B12B43A24A009D377E /* jitendexDB.zip */,
+				964394B82B454734009D377E /* jitendexDB.zip */,
 				964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */,
 				9612426E2B412A72009D6E05 /* jp-cn.realm */,
 			);
 			path = Dictionaries;
+			sourceTree = "<group>";
+		};
+		96AE7E282B480AED00862861 /* ConjugationResources */ = {
+			isa = PBXGroup;
+			children = (
+				96AE7E2D2B480B0900862861 /* conj.csv */,
+				96AE7E2B2B480B0900862861 /* conjo_notes.csv */,
+				96AE7E292B480B0900862861 /* conjo.csv */,
+				96AE7E2C2B480B0900862861 /* conotes.csv */,
+				96AE7E2A2B480B0900862861 /* types.csv */,
+			);
+			path = ConjugationResources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +170,10 @@
 				9612428E2B4262FE009D6E05 /* ZIPFoundation */,
 				961242912B428091009D6E05 /* SwiftSoup */,
 				964394B42B43A827009D377E /* SQLite */,
+				96AE7E362B4839EC00862861 /* CharacterFilter */,
+				96AE7E382B4839EC00862861 /* IPADic */,
+				96AE7E3A2B4839EC00862861 /* Mecab-Swift */,
+				96AE7E3C2B4839EC00862861 /* StringTools */,
 			);
 			productName = "CJE Dictionary";
 			productReference = 9612425D2B412A46009D6E05 /* CJE Dictionary.app */;
@@ -172,6 +210,7 @@
 				9612428D2B4262FE009D6E05 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				961242902B428091009D6E05 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */,
+				96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 			);
 			productRefGroup = 9612425E2B412A46009D6E05 /* Products */;
 			projectDirPath = "";
@@ -187,12 +226,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				964394B22B43A24A009D377E /* jitendexDB.zip in Resources */,
+				96AE7E2F2B480B0900862861 /* types.csv in Resources */,
 				961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */,
 				961242652B412A47009D6E05 /* Assets.xcassets in Resources */,
+				964394B92B454734009D377E /* jitendexDB.zip in Resources */,
+				96AE7E322B480B0900862861 /* conj.csv in Resources */,
+				96AE7E312B480B0900862861 /* conotes.csv in Resources */,
 				961242782B4147B9009D6E05 /* Localizable.xcstrings in Resources */,
+				96AE7E2E2B480B0900862861 /* conjo.csv in Resources */,
 				964394B02B43A22E009D377E /* Shogakukanjcv3DB.zip in Resources */,
 				9612427E2B415197009D6E05 /* jp-cn.realm in Resources */,
+				96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				961242752B413DB6009D6E05 /* HistoryManager.swift in Sources */,
+				96AE7E342B480B2D00862861 /* ConjugationManager.swift in Sources */,
 				9612427A2B414A53009D6E05 /* SearchDictionary.swift in Sources */,
 				961242632B412A46009D6E05 /* ContentView.swift in Sources */,
 				961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */,
@@ -447,6 +492,14 @@
 				minimumVersion = 0.14.1;
 			};
 		};
+		96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/shinjukunian/Mecab-Swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -474,6 +527,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */;
 			productName = SQLite;
+		};
+		96AE7E362B4839EC00862861 /* CharacterFilter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = CharacterFilter;
+		};
+		96AE7E382B4839EC00862861 /* IPADic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = IPADic;
+		};
+		96AE7E3A2B4839EC00862861 /* Mecab-Swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = "Mecab-Swift";
+		};
+		96AE7E3C2B4839EC00862861 /* StringTools */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = StringTools;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

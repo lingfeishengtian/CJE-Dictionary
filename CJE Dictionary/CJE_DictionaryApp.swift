@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct CJE_DictionaryApp: App {
     init() {
+        // TODO: Show loading screen and loading bar
         createDictionaryIfNotPresent()
     }
     

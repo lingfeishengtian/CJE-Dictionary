@@ -15,21 +15,8 @@ func unzipDatabase(urlOfZip: URL, exportFolder: URL) throws {
     } catch {
         throw error
     }
-    
-//    defer {
-//        do {
-//            try FileManager.default.removeItem(at: exportFolder)
-//        } catch {
-//            print("Unable to delete zip export folder")
-//        }
-//    }
 }
 
 enum DictionaryParserError: Error {
     case runtimeError(String)
-}
-
-enum DictEntryType {
-    case Definition
-    case Link
 }
