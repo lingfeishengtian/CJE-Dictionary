@@ -23,6 +23,15 @@
           }
         }
       }
+    },
+    "OK" : {
+
+    },
+    "Partial Search" : {
+
+    },
+    "The app binary resources are invalid." : {
+
     }
   },
   "version" : "1.0"
