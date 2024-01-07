@@ -7,7 +7,6 @@
 
 import Foundation
 import RealmSwift
-import SwiftSoup
 import SQLite
 import IPADic
 import Mecab_Swift
@@ -64,7 +63,11 @@ class WordBank: Object {
 }
 
 typealias LanguageToLanguage = (Language, Language)
-enum Language {
+enum Language: String, CaseIterable, Identifiable {
+    var id: Language {
+        self
+    }
+    
     case CN
     case JP
     case EN
@@ -122,9 +125,10 @@ func createDictionaryIfNotPresent() {
             print("Error occured while copying: \(error)")
         }
     }
-    
+        
     for dictName in DICTIONARY_NAMES.allCases {
         let exportFolder = exportFolderOf(dictionary: dictName)
+        
         if FileManager.default.fileExists(atPath: exportFolder.path()) {
             print("\(dictName) already exists")
             continue
@@ -169,69 +173,6 @@ func createDictionaryIfNotPresent() {
             print("failed?")
         }
     }
-}
-
-struct DefinitionEntry {
-    
-}
-
-func __parseDefinitionHTML(html: String) {
-    do {
-        let doc = try SwiftSoup.parse(html)
-        
-        let pronounciationElements = try attemptTwoSelectors(doc: doc, selectorA: ".pronunciation-text", selectorB: ".pinyin_h")
-        var pronounciationText = try pronounciationElements.text(trimAndNormaliseWhitespace: true)
-        let definitionsAndReibun = try attemptTwoSelectors(doc: doc, selectorA: ".sense", selectorB: "[data-orgtag]")
-        let termElems = try attemptTwoSelectors(doc: doc, selectorA: ".headline ruby, .headline .kanji-form-furigana", selectorB: "[data-orgtag=\"subheadword\"]")
-        var term = ""
-        
-        let shouldAddPronounciation = pronounciationText.isEmpty
-        for res in termElems {
-            if (res.hasAttr("data-orgtag")) {
-                term += try res.text()
-            } else {
-                term += res.textNodes().first?.text() ?? ""
-                if (shouldAddPronounciation) {
-                    pronounciationText += try res.select("rt").text()
-                }
-            }
-        }
-        
-        print("term: \(term) Pronounciation: \(pronounciationText)")
-        for elem in definitionsAndReibun {
-            let glossary = try elem.select(".glossary")
-            let reibun = try elem.select(".example-container")
-            
-            // TODO: 参见
-            if (glossary.isEmpty() && reibun.isEmpty()) {
-                // TODO: glossary and reibun pass as html
-                if (try elem.attr("data-orgtag") == "meaning") {
-                    //print("Definition: \(try elem.text())")
-                } else {
-                    //print("Reibun: \(try elem.text())")
-                }
-                for canJian in try doc.select("a") {
-                    //print("参见: \(try canJian.text())")
-                }
-            } else {
-                // TODO: glossary and reibun pass as html
-                //print ("Definition: \(try glossary.text()) and Reibun: \(try reibun.text())")
-            }
-        }
-                
-    } catch {
-        print("\(error) occurred, skipping")
-    }
-}
-
-func attemptTwoSelectors(doc: SwiftSoup.Document, selectorA: String, selectorB: String) throws -> Elements {
-    let optionA = try doc.select(selectorA)
-    let optionB = try doc.select(selectorB)
-    
-    if (optionA.isEmpty()) {
-        return optionB
-    }
-    return optionA
 }
 
 func sortResults(a: DatabaseWord, b: DatabaseWord, searchString: String) -> Bool {
@@ -291,32 +232,54 @@ class DatabaseWord: Hashable {
 struct CJE_Definition {
     // TODO: Change to something like Wort
     let word: DatabaseWord
-    let definitions: [(LanguageToLanguage, String)]
+    let definitions: [(LanguageToLanguage, [DefinitionGroup])]
 }
 
 func lookupWord(word: DatabaseWord) -> CJE_Definition {
     // TODO: Allow user to select dictionaries
-    var finDefs: [(LanguageToLanguage, String)] = []
+    var finDefs: [(LanguageToLanguage, [DefinitionGroup])] = []
 //    guard let wordDef = getDefinition(databasename: word.dict, for: word.id) else {
 //        return CJE_Definition(word: word, definitions: [])
 //    }
     for dict in DICTIONARY_NAMES.allCases {
         var priority = -1
         if dict.type().1 == .CN {
-            var potential: (LanguageToLanguage, String) = (dict.type(), "")
+            var potential: (LanguageToLanguage, [DefinitionGroup]) = (dict.type(), [])
             for reading in word.readings {
                 let existsInRealm = realm.objects(Wort.self).where {
                     $0.spell == reading.trimmingCharacters(in: ["-", "…"])
                 }
                 let rPrio = reading.containsChineseCharacters ? 2 : 1
                 if !existsInRealm.isEmpty && priority <= rPrio {
+                    
                     priority = rPrio
                     let realmWort = existsInRealm.first!
-                    potential = ((dict.type(), realm.objects(Subdetails.self).where {
+                    
+                    var tags: [Tag] = []
+                    
+                    for detail in realm.objects(Details.self).where({
                         $0.wordId == realmWort.objectId
-                    }.map({
-                        $0.title ?? ""
-                    }).joined(separator: "\n")))
+                    }) {
+                        if !(detail.title?.isEmpty ?? true) {
+                            tags.append(Tag(shortName: detail.title ?? "", longName: detail.title ?? ""))
+                        }
+                    }
+                    
+                    let definitions: [Definition] = realm.objects(Subdetails.self).where {
+                        $0.wordId == realmWort.objectId
+                    }.map({ subdetail in
+                        var exampleSentences: [ExampleSentence] = []
+                        
+                        for example in realm.objects(Example.self).where({
+                            $0.subdetailsId == subdetail.objectId
+                        }) {
+                            exampleSentences.append(ExampleSentence(language: .JP, attributedString: AttributedString(example.title ?? "")))
+                            exampleSentences.append(ExampleSentence(language: .CN, attributedString: AttributedString(example.trans ?? "")))
+                        }
+                        
+                        return Definition(definition: subdetail.title ?? "", exampleSentences: exampleSentences)
+                    })
+                    potential = (dict.type(), [DefinitionGroup(tags: tags, definitions: definitions)])
                 }
             }
             
@@ -326,15 +289,16 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
             }
         }
         if dict == word.dict {
-            finDefs.append((dict.type(), word.meaning))
+            finDefs.append((dict.type(), word.parseDefinitionHTML()))
             continue
         }
         var passed: [String] = []
         var wordList = word.readings
         do {
             let res = __lookupWordHelper(wordList: &wordList, passedWords: &passed, dict: dict, strict: true)
-            let firstRow = res.0.first(where: {_ in true})
-            finDefs.append((dict.type(), try firstRow?.get(Expression<String>("m")) ?? ""))
+            if let firstRow = res.0.first(where: {_ in true}) {
+                finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: try firstRow.get(Expression<String>("m")))))
+            }
         } catch {
             print("\(error) when adding \(word.word) in \(dict)")
         }
@@ -443,21 +407,36 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
                 $0.partOfSpeech != .prefix })
         var adjustedTokenized: [String] = []
         var resultSet: Set<DatabaseWord> = []
-        for token in tokenized {
+        var particlesUnused: [String] = []
+        for (index, token) in tokenized.enumerated() {
             if adjustedTokenized.count >= 1 {
-                if token.partOfSpeech != .unknown && token.partOfSpeech != .particle {
+                if token.partOfSpeech == .noun {
+                    if tokenized[index - 1].partOfSpeech == .noun {
+                        if exactSearchDatabase(for: adjustedTokenized.last! + token.base).count >= 1 {
+                            adjustedTokenized.append(adjustedTokenized.popLast()! + token.base)
+                        } else {
+                            adjustedTokenized.append(token.base)
+                        }
+                    } else {
+                        adjustedTokenized.append(token.base)
+                    }
+                } else if token.partOfSpeech != .unknown && token.partOfSpeech != .particle {
                     adjustedTokenized.append(token.base)
                     print("adding \(token.dictionaryForm)")
                     resultSet.formUnion(exactSearchDatabase(for: token.dictionaryForm))
                 } else {
                     if exactSearchDatabase(for: adjustedTokenized.last! + token.base).count >= 1 {
                         adjustedTokenized.append(adjustedTokenized.popLast()! + token.base)
+                    } else {
+                        particlesUnused.append(token.base)
                     }
                 }
             } else {
                 adjustedTokenized.append(token.base)
+                if token.partOfSpeech == .verb {
+                    resultSet.formUnion(exactSearchDatabase(for: token.dictionaryForm))
+                }
                 print("adding \(token.dictionaryForm)")
-                resultSet.formUnion(exactSearchDatabase(for: token.dictionaryForm))
             }
         }
         
@@ -465,6 +444,9 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
         print(tokenized)
         for filteredWord in adjustedTokenized {
             resultSet.formUnion(exactSearchDatabase(for: filteredWord))
+        }
+        for particleUnused in particlesUnused {
+            resultSet.formUnion(exactSearchDatabase(for: particleUnused))
         }
         return resultSet.sorted(by: {
             sortResults(a: $0, b: $1, searchString: searchString)
@@ -475,7 +457,8 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
     return []
 }
 
-func partialSearchDeprecated(searchString: String) -> [DatabaseWord] {
+@available(*, deprecated, renamed: "partialSearch", message: "Try not to use intensive search, this costs a lot of resources and grows exponentially as the string grows")
+func doPartialSearch(searchString: String) -> [DatabaseWord] {
     var newPartialSearchCache: [String: Set<DatabaseWord>] = [:]
     return __partialSearch(searchString: searchString, partialSearchCache: &newPartialSearchCache).sorted(by: {
         sortResults(a: $0, b: $1, searchString: searchString)
@@ -527,17 +510,6 @@ fileprivate func __partialSearch(searchString: String, originalSearchString: Str
     return searchResults
 }
 
-//func partialSearchHelper(for dictionaryFormWord: VerbDictionaryForm) -> Set<DatabaseWord> {
-//    var searchResults: Set<DatabaseWord> = []
-//    // TODO: maybe support all dictionaries??
-//    
-//    for dictionaryFormVerb in dictionaryFormWord.derivations {
-//        searchResults.for
-//        searchResults.formUnion(partialSearchHelper(for: dictionaryFormVerb))
-//    }
-//    return searchResults
-//}
-
 func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
     var searchResults: Set<DatabaseWord> = []
     if let iterator = searchDatabase(databaseName: .jitendex, for: searchString, exact: true) {
@@ -565,7 +537,11 @@ func searchDatabase(databaseName dictName: DICTIONARY_NAMES, for searchString: S
         let wordIndex = VirtualTable("wordIndex")
         let word = Table("word")
         let id = Expression<Int>("id")
-        let results: Expression<Bool> = exact ? wordIndex.match("w:\"\(searchString)\"") : wordIndex.match("w:\"\(searchString)\"*")
+        let results: Expression<Bool> = (exact ? wordIndex.match("w:\"\(searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
+//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"*")) ||
+//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"*")) ||
+//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*")) ||
+//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"*"))
         return try db.prepareRowIterator(wordIndex.filter(results).join(word, on: word[id] == wordIndex[id]))
     } catch {
         return nil
