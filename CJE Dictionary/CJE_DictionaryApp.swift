@@ -9,14 +9,22 @@ import SwiftUI
 
 @main
 struct CJE_DictionaryApp: App {
-    init() {
-        // TODO: Show loading screen and loading bar
-        createDictionaryIfNotPresent()
-    }
+    @State private var progress: Double = 0.0
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if progress < 1.0 {
+                
+                ProgressView("Please wait for app resources to unload, this will take a little bit of time on the first app launch.")
+                    .progressViewStyle(.circular)
+                    .padding()
+                    .task {
+                        createDictionaryIfNotPresent()
+                        progress = 1.0
+                    }
+            } else {
+                ContentView()
+            }
         }
     }
 }

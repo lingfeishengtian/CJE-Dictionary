@@ -200,6 +200,24 @@ public struct VerbDictionaryForm: Hashable {
     }
 }
 
+struct ConjugatedVerb: Hashable, Identifiable {
+    let form: String
+    let isNegative: Bool
+    let isFormal: Bool
+    let verb: String
+    
+    var id: String {
+        return form + String(isFormal) + String(isNegative) + verb
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(form)
+        hasher.combine(isNegative)
+        hasher.combine(isFormal)
+        hasher.combine(verb)
+    }
+}
+
 class ConjugationManager {
     let verbTypes: [VerbTypes]
     let conjugationTypes: [ConjugationTypes]
@@ -257,5 +275,22 @@ class ConjugationManager {
             }
         }
         return potentialCandidates
+    }
+    
+    func conjugate(_ str: String, verbType: String) -> [ConjugatedVerb] {
+        var conjugatedStrings: [ConjugatedVerb] = []
+        guard let verbType = verbTypes.first(where: { $0.shortDescription == verbType }) else {
+            return []
+        }
+        
+        for conjugation in conjugations {
+            if conjugation.verbId == verbType.id {
+                if let conjugationType = conjugationTypes.first(where: { $0.id == conjugation.conjugationTypeId }) {
+                    conjugatedStrings.append(ConjugatedVerb(form: conjugationType.name, isNegative: conjugation.isNegative, isFormal: conjugation.isFormal, verb: String(str.dropLast(conjugation.stemRemovalCharacterNum)) + conjugation.kanaTextReplacement + conjugation.conjugation))
+                }
+            }
+        }
+        
+        return conjugatedStrings
     }
 }
