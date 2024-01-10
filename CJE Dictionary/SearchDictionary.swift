@@ -10,6 +10,7 @@ import RealmSwift
 import SQLite
 import IPADic
 import Mecab_Swift
+import OrderedCollections
 
 class Wort: Object {
     @Persisted(primaryKey: true) var objectId: String?
@@ -75,7 +76,7 @@ enum Language: String, CaseIterable, Identifiable {
 
 let LOCAL_REALM_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: "dict.realm", directoryHint: .notDirectory)
 let BUNDLE_CN_JP_DICT = Bundle.main.url(forResource: "jp-cn", withExtension: "realm")
-enum DICTIONARY_NAMES: String, CaseIterable {
+enum DICTIONARY_NAMES: String, CaseIterable, Codable {
     case jitendex = "jitendexDB"
     case shogakukanjcv3 = "Shogakukanjcv3DB"
     
@@ -144,8 +145,18 @@ func createDictionaryIfNotPresent() {
     for dbConnection in DatabaseConnections.values {
         do {
             try dbConnection.execute("""
-                CREATE VIRTUAL TABLE wordIndex
-                USING FTS5(id, w);
+            CREATE TABLE "wordIndex" (
+                "id"    INTEGER NOT NULL,
+                "wort"    TEXT NOT NULL,
+                FOREIGN KEY(id) REFERENCES word(id)
+            );
+            CREATE VIRTUAL TABLE IF NOT EXISTS wordFTS USING
+            FTS5(id,w);
+            CREATE VIRTUAL TABLE IF NOT EXISTS main USING
+            FTS5(content="wordIndex",id,wort, tokenize=unicode61);
+            CREATE TRIGGER IF NOT EXISTS content_trig1 AFTER INSERT ON wordIndex BEGIN
+            INSERT INTO main(id, wort) VALUES(new.id, new.wort); END;
+            CREATE INDEX wordIndex_w_idx ON wordIndex (wort);
             """)
             try dbConnection.execute("""
                 WITH cte AS (
@@ -158,15 +169,17 @@ func createDictionaryIfNotPresent() {
                     FROM cte
                     WHERE s <> ''
                 )
-                INSERT INTO wordIndex (id, w)
+                INSERT INTO wordIndex (id, wort)
                 SELECT id, w
                 FROM cte
                 WHERE w <> '';
+                INSERT INTO wordFTS SELECT id,w FROM word
             """)
             try dbConnection.execute("""
-                DELETE FROM wordIndex WHERE w LIKE "%【%】%"
+                DELETE FROM wordIndex WHERE wort LIKE "%【%】%"
             """)
             try dbConnection.execute("""
+                INSERT INTO main(main) VALUES('rebuild');
                 ANALYZE
             """)
         } catch {
@@ -192,7 +205,7 @@ func sortResults(a: DatabaseWord, b: DatabaseWord, searchString: String) -> Bool
     }
 }
 
-class DatabaseWord: Hashable {
+class DatabaseWord: Hashable, Codable {
     let id: Int
     let dict: DICTIONARY_NAMES
     let word: String
@@ -238,48 +251,71 @@ struct CJE_Definition {
 func lookupWord(word: DatabaseWord) -> CJE_Definition {
     // TODO: Allow user to select dictionaries
     var finDefs: [(LanguageToLanguage, [DefinitionGroup])] = []
+    //title CONTAINS[c] "同:" OR title contains[c] "同："
 //    guard let wordDef = getDefinition(databasename: word.dict, for: word.id) else {
 //        return CJE_Definition(word: word, definitions: [])
 //    }
+    print("Start lookup: \(Date.now.timeIntervalSince1970)")
     for dict in DICTIONARY_NAMES.allCases {
         var priority = -1
         if dict.type().1 == .CN {
             var potential: (LanguageToLanguage, [DefinitionGroup]) = (dict.type(), [])
+            let readingsContainsKanji = word.readings.contains(where: { $0.containsKanjiCharacters })
             for reading in word.readings {
-                let existsInRealm = realm.objects(Wort.self).where {
-                    $0.spell == reading.trimmingCharacters(in: ["-", "…"])
+                let existsInRealm = realm.objects(Wort.self).where { realmObj in
+                    realmObj.spell == reading.trimmingCharacters(in: ["-", "…"])
                 }
                 let rPrio = reading.containsChineseCharacters ? 2 : 1
-                if !existsInRealm.isEmpty && priority <= rPrio {
-                    
-                    priority = rPrio
-                    let realmWort = existsInRealm.first!
-                    
-                    var tags: [Tag] = []
-                    
-                    for detail in realm.objects(Details.self).where({
-                        $0.wordId == realmWort.objectId
-                    }) {
-                        if !(detail.title?.isEmpty ?? true) {
-                            tags.append(Tag(shortName: detail.title ?? "", longName: detail.title ?? ""))
-                        }
+                let kanjiFindPron = reading.containsKanjiCharacters ? existsInRealm.filter({ wort in
+                    word.readings.contains(where: { wort.pron == $0.trimmingCharacters(in: ["-", "…"]) })
+                }).sorted(by: {
+                    if $0.pron == word.word {
+                        return true
+                    } else if $1.pron == word.word {
+                        return false
+                    } else {
+                        return $0.pron ?? "" > $1.pron ?? ""
                     }
-                    
-                    let definitions: [Definition] = realm.objects(Subdetails.self).where {
-                        $0.wordId == realmWort.objectId
-                    }.map({ subdetail in
-                        var exampleSentences: [ExampleSentence] = []
+                }) : nil
+                if !existsInRealm.isEmpty && priority <= rPrio && (!readingsContainsKanji || kanjiFindPron != nil) {
+                    for realmWort in kanjiFindPron?.uniqueElements ?? [existsInRealm.first!] {
+                        var tags: [Tag] = []
                         
-                        for example in realm.objects(Example.self).where({
-                            $0.subdetailsId == subdetail.objectId
+                        for detail in realm.objects(Details.self).where({
+                            $0.wordId == realmWort.objectId
                         }) {
-                            exampleSentences.append(ExampleSentence(language: .JP, attributedString: AttributedString(example.title ?? "")))
-                            exampleSentences.append(ExampleSentence(language: .CN, attributedString: AttributedString(example.trans ?? "")))
+                            if !(detail.title?.isEmpty ?? true) {
+                                tags.append(Tag(shortName: detail.title ?? "", longName: detail.title ?? ""))
+                            }
                         }
                         
-                        return Definition(definition: subdetail.title ?? "", exampleSentences: exampleSentences)
-                    })
-                    potential = (dict.type(), [DefinitionGroup(tags: tags, definitions: definitions)])
+                        let realmDefinitions = realm.objects(Subdetails.self).where {
+                            $0.wordId == realmWort.objectId
+                        }
+                        
+                        // Special case where realm definition gives only one 同：
+                        if realmDefinitions.count == 1 {
+                            if realmDefinitions.first!.title?.starts(with: "同：") ?? false || realmDefinitions.first!.title?.starts(with: "同:") ?? false {
+                                continue
+                            }
+                        }
+                        
+                        let definitions: [Definition] = realmDefinitions.map({ subdetail in
+                            var exampleSentences: [ExampleSentence] = []
+                            
+                            for example in realm.objects(Example.self).where({
+                                $0.subdetailsId == subdetail.objectId
+                            }) {
+                                exampleSentences.append(ExampleSentence(language: .JP, attributedString: AttributedString(example.title ?? "")))
+                                exampleSentences.append(ExampleSentence(language: .CN, attributedString: AttributedString(example.trans ?? "")))
+                            }
+                            
+                            return Definition(definition: subdetail.title ?? "", exampleSentences: exampleSentences)
+                        })
+                        
+                        priority = rPrio
+                        potential = (dict.type(), [DefinitionGroup(tags: tags, definitions: definitions)])
+                    }
                 }
             }
             
@@ -288,6 +324,7 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
                 continue
             }
         }
+        print("End lookup moji: \(Date.now.timeIntervalSince1970)")
         if dict == word.dict {
             finDefs.append((dict.type(), word.parseDefinitionHTML()))
             continue
@@ -295,9 +332,29 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
         var passed: [String] = []
         var wordList = word.readings
         do {
-            let res = __lookupWordHelper(wordList: &wordList, passedWords: &passed, dict: dict, strict: true)
-            if let firstRow = res.0.first(where: {_ in true}) {
-                finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: try firstRow.get(Expression<String>("m")))))
+            let kanjiWords = wordList.filter({ $0.containsKanjiCharacters })
+            let nonKanjiWords = wordList.filter( { !$0.containsKanjiCharacters })
+            
+            var res: (AnySequence<Row>, Int)? = nil
+            
+            if kanjiWords.isEmpty {
+                res = __lookupWordHelper(wordList: &wordList, passedWords: &passed, dict: dict, strict: true)
+            } else {
+                for kanjiWord in kanjiWords {
+                    var arrKanjiWord = [kanjiWord]
+                    var nonKanji = nonKanjiWords
+                    let tmp = __lookupWordHelper(wordList: &nonKanji, passedWords: &arrKanjiWord, dict: dict, strict: true)
+                    if tmp.1 > 0 {
+                        res = tmp
+                        break
+                    }
+                }
+            }
+            
+            if let resultExists = res {
+                if let firstRow = resultExists.0.first(where: {_ in true}) {
+                    finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: try firstRow.get(Expression<String>("m")))))
+                }
             }
         } catch {
             print("\(error) when adding \(word.word) in \(dict)")
@@ -307,12 +364,14 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
 }
 
 fileprivate func __lookupWordHelper(wordList: inout [String], passedWords: inout [String], dict: DICTIONARY_NAMES, strict: Bool) -> (AnySequence<Row>, Int) {
+    print("Find similar word FTS start \(Date.now.timeIntervalSince1970)")
     if (wordList.isEmpty) {
         return (AnySequence([]), 0)
     }
     let word = wordList.popLast()!
     passedWords.append(word)
-    let res = findSimilarWord(databaseName: dict, for: passedWords)
+    let res = findSimilarWordFTS(databaseName: dict, for: passedWords)
+    print("Find similar word FTS end \(Date.now.timeIntervalSince1970)")
     if res.1 > 0 {
         if res.1 == 1 {
             return res
@@ -364,10 +423,10 @@ class SearchResultsEnumerator: ObservableObject {
                 
                 let wordIndex = Table("wordIndex")
                 let word = Table("word")
-                let newWord = DatabaseWord(id: try! row.get(word[Expression<Int>("id")]),
+                let newWord = DatabaseWord(id: try! row.get(Expression<Int>("id")),
                                            dict: sQueryIterators.first!.0,
-                                           word: try! row.get(wordIndex[Expression<String>("w")]),
-                                           readingsString: try! row.get(word[Expression<String>("w")]),
+                                           word: try! row.get(Expression<String>("wort")),
+                                           readingsString: try! row.get(Expression<String>("w")),
                                            meaning: try! row.get(Expression<String>("m")))
                 print("End adding word (\(newWord.word)): \(Date.now.timeIntervalSince1970)")
                 lazyArray.append(newWord)
@@ -403,10 +462,9 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
     do {
         let tokenizer = try Tokenizer(dictionary: ipadic)
         let tokenized = tokenizer.tokenize(text: searchString)
-            .filter({ $0.partOfSpeech != .particle ||
-                $0.partOfSpeech != .prefix })
+            .filter({ $0.partOfSpeech != .prefix })
         var adjustedTokenized: [String] = []
-        var resultSet: Set<DatabaseWord> = []
+        var resultSet: OrderedSet<DatabaseWord> = []
         var particlesUnused: [String] = []
         for (index, token) in tokenized.enumerated() {
             if adjustedTokenized.count >= 1 {
@@ -423,7 +481,7 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
                 } else if token.partOfSpeech != .unknown && token.partOfSpeech != .particle {
                     adjustedTokenized.append(token.base)
                     print("adding \(token.dictionaryForm)")
-                    resultSet.formUnion(exactSearchDatabase(for: token.dictionaryForm))
+                    resultSet.append(contentsOf: exactSearchDatabase(for: token.dictionaryForm))
                 } else {
                     if exactSearchDatabase(for: adjustedTokenized.last! + token.base).count >= 1 {
                         adjustedTokenized.append(adjustedTokenized.popLast()! + token.base)
@@ -433,8 +491,8 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
                 }
             } else {
                 adjustedTokenized.append(token.base)
-                if token.partOfSpeech == .verb {
-                    resultSet.formUnion(exactSearchDatabase(for: token.dictionaryForm))
+                if token.partOfSpeech != .unknown && token.partOfSpeech != .particle {
+                    resultSet.append(contentsOf: exactSearchDatabase(for: token.dictionaryForm))
                 }
                 print("adding \(token.dictionaryForm)")
             }
@@ -443,25 +501,28 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
         print(adjustedTokenized)
         print(tokenized)
         for filteredWord in adjustedTokenized {
-            resultSet.formUnion(exactSearchDatabase(for: filteredWord))
+            resultSet.append(contentsOf: exactSearchDatabase(for: filteredWord))
         }
         for particleUnused in particlesUnused {
-            resultSet.formUnion(exactSearchDatabase(for: particleUnused))
+            resultSet.append(contentsOf: exactSearchDatabase(for: particleUnused))
         }
-        return resultSet.sorted(by: {
-            sortResults(a: $0, b: $1, searchString: searchString)
-        })
+        return resultSet.elements
+//            .sorted(by: {
+//            sortResults(a: $0, b: $1, searchString: searchString)
+//        })
     } catch {
         print("\(error) when tokenizing for partial search")
     }
     return []
 }
 
-@available(*, deprecated, renamed: "partialSearch", message: "Try not to use intensive search, this costs a lot of resources and grows exponentially as the string grows")
+//@available(*, deprecated, renamed: "partialSearch", message: "Try not to use intensive search, this costs a lot of resources and grows exponentially as the string grows")
 func doPartialSearch(searchString: String) -> [DatabaseWord] {
     var newPartialSearchCache: [String: Set<DatabaseWord>] = [:]
-    return __partialSearch(searchString: searchString, partialSearchCache: &newPartialSearchCache).sorted(by: {
-        sortResults(a: $0, b: $1, searchString: searchString)
+    return []
+    return __partialSearch(searchString: searchString, partialSearchCache: &newPartialSearchCache)
+        .sorted(by: {
+        $0.word.levenshteinDistanceScore(to: searchString) > $1.word.levenshteinDistanceScore(to: searchString)
     })
 }
 
@@ -517,15 +578,15 @@ func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
             while let row = try iterator.failableNext() {
                 let wordIndex = Table("wordIndex")
                 let word = Table("word")
-                let newWord = DatabaseWord(id: try! row.get(word[Expression<Int>("id")]),
+                let newWord = DatabaseWord(id: try! row.get(Expression<Int>("id")),
                                            dict: .jitendex,
-                                           word: try! row.get(wordIndex[Expression<String>("w")]),
-                                           readingsString: try! row.get(word[Expression<String>("w")]),
+                                           word: try! row.get(Expression<String>("wort")),
+                                           readingsString: try! row.get(Expression<String>("w")),
                                            meaning: try! row.get(Expression<String>("m")))
                 searchResults.insert(newWord)
             }
         } catch {
-            print("error occurred when searching partially")
+            print("error occurred when searching partially \(error)")
         }
     }
     return searchResults
@@ -534,15 +595,19 @@ func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
 func searchDatabase(databaseName dictName: DICTIONARY_NAMES, for searchString: String, exact: Bool = false) -> RowIterator? {
     do {
         let db = DatabaseConnections[dictName]!
-        let wordIndex = VirtualTable("wordIndex")
+        let vTable = VirtualTable("main")
+        let wordIndex = Table("wordIndex")
         let word = Table("word")
         let id = Expression<Int>("id")
-        let results: Expression<Bool> = (exact ? wordIndex.match("w:\"\(searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
-//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"*")) ||
-//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"*")) ||
-//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*")) ||
-//        (exact ? wordIndex.match("w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"") : wordIndex.match("w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"*"))
-        return try db.prepareRowIterator(wordIndex.filter(results).join(word, on: word[id] == wordIndex[id]))
+        let wort = Expression<String>("wort")
+        // let results: Expression<Bool> = (exact ? vTable.match("w:\"\(searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : vTable.match("w:\"\(searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
+    // let results: Expression<Bool> = (exact ? (wort.like("\(searchString)") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)") || wort.like("\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)") || wort.like("\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)")) : (wort.like("\(searchString)%") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)%")))
+//        return try db.prepareRowIterator("SELECT * FROM (SELECT * FROM \"wordIndex\" WHERE (((((wordIndex.wort LIKE ?) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) ORDER BY \"wort\") INNER JOIN \"word\" USING(\"id\")", bindings: "\(searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")")
+        
+        return try db.prepareRowIterator("SELECT * FROM \"wordIndex\" INDEXED BY wordIndex_w_idx INNER JOIN \"word\" USING(\"id\") WHERE wort IN (SELECT wort FROM main WHERE main MATCH ?) ORDER BY \"wort\"", bindings: (exact ? ("wort:\"\(searchString)\" OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : ("wort:\"\(searchString)\"* OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
+//                                            "\(searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")"
+        )
+        //return try db.prepareRowIterator(wordIndex.filter(results).order(wort).join(word, on: word[id] == wordIndex[id]).select(word[id], wort,  Expression<String>("w"), Expression<String>("m")))
     } catch {
         return nil
     }
@@ -552,6 +617,53 @@ let specialCases = [
 "…",
 "-"
 ]
+
+
+func findSimilarWordFTS(databaseName dictName: DICTIONARY_NAMES, for searchStrings: [String]) -> (AnySequence<Row>, Int) {
+    if searchStrings.count < 1 {
+        return (AnySequence([]), 0)
+    }
+    do {
+        let db = DatabaseConnections[dictName]!
+        let main = Table("wordIndex")
+        let word = Table("word")
+        let w = Expression<String>("w")
+        //let w = Expression<String>("wort")
+        let id = Expression<String>("id")
+        let wordFTS = VirtualTable("wordFTS")
+        let firstSS = searchStrings.first!
+        var results = "(" + __generateStrictWithExceptions(columnName: "w", searchString: firstSS)
+        for searchString in searchStrings[1...] {
+            results = results + ") AND (" + __generateStrictWithExceptions(columnName: "w", searchString: searchString)
+        }
+        results += ")"
+        return (try db.prepare(wordFTS.filter(wordFTS.match(results)).join(word, on: word[id] == VirtualTable("wordFTS")[id])), try db.scalar(wordFTS.filter(wordFTS.match(results)).count))
+    } catch {
+        return (AnySequence([]), 0)
+    }
+}
+
+func __generateStrictWithExceptions(columnName: String, searchString: String) -> String {
+    func expr(s: String) -> String {
+        return "\(columnName):\"\(s)\""
+    }
+    var base = expr(s: searchString)
+    for specialCase in specialCases {
+        base = base + " OR " + expr(s: "\(specialCase)\(searchString)") + " OR " + expr(s: "\(searchString)\(specialCase)")
+    }
+    return base
+}
+
+//func __generateStrictWithExceptions1(clm: Expression<String>, searchString: String) -> Expression<Bool> {
+//    func expr(s: String) -> Expression<Bool> {
+//        return clm.match("w:'\(s)'")
+//    }
+//    var base = expr(s: searchString)
+//    for specialCase in specialCases {
+//        base = base || expr(s: "\(specialCase)\(searchString)") || expr(s: "\(searchString)\(specialCase)")
+//    }
+//    return base
+//}
 
 func findSimilarWord(databaseName dictName: DICTIONARY_NAMES, for searchStrings: [String]) -> (AnySequence<Row>, Int) {
     if searchStrings.count < 1 {
@@ -588,3 +700,41 @@ extension String {
         return self.range(of: "\\p{Han}", options: .regularExpression) != nil
     }
 }
+
+extension String {
+    func levenshteinDistanceScore(to string: String, ignoreCase: Bool = true, trimWhiteSpacesAndNewLines: Bool = true) -> Double {
+
+        var firstString = self
+        var secondString = string
+
+        if ignoreCase {
+            firstString = firstString.lowercased()
+            secondString = secondString.lowercased()
+        }
+        if trimWhiteSpacesAndNewLines {
+            firstString = firstString.trimmingCharacters(in: .whitespacesAndNewlines)
+            secondString = secondString.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        let empty = [Int](repeating:0, count: secondString.count)
+        var last = [Int](0...secondString.count)
+
+        for (i, tLett) in firstString.enumerated() {
+            var cur = [i + 1] + empty
+            for (j, sLett) in secondString.enumerated() {
+                cur[j + 1] = tLett == sLett ? last[j] : Swift.min(last[j], last[j + 1], cur[j])+1
+            }
+            last = cur
+        }
+
+        // maximum string length between the two
+        let lowestScore = max(firstString.count, secondString.count)
+
+        if let validDistance = last.last {
+            return  1 - (Double(validDistance) / Double(lowestScore))
+        }
+
+        return 0.0
+    }
+}
+

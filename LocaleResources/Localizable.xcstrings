@@ -463,6 +463,28 @@
         }
       }
     },
+    "Start searching!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調べ始めましょう！"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調べ始めましょう！"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調べ始めましょう！"
+          }
+        }
+      }
+    },
     "The app binary resources are invalid." : {
       "localizations" : {
         "ja" : {
@@ -492,6 +514,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "意向形"
+          }
+        }
+      }
+    },
+    "Welcome to CJE Dictionary" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中和英辞書へよこそ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎日语学者"
           }
         }
       }

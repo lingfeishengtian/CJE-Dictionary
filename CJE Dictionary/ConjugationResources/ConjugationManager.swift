@@ -135,7 +135,11 @@ struct Conjugation : CSVCodable {
             throw CSVError.runtimeError("Not an Int")
         }
         self.stemRemovalCharacterNum = stemRemovalCharacterNum
-        self.conjugation = String(strArray[6])
+        if strArray[6] != "\"\"" {
+            self.conjugation = String(strArray[6])
+        } else {
+            self.conjugation = ""
+        }
         self.kanaTextReplacement = String(strArray[7])
         self.kanjiTextReplacement = String(strArray[8])
         self.pos2 = String(strArray[9])
@@ -260,11 +264,11 @@ class ConjugationManager {
     func deconjugate(_ str: String) -> [VerbDictionaryForm] {
         var potentialCandidates: [VerbDictionaryForm] = []
         for conjugation in conjugations {
-            if str.hasSuffix(conjugation.kanaTextReplacement + conjugation.conjugation) {
+            if !conjugation.conjugation.isEmpty && str.hasSuffix(conjugation.kanaTextReplacement + conjugation.conjugation) {
                 let base = String(str.dropLast(conjugation.conjugation.count + conjugation.kanaTextReplacement.count))
                 let combine = base + getStemFor(conjugation: conjugation)
                 if isDictionaryForm(conjugation) {
-                    // print("\(combine): \(conjugation.conjugation) is dictionary")
+//                    print("\(combine): \(conjugation.conjugation) is dictionary")
                     // potentialCandidates.append(VerbDictionaryForm(verbTypeId: conjugation.verbId, verbDictionaryForm: combine, derivations: []))
                     continue
                 }
@@ -286,7 +290,7 @@ class ConjugationManager {
         for conjugation in conjugations {
             if conjugation.verbId == verbType.id {
                 if let conjugationType = conjugationTypes.first(where: { $0.id == conjugation.conjugationTypeId }) {
-                    conjugatedStrings.append(ConjugatedVerb(form: conjugationType.name, isNegative: conjugation.isNegative, isFormal: conjugation.isFormal, verb: String(str.dropLast(conjugation.stemRemovalCharacterNum)) + conjugation.kanaTextReplacement + conjugation.conjugation))
+                    conjugatedStrings.append(ConjugatedVerb(form: conjugationType.name, isNegative: conjugation.isNegative, isFormal: conjugation.isFormal, verb: String(str.dropLast(conjugation.stemRemovalCharacterNum + conjugation.kanaTextReplacement.count)) + conjugation.kanaTextReplacement + conjugation.conjugation))
                 }
             }
         }
