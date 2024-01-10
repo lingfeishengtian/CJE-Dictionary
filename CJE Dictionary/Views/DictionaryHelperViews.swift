@@ -16,8 +16,8 @@ struct RubyDisplay: UIViewRepresentable {
     public func makeUIView(context: UIViewRepresentableContext<RubyDisplay>) -> TextView {
         let textView = TextView()
        
-        textView.isSelectable = true
-        textView.isUserInteractionEnabled = true
+        textView.isSelectable = false
+        textView.isUserInteractionEnabled = false
         
         textView.backgroundColor = .clear
         textView.textContainerInset = .zero

@@ -7,17 +7,29 @@
 
 import Foundation
 
-let HISTORY_KEY = "history"
+let HISTORY_KEY = "searchHistory"
+let MAX_HISTORY_COUNT = 50
 
-var HistoryArray: [String] {
+var HistoryArray: [DatabaseWord] {
     get {
-        UserDefaults.group?.stringArray(forKey: HISTORY_KEY) ?? []
+        if let retrieved = UserDefaults.group?.value(forKey: HISTORY_KEY) as? Data {
+            return try! PropertyListDecoder().decode(Array<DatabaseWord>.self, from: retrieved)
+        } else {
+            return []
+        }
+//        UserDefaults.group?.array(forKey: HISTORY_KEY) as? [DatabaseWord] ?? []
     }
     set(newArr) {
-        saveHistory(arr: newArr)
+        if newArr.count >= MAX_HISTORY_COUNT {
+            saveHistory(arr: Array(newArr[0..<MAX_HISTORY_COUNT]))
+        } else {
+            saveHistory(arr: newArr)
+        }
     }
 }
 
-@inline(__always) fileprivate func saveHistory(arr: [String]) {
-    UserDefaults.group?.set(arr, forKey: HISTORY_KEY)
+@inline(__always) fileprivate func saveHistory(arr: [DatabaseWord]) {
+    if let encoded = try? PropertyListEncoder().encode(arr) {
+        UserDefaults.group?.set(encoded, forKey: HISTORY_KEY)
+    }
 }

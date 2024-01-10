@@ -17,7 +17,7 @@ struct DefinitionEntry {
 
 struct ExampleSentence: Identifiable {
     let id = UUID()
-    let language: Language
+    let language: Language?
     let attributedString: AttributedString
 }
 
@@ -82,7 +82,7 @@ extension DatabaseWord {
             
             let pronounciationElements = try attemptTwoSelectors(doc: doc, selectorA: ".pronunciation-text", selectorB: ".pinyin_h")
             var pronounciationText = try pronounciationElements.text(trimAndNormaliseWhitespace: true)
-            let definitionsAndReibun = try attemptTwoSelectors(doc: doc, selectorA: ".sense-group", selectorB: "[data-orgtag]")
+            let definitionsAndReibun = try attemptTwoSelectors(doc: doc, selectorA: ".sense-group", selectorB: ".description:last-of-type > [data-orgtag]")
             let termElems = try attemptTwoSelectors(doc: doc, selectorA: ".headline ruby, .headline .kanji-form-furigana", selectorB: "[data-orgtag=\"subheadword\"]")
             var term = ""
             
@@ -102,6 +102,8 @@ extension DatabaseWord {
             var currDef: String?
             var shogakuExampleSentenceArray: [ExampleSentence] = []
             
+            var shogakuTags: [Tag] = []
+            
             for elem in definitionsAndReibun {
                 let partOfSpeechs = try elem.select(".tag.part-of-speech-info")
                 let senses = try elem.select(".sense")
@@ -110,17 +112,69 @@ extension DatabaseWord {
                 if (senses.isEmpty()) {
                     // TODO: glossary and reibun pass as html
                     if (try elem.attr("data-orgtag") == "meaning") {
-                        //print("Definition: \(try elem.text())")
-                        try elem.getChildNodes().first?.remove()
-                        if (currDef != nil) {
-                            shogakuDefArray.append(Definition(definition: currDef!, exampleSentences: shogakuExampleSentenceArray))
-                            shogakuExampleSentenceArray = []
+                        if elem.hasAttr("level") && elem.hasAttr("no") {
+                            let level = try elem.attr("level")
+                            _ = try elem.attr("no")
+                            
+                            //print("Definition: \(try elem.text())")
+                            try elem.getChildNodes().first?.remove()
+                            if (currDef != nil) {
+                                shogakuDefArray.append(Definition(definition: currDef!, exampleSentences: shogakuExampleSentenceArray))
+                                shogakuExampleSentenceArray = []
+                                
+                                if level == "1" {
+                                    definitionGroupArrays.append(DefinitionGroup(tags: shogakuTags, definitions: shogakuDefArray))
+                                    shogakuTags = []
+                                    shogakuDefArray = []
+                                    currDef = nil
+                                }
+                            }
+                            
+                            if level == "1" {
+                                let tagName = try elem.text().trimmingCharacters(in: ["]", "["])
+                                shogakuTags.append(Tag(shortName: tagName, longName: tagName))
+                            } else {
+                                currDef = try elem.text()
+                            }
+                        } else {
+                            if let cDef = currDef {
+                                currDef = cDef + "\n" + (try elem.text())
+                            } else {
+                                currDef = try elem.text()
+                            }
                         }
-                        currDef = try elem.text()
+                    } else if (try elem.attr("data-orgtag") == "subhead") {
+                        if let meaning = try elem.select("[data-orgtag=\"meaning\"]").first(), let subheadword = try elem.select("[data-orgtag=\"subheadword\"]").first() {
+                            if (currDef != nil) {
+                                shogakuDefArray.append(Definition(definition: currDef!, exampleSentences: shogakuExampleSentenceArray))
+                                shogakuExampleSentenceArray = []
+                                
+                                definitionGroupArrays.append(DefinitionGroup(tags: shogakuTags, definitions: shogakuDefArray))
+                                shogakuTags = []
+                                shogakuDefArray = []
+                                currDef = nil
+                            }
+                            if elem.hasAttr("type") {
+                                shogakuTags.append(Tag(shortName: try elem.attr("type"), longName: try elem.attr("type")))
+                            }
+                            for span in try meaning.select("span") {
+                                shogakuTags.append(Tag(shortName: try span.text(), longName: try span.text()))
+                            }
+                            
+                            var def = ""
+                            for childNode in meaning.getChildNodes() {
+                                if let tNode = childNode as? TextNode {
+                                    def += tNode.text()
+                                }
+                            }
+                            
+                            definitionGroupArrays.append(DefinitionGroup(tags: shogakuTags, definitions: [Definition(definition: def, exampleSentences: [ExampleSentence(language: .JP, attributedString: AttributedString(stringLiteral: try subheadword.text()))])]))
+                            shogakuTags = []
+                        }
                     } else {
                         //print("Reibun: \(try elem.text())")
                         shogakuExampleSentenceArray.append(ExampleSentence(language: .JP, attributedString: AttributedString(stringLiteral: try elem.select("jae").first()?.text() ?? "")))
-                        shogakuExampleSentenceArray.append(ExampleSentence(language: .JP, attributedString: AttributedString(stringLiteral: try elem.select("ja_cn").first()?.text() ?? "")))
+                        shogakuExampleSentenceArray.append(ExampleSentence(language: .CN, attributedString: AttributedString(stringLiteral: try elem.select("ja_cn").first()?.text() ?? "")))
                     }
                     for canJian in try doc.select("a") {
                         //print("参见: \(try canJian.text())")
@@ -159,6 +213,10 @@ extension DatabaseWord {
                             }
                         }
                         
+                        if let note = notes.first() {
+                            exampleSentences.append(ExampleSentence(language: nil, attributedString: translateHtmlIntoAttributedString(element: note)))
+                        }
+                        
                         definitionArray.append(Definition(definition: definition ?? "", exampleSentences: exampleSentences))
                     }
                     
@@ -192,6 +250,10 @@ extension DatabaseWord {
                             } else {
                                 attributedString.append(AttributedString(stringLiteral: try elementNode.text()))
                             }
+                        } else if elementNode.tagName() == "legend" {
+                            // attributedString.append(try AttributedString("\(elementNode.text()): ", attributes: AttributeContainer([.font: UIFont.boldSystemFont(ofSize: 17)])))
+                        } else if elementNode.hasClass("sense-note-icon") {
+                            attributedString.append(AttributedString(stringLiteral: try elementNode.text() + " "))
                         } else {
                             attributedString.append(translateHtmlIntoAttributedString(element: elementNode))
                         }

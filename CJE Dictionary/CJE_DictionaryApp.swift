@@ -14,7 +14,6 @@ struct CJE_DictionaryApp: App {
     var body: some Scene {
         WindowGroup {
             if progress < 1.0 {
-                
                 ProgressView("Please wait for app resources to unload, this will take a little bit of time on the first app launch.")
                     .progressViewStyle(.circular)
                     .padding()

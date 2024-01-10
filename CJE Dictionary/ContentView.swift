@@ -17,7 +17,7 @@ fileprivate struct ExampleSentenceTextView: View {
     let attributedString: AttributedString
     let screenWidth: CGFloat
 
-    init(attributedString: AttributedString, screenWidth: CGFloat, language: Language) {
+    init(attributedString: AttributedString, screenWidth: CGFloat, language: Language?) {
         let fontFamilyNames = UIFont.familyNames
         var flagEmoji: String {
             switch language {
@@ -27,11 +27,12 @@ fileprivate struct ExampleSentenceTextView: View {
                 "🇺🇸"
             case .JP:
                 "🇯🇵"
+            default:
+                ""
             }
         }
         var beginning = AttributedString(stringLiteral: flagEmoji + " ")
-        var attrString = attributedString
-        beginning.append(attrString)
+        beginning.append(attributedString)
         beginning.mergeAttributes(try! AttributeContainer([.font: UIFont(name: "HiraMinProN-W3", size: 15)!], including: \.uiKit))
         self.attributedString = beginning
         self.screenWidth = screenWidth
@@ -152,16 +153,29 @@ struct DefinitionView: View {
     }
 }
 
+//class HistoryManager : ObservableObject {
+//    @Published var localHistory: [DatabaseWord] = HistoryArray
+//    
+//    func setHistory(_ a: [DatabaseWord]) {
+//        localHistory = a
+//    }
+//}
+
 struct ContentView: View {
     @State private var searchText = ""
-    @State private var history = HistoryArray
     @ObservedObject var searchResults: SearchEnumeratorWrapper = SearchEnumeratorWrapper()
+    @State var localHistry: [DatabaseWord] = HistoryArray
+    @State var searchBarVisible = false
     
     func forEachSearchResults(arr: some RandomAccessCollection<DatabaseWord>, screenWidth: CGFloat) -> some View {
         ForEach(arr, id: \.self) { name in
             NavigationLink {
                 NavigationLazyView(
-                    DefinitionView(dbWord: name, screenWidth: screenWidth)
+                    DefinitionView(dbWord: name, screenWidth: screenWidth).onAppear {
+                        localHistry.removeAll(where: { $0.readings == name.readings })
+                        localHistry.insert(name, at: 0)
+                        HistoryArray = localHistry
+                    }
                 ).navigationBarTitleDisplayMode(.inline)
             } label: {
                 let readings = name.readings.filter({ $0 != name.word })
@@ -186,7 +200,16 @@ struct ContentView: View {
                 } else {
                     searchResults.searchEnumerator = CJE_Dictionary.searchText(searchString: $0)
                     if $0.count >= 2 {
-                        searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: $0)
+                        if searchResults.searchEnumerator?.lazyArray.count == 0 {
+                            if let sS = $0.applyingTransform(.latinToHiragana, reverse: false) {
+                                searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: sS)
+//                                if searchResults.partialSearch.isEmpty {
+//                                    searchResults.partialSearch = CJE_Dictionary.doPartialSearch(searchString: sS)
+//                                }
+                            } else {
+                                searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: $0)
+                            }
+                        }
                     } else {
                         searchResults.partialSearch = []
                     }
@@ -196,30 +219,38 @@ struct ContentView: View {
         })
         
         GeometryReader { geo in
-            NavigationView {
+            NavigationStack {
                 VStack {
-                    List {
-                        if !searchResults.lazyArray.isEmpty {
-                            forEachSearchResults(arr: searchResults.lazyArray, screenWidth: geo.maxWidth)
-                        } else {
-                            ForEach(history, id: \.self) { name in
-                                NavigationLink {
-                                    Text(name)
-                                } label: {
-                                    Text(name)
+                    if HistoryArray.isEmpty && searchResults.lazyArray.isEmpty && searchResults.partialSearch.isEmpty {
+                        Text("Welcome to CJE Dictionary")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                        Text("Start searching!")
+                            .font(.subheadline)
+                            .fontWeight(.light)
+                            .multilineTextAlignment(.center)
+                    }else {
+                        List {
+                            if !searchResults.lazyArray.isEmpty {
+                                forEachSearchResults(arr: searchResults.lazyArray, screenWidth: geo.maxWidth)
+                            } else {
+                                if searchText.isEmpty {
+                                    forEachSearchResults(arr: localHistry, screenWidth: geo.maxWidth)
                                 }
                             }
-                        }
-                        if !searchResults.partialSearch.isEmpty {
-                            Label("Partial Search", systemImage: "magnifyingglass.circle")
-                            forEachSearchResults(arr: Array(searchResults.partialSearch), screenWidth: geo.maxWidth)
-                        }
-                    }.id(searchResults.searchEnumerator?.id ?? UUID())
+                            if !searchResults.partialSearch.isEmpty {
+                                Label("Partial Search", systemImage: "magnifyingglass.circle")
+                                forEachSearchResults(arr: Array(searchResults.partialSearch), screenWidth: geo.maxWidth)
+                            }
+                        }.id(searchResults.searchEnumerator?.id ?? UUID())
+                    }
                 }
                 .id(searchResults.searchEnumerator?.id ?? UUID())
                 .navigationTitle(LocalizedStringKey("dictionary"))
             }
-            .searchable(text: searchStringBinding)
+            .autocorrectionDisabled()
+            .searchable(text: searchStringBinding, isPresented: $searchBarVisible)
             .alert(isPresented: Binding<Bool> (get: {
                 ConjugationManager.sharedInstance.error
             }, set: {_ in
