@@ -114,7 +114,7 @@ let DatabaseConnections: [DICTIONARY_NAMES:Connection] = {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: dictName.rawValue, directoryHint: .isDirectory)
 }
 
-let realm = try! Realm(configuration: CONFIGURATION)
+let realm: Realm = try! Realm(configuration: CONFIGURATION)
 
 func createDictionaryIfNotPresent() {
     if let existingRealm = BUNDLE_CN_JP_DICT {
@@ -126,7 +126,7 @@ func createDictionaryIfNotPresent() {
             print("Error occured while copying: \(error)")
         }
     }
-        
+    
     for dictName in DICTIONARY_NAMES.allCases {
         let exportFolder = exportFolderOf(dictionary: dictName)
         
@@ -144,43 +144,36 @@ func createDictionaryIfNotPresent() {
     
     for dbConnection in DatabaseConnections.values {
         do {
+            // ENSURE SEARCH IS USING INDEX
+            //            let plan = try dbConnection.prepareRowIterator("EXPLAIN QUERY PLAN SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE \"あ%\";")
+            //            while let a = plan.next() {
+            //                print(a)
+            //            }
+            
+            // Substring works differently here, you need to -1 at the end for some reason
             try dbConnection.execute("""
             CREATE TABLE "wordIndex" (
-                "id"    INTEGER NOT NULL,
-                "wort"    TEXT NOT NULL,
-                FOREIGN KEY(id) REFERENCES word(id)
-            );
-            CREATE VIRTUAL TABLE IF NOT EXISTS wordFTS USING
-            FTS5(id,w);
-            CREATE VIRTUAL TABLE IF NOT EXISTS main USING
-            FTS5(content="wordIndex",id,wort, tokenize=unicode61);
-            CREATE TRIGGER IF NOT EXISTS content_trig1 AFTER INSERT ON wordIndex BEGIN
-            INSERT INTO main(id, wort) VALUES(new.id, new.wort); END;
-            CREATE INDEX wordIndex_w_idx ON wordIndex (wort);
-            """)
-            try dbConnection.execute("""
-                WITH cte AS (
-                    SELECT id, '' w, w || '|' s
-                    FROM word
-                    UNION ALL
-                    SELECT id,
-                           SUBSTR(s, 0, INSTR(s, '|') - 1),
-                           SUBSTR(s, INSTR(s, '|') + 1)
-                    FROM cte
-                    WHERE s <> ''
-                )
-                INSERT INTO wordIndex (id, wort)
-                SELECT id, w
-                FROM cte
-                WHERE w <> '';
-                INSERT INTO wordFTS SELECT id,w FROM word
-            """)
-            try dbConnection.execute("""
-                DELETE FROM wordIndex WHERE wort LIKE "%【%】%"
-            """)
-            try dbConnection.execute("""
-                INSERT INTO main(main) VALUES('rebuild');
-                ANALYZE
+                            "id"    INTEGER NOT NULL,
+                            "wort"    TEXT NOT NULL,
+                            FOREIGN KEY(id) REFERENCES word(id)
+                        );
+            WITH cte AS (
+                                SELECT id, '' w, w || '|' s
+                                FROM word
+                                UNION ALL
+                                SELECT id,
+                                       SUBSTR(s, 0, INSTR(s, '|') - 1),
+                                       SUBSTR(s, INSTR(s, '|') + 1)
+                                FROM cte
+                                WHERE s <> ''
+                            )
+                            INSERT INTO wordIndex (id, wort)
+                            SELECT id, w
+                            FROM cte
+                            WHERE w <> '';
+            DELETE FROM wordIndex WHERE wort LIKE "%【%】%";
+            CREATE INDEX wordIndex_w_idx ON wordIndex(wort COLLATE NOCASE);
+            ANALYZE;
             """)
         } catch {
             print("failed?")
@@ -252,9 +245,9 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
     // TODO: Allow user to select dictionaries
     var finDefs: [(LanguageToLanguage, [DefinitionGroup])] = []
     //title CONTAINS[c] "同:" OR title contains[c] "同："
-//    guard let wordDef = getDefinition(databasename: word.dict, for: word.id) else {
-//        return CJE_Definition(word: word, definitions: [])
-//    }
+    //    guard let wordDef = getDefinition(databasename: word.dict, for: word.id) else {
+    //        return CJE_Definition(word: word, definitions: [])
+    //    }
     print("Start lookup: \(Date.now.timeIntervalSince1970)")
     for dict in DICTIONARY_NAMES.allCases {
         var priority = -1
@@ -326,66 +319,72 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
         }
         print("End lookup moji: \(Date.now.timeIntervalSince1970)")
         if dict == word.dict {
+            print("Start parsing \(Date.now.timeIntervalSince1970)")
             finDefs.append((dict.type(), word.parseDefinitionHTML()))
+            print("End parsing \(Date.now.timeIntervalSince1970)")
             continue
         }
-        var passed: [String] = []
-        var wordList = word.readings
+        print("Start lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
+        var wordList = eliminateSpecialCasesFromWordlist(wordList: word.readings)
         do {
-            let kanjiWords = wordList.filter({ $0.containsKanjiCharacters })
-            let nonKanjiWords = wordList.filter( { !$0.containsKanjiCharacters })
-            
-            var res: (AnySequence<Row>, Int)? = nil
-            
-            if kanjiWords.isEmpty {
-                res = __lookupWordHelper(wordList: &wordList, passedWords: &passed, dict: dict, strict: true)
-            } else {
-                for kanjiWord in kanjiWords {
-                    var arrKanjiWord = [kanjiWord]
-                    var nonKanji = nonKanjiWords
-                    let tmp = __lookupWordHelper(wordList: &nonKanji, passedWords: &arrKanjiWord, dict: dict, strict: true)
-                    if tmp.1 > 0 {
-                        res = tmp
-                        break
+            var res: [DatabaseWord] = __lookupWordHelper(wordList: wordList, dict: dict)
+            // Word, Percent Match, Number of Readings
+            var finalList: [(DatabaseWord, Double, Int)] = []
+            // Sort words by highest match
+            for possibleWord in res {
+                let numReadings = possibleWord.readings.count
+                var readingsExists = 0
+                for reading in eliminateSpecialCasesFromWordlist(wordList: possibleWord.readings) {
+                    if wordList.contains(reading) {
+                        readingsExists += 1
                     }
                 }
+                
+                finalList.append((possibleWord, Double(readingsExists)/Double(numReadings), numReadings))
             }
             
-            if let resultExists = res {
-                if let firstRow = resultExists.0.first(where: {_ in true}) {
-                    finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: try firstRow.get(Expression<String>("m")))))
+            finalList = finalList.sorted(by: { a, b in
+                if a.1 == b.1 {
+                    return a.2 > b.2
+                } else {
+                    return a.1 > b.1
                 }
+            })
+            
+            if finalList.count > 0 {
+                finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: finalList.first?.0.meaning)))
             }
         } catch {
             print("\(error) when adding \(word.word) in \(dict)")
         }
+        print("End lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
     }
+    print("End lookup final: \(Date.now.timeIntervalSince1970)")
     return CJE_Definition(word: word, definitions: finDefs)
 }
 
-fileprivate func __lookupWordHelper(wordList: inout [String], passedWords: inout [String], dict: DICTIONARY_NAMES, strict: Bool) -> (AnySequence<Row>, Int) {
-    print("Find similar word FTS start \(Date.now.timeIntervalSince1970)")
-    if (wordList.isEmpty) {
-        return (AnySequence([]), 0)
+func eliminateSpecialCasesFromWordlist(wordList: [String]) -> [String] {
+    let specialCases = ["…", "-"]
+    var result = wordList
+    for specialCase in specialCases {
+        result.forEach({ $0.replacingOccurrences(of: specialCase, with: "")})
     }
-    let word = wordList.popLast()!
-    passedWords.append(word)
-    let res = findSimilarWordFTS(databaseName: dict, for: passedWords)
-    print("Find similar word FTS end \(Date.now.timeIntervalSince1970)")
-    if res.1 > 0 {
-        if res.1 == 1 {
-            return res
-        } else {
-            let deeperRun = __lookupWordHelper(wordList: &wordList, passedWords: &passedWords, dict: dict, strict: strict)
-            if deeperRun.1 < 1 {
-                return res
-            }
-            return deeperRun
+    return result
+}
+
+fileprivate func __lookupWordHelper(wordList: [String], dict: DICTIONARY_NAMES) -> [DatabaseWord] {
+    var words = [DatabaseWord]()
+    for word in wordList {
+        let iterator = searchDatabase(databaseName: dict, for: word, exact: true)
+        while let row = iterator?.next() {
+            words.append(DatabaseWord(id: try! row.get(Expression<Int>("id")),
+                                      dict: dict,
+                                      word: try! row.get(Expression<String>("wort")),
+                                      readingsString: try! row.get(Expression<String>("w")),
+                                      meaning: try! row.get(Expression<String>("m"))))
         }
-    } else {
-        passedWords.removeLast()
-        return __lookupWordHelper(wordList: &wordList, passedWords: &passedWords, dict: dict, strict: strict)
     }
+    return words
 }
 
 class SearchResultsEnumerator: ObservableObject {
@@ -410,7 +409,7 @@ class SearchResultsEnumerator: ObservableObject {
     func addToLazyArray() {
         // TODO: Support in the future reading both at the same time
         for _ in 1...pollingLimit {
-            print("Start adding word: \(Date.now.timeIntervalSince1970)")
+            let statsTimeStart = Date.now
             do {
                 if sQueryIterators.isEmpty {
                     return
@@ -421,14 +420,12 @@ class SearchResultsEnumerator: ObservableObject {
                     continue
                 }
                 
-                let wordIndex = Table("wordIndex")
-                let word = Table("word")
                 let newWord = DatabaseWord(id: try! row.get(Expression<Int>("id")),
                                            dict: sQueryIterators.first!.0,
                                            word: try! row.get(Expression<String>("wort")),
                                            readingsString: try! row.get(Expression<String>("w")),
                                            meaning: try! row.get(Expression<String>("m")))
-                print("End adding word (\(newWord.word)): \(Date.now.timeIntervalSince1970)")
+                print("\((Date.now.timeIntervalSince(statsTimeStart) * 1000 * 1000).rounded() / 1000) ms to add word \(newWord.word)")
                 lazyArray.append(newWord)
                 objectWillChange.send()
             } catch {
@@ -446,7 +443,7 @@ var it: AnySequence<Row>.Iterator? = nil
 func searchText(searchString: String) -> SearchResultsEnumerator {
     // TODO: Deconjugate and smart search
     let ret = SearchResultsEnumerator()
-    for dict in DICTIONARY_NAMES.allCases {
+    for dict in [DICTIONARY_NAMES.jitendex] {
         let f = searchDatabase(databaseName: dict, for: searchString)
         if let it = f {
             ret.initSQueryForDict(dict: dict, sQuery: it)
@@ -507,9 +504,9 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
             resultSet.append(contentsOf: exactSearchDatabase(for: particleUnused))
         }
         return resultSet.elements
-//            .sorted(by: {
-//            sortResults(a: $0, b: $1, searchString: searchString)
-//        })
+        //            .sorted(by: {
+        //            sortResults(a: $0, b: $1, searchString: searchString)
+        //        })
     } catch {
         print("\(error) when tokenizing for partial search")
     }
@@ -522,14 +519,14 @@ func doPartialSearch(searchString: String) -> [DatabaseWord] {
     return []
     return __partialSearch(searchString: searchString, partialSearchCache: &newPartialSearchCache)
         .sorted(by: {
-        $0.word.levenshteinDistanceScore(to: searchString) > $1.word.levenshteinDistanceScore(to: searchString)
-    })
+            $0.word.levenshteinDistanceScore(to: searchString) > $1.word.levenshteinDistanceScore(to: searchString)
+        })
 }
 
 fileprivate func __partialSearch(searchString: String, originalSearchString: String? = nil, dropNumber: Int = 0, partialSearchCache: inout [String: Set<DatabaseWord>]) -> Set<DatabaseWord> {
-//    if searchString.count <= 2 {
-//        return []
-//    }
+    //    if searchString.count <= 2 {
+    //        return []
+    //    }
     if partialSearchCache.keys.contains(searchString) {
         return partialSearchCache[searchString]!
     }
@@ -592,107 +589,39 @@ func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
     return searchResults
 }
 
+fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = false) -> String {
+    let stringTranformations = Set([
+        searchString.applyingTransform(.hiraganaToKatakana, reverse: false),
+        searchString.applyingTransform(.hiraganaToKatakana, reverse: true),
+        searchString.applyingTransform(.latinToHiragana, reverse: false),
+        searchString.applyingTransform(.latinToKatakana, reverse: false)
+    ])
+    print(stringTranformations)
+    
+    var query = """
+    SELECT * FROM wordIndex INNER JOIN "word" USING ("id") WHERE
+    """
+    
+    for transformation in stringTranformations {
+        guard let string = transformation else {
+            continue
+        }
+        query.append(" wort LIKE \"\(string + (exact ? "" : "%"))\" OR")
+    }
+    query.append(" FALSE;")
+    
+    print("Generated Query \(query)")
+    
+    return query
+}
+
 func searchDatabase(databaseName dictName: DICTIONARY_NAMES, for searchString: String, exact: Bool = false) -> RowIterator? {
     do {
         let db = DatabaseConnections[dictName]!
-        let vTable = VirtualTable("main")
-        let wordIndex = Table("wordIndex")
-        let word = Table("word")
-        let id = Expression<Int>("id")
-        let wort = Expression<String>("wort")
-        // let results: Expression<Bool> = (exact ? vTable.match("w:\"\(searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : vTable.match("w:\"\(searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR w:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
-    // let results: Expression<Bool> = (exact ? (wort.like("\(searchString)") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)") || wort.like("\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)") || wort.like("\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)")) : (wort.like("\(searchString)%") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)%") || wort.like("\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)%")))
-//        return try db.prepareRowIterator("SELECT * FROM (SELECT * FROM \"wordIndex\" WHERE (((((wordIndex.wort LIKE ?) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) OR (wordIndex.wort LIKE ?)) ORDER BY \"wort\") INNER JOIN \"word\" USING(\"id\")", bindings: "\(searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")")
-        
-        return try db.prepareRowIterator("SELECT * FROM \"wordIndex\" INDEXED BY wordIndex_w_idx INNER JOIN \"word\" USING(\"id\") WHERE wort IN (SELECT wort FROM main WHERE main MATCH ?) ORDER BY \"wort\"", bindings: (exact ? ("wort:\"\(searchString)\" OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\" OR wort:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"") : ("wort:\"\(searchString)\"* OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\"* OR wort:\"\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\"*"))
-//                                            "\(searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.hiraganaToKatakana, reverse: true) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToHiragana, reverse: false) ?? searchString)\(exact ? "" : "%")", "\(searchString.applyingTransform(.latinToKatakana, reverse: false) ?? searchString)\(exact ? "" : "%")"
-        )
-        //return try db.prepareRowIterator(wordIndex.filter(results).order(wort).join(word, on: word[id] == wordIndex[id]).select(word[id], wort,  Expression<String>("w"), Expression<String>("m")))
+        return try db.prepareRowIterator(__generateSQLiteQuery(for: searchString, exact: exact))
     } catch {
         return nil
     }
-}
-
-let specialCases = [
-"…",
-"-"
-]
-
-
-func findSimilarWordFTS(databaseName dictName: DICTIONARY_NAMES, for searchStrings: [String]) -> (AnySequence<Row>, Int) {
-    if searchStrings.count < 1 {
-        return (AnySequence([]), 0)
-    }
-    do {
-        let db = DatabaseConnections[dictName]!
-        let main = Table("wordIndex")
-        let word = Table("word")
-        let w = Expression<String>("w")
-        //let w = Expression<String>("wort")
-        let id = Expression<String>("id")
-        let wordFTS = VirtualTable("wordFTS")
-        let firstSS = searchStrings.first!
-        var results = "(" + __generateStrictWithExceptions(columnName: "w", searchString: firstSS)
-        for searchString in searchStrings[1...] {
-            results = results + ") AND (" + __generateStrictWithExceptions(columnName: "w", searchString: searchString)
-        }
-        results += ")"
-        return (try db.prepare(wordFTS.filter(wordFTS.match(results)).join(word, on: word[id] == VirtualTable("wordFTS")[id])), try db.scalar(wordFTS.filter(wordFTS.match(results)).count))
-    } catch {
-        return (AnySequence([]), 0)
-    }
-}
-
-func __generateStrictWithExceptions(columnName: String, searchString: String) -> String {
-    func expr(s: String) -> String {
-        return "\(columnName):\"\(s)\""
-    }
-    var base = expr(s: searchString)
-    for specialCase in specialCases {
-        base = base + " OR " + expr(s: "\(specialCase)\(searchString)") + " OR " + expr(s: "\(searchString)\(specialCase)")
-    }
-    return base
-}
-
-//func __generateStrictWithExceptions1(clm: Expression<String>, searchString: String) -> Expression<Bool> {
-//    func expr(s: String) -> Expression<Bool> {
-//        return clm.match("w:'\(s)'")
-//    }
-//    var base = expr(s: searchString)
-//    for specialCase in specialCases {
-//        base = base || expr(s: "\(specialCase)\(searchString)") || expr(s: "\(searchString)\(specialCase)")
-//    }
-//    return base
-//}
-
-func findSimilarWord(databaseName dictName: DICTIONARY_NAMES, for searchStrings: [String]) -> (AnySequence<Row>, Int) {
-    if searchStrings.count < 1 {
-        return (AnySequence([]), 0)
-    }
-    do {
-        let db = DatabaseConnections[dictName]!
-        let word = Table("word")
-        let w = Expression<String>("w")
-        let firstSS = searchStrings.first!
-        var results = __generateStrict(clm: w, searchString: firstSS)
-        for searchString in searchStrings[1...] {
-            results = results && __generateStrict(clm: w, searchString: searchString)
-        }
-        return (try db.prepare(word.filter(results).order(w.length)), try db.scalar(word.filter(results).count))
-    } catch {
-        return (AnySequence([]), 0)
-    }
-}
-
-func __generateStrict(clm: Expression<String>, searchString: String) -> Expression<Bool> {
-    func expr(s: String) -> Expression<Bool> {
-        return clm.like("%|\(s)") || clm.like("\(s)|%") || clm.like("%|\(s)|%") || clm.like("\(s)")
-    }
-    var base = expr(s: searchString)
-    for specialCase in specialCases {
-        base = base || expr(s: "\(specialCase)\(searchString)") || expr(s: "\(searchString)\(specialCase)")
-    }
-    return base
 }
 
 extension String {
@@ -703,10 +632,10 @@ extension String {
 
 extension String {
     func levenshteinDistanceScore(to string: String, ignoreCase: Bool = true, trimWhiteSpacesAndNewLines: Bool = true) -> Double {
-
+        
         var firstString = self
         var secondString = string
-
+        
         if ignoreCase {
             firstString = firstString.lowercased()
             secondString = secondString.lowercased()
@@ -715,10 +644,10 @@ extension String {
             firstString = firstString.trimmingCharacters(in: .whitespacesAndNewlines)
             secondString = secondString.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-
+        
         let empty = [Int](repeating:0, count: secondString.count)
         var last = [Int](0...secondString.count)
-
+        
         for (i, tLett) in firstString.enumerated() {
             var cur = [i + 1] + empty
             for (j, sLett) in secondString.enumerated() {
@@ -726,14 +655,14 @@ extension String {
             }
             last = cur
         }
-
+        
         // maximum string length between the two
         let lowestScore = max(firstString.count, secondString.count)
-
+        
         if let validDistance = last.last {
             return  1 - (Double(validDistance) / Double(lowestScore))
         }
-
+        
         return 0.0
     }
 }

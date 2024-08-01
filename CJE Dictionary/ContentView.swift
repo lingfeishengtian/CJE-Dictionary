@@ -202,7 +202,7 @@ struct ContentView: View {
                     if $0.count >= 2 {
                         if searchResults.searchEnumerator?.lazyArray.count == 0 {
                             if let sS = $0.applyingTransform(.latinToHiragana, reverse: false) {
-                                searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: sS)
+                                // searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: sS)
 //                                if searchResults.partialSearch.isEmpty {
 //                                    searchResults.partialSearch = CJE_Dictionary.doPartialSearch(searchString: sS)
 //                                }
