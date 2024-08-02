@@ -375,7 +375,7 @@ func eliminateSpecialCasesFromWordlist(wordList: [String]) -> [String] {
 fileprivate func __lookupWordHelper(wordList: [String], dict: DICTIONARY_NAMES) -> [DatabaseWord] {
     var words = [DatabaseWord]()
     for word in wordList {
-        let iterator = searchDatabase(databaseName: dict, for: word, exact: true)
+        let iterator = searchDatabaseExact(databaseName: dict, for: word)
         while let row = iterator?.next() {
             words.append(DatabaseWord(id: try! row.get(Expression<Int>("id")),
                                       dict: dict,
@@ -394,7 +394,7 @@ class SearchResultsEnumerator: ObservableObject {
     let id: UUID = UUID()
     
     // TODO: multi squery support
-    init(pollingLimit:Int = 30) {
+    init(pollingLimit:Int = 10) {
         self.pollingLimit = pollingLimit
         lazyArray = []
     }
@@ -425,7 +425,11 @@ class SearchResultsEnumerator: ObservableObject {
                                            word: try! row.get(Expression<String>("wort")),
                                            readingsString: try! row.get(Expression<String>("w")),
                                            meaning: try! row.get(Expression<String>("m")))
-                print("\((Date.now.timeIntervalSince(statsTimeStart) * 1000 * 1000).rounded() / 1000) ms to add word \(newWord.word)")
+                let msToRun = (Date.now.timeIntervalSince(statsTimeStart) * 1000 * 1000).rounded() / 1000
+                if msToRun > 1 {
+                    print("TOO LONG")
+                }
+                print("\(msToRun) ms to add word \(newWord.word)")
                 lazyArray.append(newWord)
                 objectWillChange.send()
             } catch {
@@ -444,9 +448,11 @@ func searchText(searchString: String) -> SearchResultsEnumerator {
     // TODO: Deconjugate and smart search
     let ret = SearchResultsEnumerator()
     for dict in [DICTIONARY_NAMES.jitendex] {
-        let f = searchDatabase(databaseName: dict, for: searchString)
-        if let it = f {
-            ret.initSQueryForDict(dict: dict, sQuery: it)
+        let iterators = searchDatabaseGeneral(databaseName: dict, for: searchString)
+        for f in iterators {
+            if let it = f {
+                ret.initSQueryForDict(dict: dict, sQuery: it)
+            }
         }
     }
     return ret
@@ -570,7 +576,7 @@ fileprivate func __partialSearch(searchString: String, originalSearchString: Str
 
 func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
     var searchResults: Set<DatabaseWord> = []
-    if let iterator = searchDatabase(databaseName: .jitendex, for: searchString, exact: true) {
+    if let iterator = searchDatabaseExact(databaseName: .jitendex, for: searchString) {
         do {
             while let row = try iterator.failableNext() {
                 let wordIndex = Table("wordIndex")
@@ -589,7 +595,7 @@ func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
     return searchResults
 }
 
-fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = false) -> String {
+fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = false) -> [String] {
     let stringTranformations = Set([
         searchString.applyingTransform(.hiraganaToKatakana, reverse: false),
         searchString.applyingTransform(.hiraganaToKatakana, reverse: true),
@@ -598,29 +604,51 @@ fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = f
     ])
     print(stringTranformations)
     
-    var query = """
-    SELECT * FROM wordIndex INNER JOIN "word" USING ("id") WHERE
-    """
+    var finalQueries: [String] = []
     
     for transformation in stringTranformations {
         guard let string = transformation else {
             continue
         }
-        query.append(" wort LIKE \"\(string + (exact ? "" : "%"))\" OR")
+        finalQueries.append("SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE '\(string + (exact ? "" : "%"))'")
     }
-    query.append(" FALSE;")
-    
-    print("Generated Query \(query)")
-    
-    return query
+        
+    return finalQueries
 }
 
-func searchDatabase(databaseName dictName: DICTIONARY_NAMES, for searchString: String, exact: Bool = false) -> RowIterator? {
+let DEBUG_DATABASE = 0
+
+func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> RowIterator? {
     do {
         let db = DatabaseConnections[dictName]!
-        return try db.prepareRowIterator(__generateSQLiteQuery(for: searchString, exact: exact))
+        let query = "SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE '\(searchString)'"
+        if DEBUG_DATABASE != 0 {
+            try db.prepare("explain query plan " + query).forEach { a in
+                print(a)
+            }
+        }
+        return try db.prepareRowIterator(query)
     } catch {
         return nil
+    }
+}
+
+func searchDatabaseGeneral(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> [RowIterator?] {
+    do {
+        let db = DatabaseConnections[dictName]!
+        let queries = __generateSQLiteQuery(for: searchString, exact: false).sorted(by: { $0.levenshteinDistanceScore(to: searchString) > $1.levenshteinDistanceScore(to: searchString) })
+        var iterators: [RowIterator] = []
+        for query in queries {
+            if DEBUG_DATABASE != 0 {
+                try db.prepare("explain query plan " + query).forEach { a in
+                    print(a)
+                }
+            }
+            iterators.append(try db.prepareRowIterator(query))
+        }
+        return iterators
+    } catch {
+        return []
     }
 }
 

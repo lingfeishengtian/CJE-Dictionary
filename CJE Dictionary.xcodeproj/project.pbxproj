@@ -22,6 +22,7 @@
 		964394B02B43A22E009D377E /* Shogakukanjcv3DB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */; };
 		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
 		964394B92B454734009D377E /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 964394B82B454734009D377E /* jitendexDB.zip */; };
+		968A95D82C5C957E005B2C5D /* jp-cn.realm in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E482B4B781700862861 /* jp-cn.realm */; };
 		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
 		96AE7E2F2B480B0900862861 /* types.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2A2B480B0900862861 /* types.csv */; };
 		96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2B2B480B0900862861 /* conjo_notes.csv */; };
@@ -266,6 +267,7 @@
 			files = (
 				96AE7E2F2B480B0900862861 /* types.csv in Resources */,
 				961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */,
+				968A95D82C5C957E005B2C5D /* jp-cn.realm in Resources */,
 				961242652B412A47009D6E05 /* Assets.xcassets in Resources */,
 				964394B92B454734009D377E /* jitendexDB.zip in Resources */,
 				96AE7E322B480B0900862861 /* conj.csv in Resources */,

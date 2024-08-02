@@ -198,14 +198,17 @@ struct ContentView: View {
                     searchResults.searchEnumerator = nil
                     searchResults.partialSearch = []
                 } else {
+                    let timeRn = Date.now
                     searchResults.searchEnumerator = CJE_Dictionary.searchText(searchString: $0)
+                    let tookToRun = (Date.now.timeIntervalSince(timeRn) * 1000 * 1000).rounded() / 1000
+                    print("\(tookToRun) ms")
                     if $0.count >= 2 {
                         if searchResults.searchEnumerator?.lazyArray.count == 0 {
                             if let sS = $0.applyingTransform(.latinToHiragana, reverse: false) {
-                                // searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: sS)
-//                                if searchResults.partialSearch.isEmpty {
-//                                    searchResults.partialSearch = CJE_Dictionary.doPartialSearch(searchString: sS)
-//                                }
+                                searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: sS)
+                                if searchResults.partialSearch.isEmpty {
+                                    searchResults.partialSearch = CJE_Dictionary.doPartialSearch(searchString: sS)
+                                }
                             } else {
                                 searchResults.partialSearch = CJE_Dictionary.partialSearch(searchString: $0)
                             }
