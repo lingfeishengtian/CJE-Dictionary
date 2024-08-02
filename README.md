@@ -5,11 +5,9 @@ As a trilingual, there's not many choices for Chinese-Japanese-English dictionar
 [中文README](README_cn.md)
 [日本語README](README_jp.md)
 
-This app is for those attempting to learn Chinese and Japanese, or those who are bilingual in English and Chinese already and want to learn Japanese.
+This app is for those attempting to learn Japanese, or those who are bilingual in English and Chinese already and want to learn Japanese.
 
-* Note: CN dictionary is not included, the plan is to add MOJI Dictionary support through the API.
-
-## Features (WIP)
+## Features
 
 * Search for words in Chinese, Japanese, or English
 
@@ -17,4 +15,8 @@ This app is for those attempting to learn Chinese and Japanese, or those who are
 
 * Verb conjugations
 
-* And more!
+## Planned Features
+
+* Favorites
+
+* Export to Anki, csv, etc.
