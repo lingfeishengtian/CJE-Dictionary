@@ -13,7 +13,7 @@ enum CSVError: LocalizedError {
 }
 
 func readCSV<T:CSVCodable>(csvURL: URL) -> [T] {
-    print("start reading \(Date.now.timeIntervalSinceReferenceDate)")
+    print("Conjugation manager start CSV reading: \(Date.now.timeIntervalSinceReferenceDate)")
     do {
         var ret: Array<T> = []
         
@@ -35,10 +35,10 @@ func readCSV<T:CSVCodable>(csvURL: URL) -> [T] {
             ret.append(appendVal)
         }
         
-        print("end reading \(Date.now.timeIntervalSinceReferenceDate)")
+        print("Conjugation manager finished CSV reading: \(Date.now.timeIntervalSinceReferenceDate)")
         return ret
     } catch {
-        print("Couldn't read csv \(csvURL.path()): \(error)")
+        print("Conjugation manager error: Couldn't read csv \(csvURL.path()): \(error)")
         return []
     }
 }

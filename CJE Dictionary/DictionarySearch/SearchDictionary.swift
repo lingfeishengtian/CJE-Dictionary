@@ -12,92 +12,6 @@ import IPADic
 import Mecab_Swift
 import OrderedCollections
 
-class Wort: Object {
-    @Persisted(primaryKey: true) var objectId: String?
-    @Persisted var spell: String?
-    @Persisted var pron: String?
-    @Persisted var excerpt: String?
-    @Persisted var accent: String?
-    @Persisted var romaji: String?
-    @Persisted var createdBy: String?
-    @Persisted var updatedBy: String?
-    @Persisted var createdAt: Date?
-    @Persisted var updatedAt: Date?
-    @Persisted var isDirty: Bool?
-    @Persisted var tags: String?
-    @Persisted var langEnv: String?
-    @Persisted var isTrash: Bool?
-    @Persisted var libId: String?
-    @Persisted var isFree: Bool?
-}
-
-class Subdetails: Object {
-    @Persisted(primaryKey: true) var objectId: String?
-    @Persisted var title: String?
-    @Persisted var index: Int?
-    @Persisted var wordId: String?
-    @Persisted var detailsId: String?
-    @Persisted var isTrash: Bool?
-}
-
-class Example: Object {
-    @Persisted(primaryKey: true) var objectId: String?
-    @Persisted var title: String?
-    @Persisted var trans: String?
-    @Persisted var index: Int?
-    @Persisted var wordId: String?
-    @Persisted var subdetailsId: String?
-    @Persisted var isTrash: Bool?
-}
-
-class Details: Object {
-    @Persisted(primaryKey: true) var objectId: String?
-    @Persisted var title: String?
-    @Persisted var index: Int?
-    @Persisted var wordId: String?
-    @Persisted var isTrash: Bool?
-}
-
-class WordBank: Object {
-    @Persisted var word: String
-    @Persisted var dict: String?
-}
-
-typealias LanguageToLanguage = (Language, Language)
-enum Language: String, CaseIterable, Identifiable {
-    var id: Language {
-        self
-    }
-    
-    case CN
-    case JP
-    case EN
-}
-
-let LOCAL_REALM_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: "dict.realm", directoryHint: .notDirectory)
-let BUNDLE_CN_JP_DICT = Bundle.main.url(forResource: "jp-cn", withExtension: "realm")
-enum DICTIONARY_NAMES: String, CaseIterable, Codable {
-    case jitendex = "jitendexDB"
-    case shogakukanjcv3 = "Shogakukanjcv3DB"
-    
-    // from $0 to $1
-    func type() -> LanguageToLanguage {
-        switch self {
-        case .jitendex:
-            return (.JP, .EN)
-        case .shogakukanjcv3:
-            return (.JP, .CN)
-        }
-    }
-}
-
-let CONFIGURATION = {
-    var configuration = Realm.Configuration.defaultConfiguration
-    configuration.fileURL = LOCAL_REALM_URL
-    configuration.schemaVersion = 5
-    return configuration
-}()
-
 let DatabaseConnections: [DICTIONARY_NAMES:Connection] = {
     var ret: [DICTIONARY_NAMES:Connection] = [:]
     for dictName in DICTIONARY_NAMES.allCases {
@@ -325,9 +239,9 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
             continue
         }
         print("Start lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
-        var wordList = eliminateSpecialCasesFromWordlist(wordList: word.readings)
+        let wordList = eliminateSpecialCasesFromWordlist(wordList: word.readings)
         do {
-            var res: [DatabaseWord] = __lookupWordHelper(wordList: wordList, dict: dict)
+            let res: [DatabaseWord] = __lookupWordHelper(wordList: wordList, dict: dict)
             // Word, Percent Match, Number of Readings
             var finalList: [(DatabaseWord, Double, Int)] = []
             // Sort words by highest match
@@ -354,8 +268,6 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
             if finalList.count > 0 {
                 finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: finalList.first?.0.meaning)))
             }
-        } catch {
-            print("\(error) when adding \(word.word) in \(dict)")
         }
         print("End lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
     }
@@ -366,8 +278,10 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
 func eliminateSpecialCasesFromWordlist(wordList: [String]) -> [String] {
     let specialCases = ["…", "-"]
     var result = wordList
-    for specialCase in specialCases {
-        
+    for var res in result {
+        for specialCase in specialCases {
+            res = res.replacingOccurrences(of: specialCase, with: "")
+        }
     }
     return result
 }
@@ -461,7 +375,11 @@ func searchText(searchString: String) -> SearchResultsEnumerator {
 var partialSearchGlobalCache: [String: Set<DatabaseWord>] = [:]
 let ipadic=IPADic()
 
-func partialSearch(searchString: String) -> [DatabaseWord] {
+func partialSearch(searchQuery: String) -> [DatabaseWord] {
+    guard let searchString = searchQuery.applyingTransform(.latinToHiragana, reverse: false) else {
+        return []
+    }
+    
     do {
         let tokenizer = try Tokenizer(dictionary: ipadic)
         let tokenized = tokenizer.tokenize(text: searchString)
@@ -519,61 +437,6 @@ func partialSearch(searchString: String) -> [DatabaseWord] {
     return []
 }
 
-//@available(*, deprecated, renamed: "partialSearch", message: "Try not to use intensive search, this costs a lot of resources and grows exponentially as the string grows")
-func doPartialSearch(searchString: String) -> [DatabaseWord] {
-    var newPartialSearchCache: [String: Set<DatabaseWord>] = [:]
-    return []
-    return __partialSearch(searchString: searchString, partialSearchCache: &newPartialSearchCache)
-        .sorted(by: {
-            $0.word.levenshteinDistanceScore(to: searchString) > $1.word.levenshteinDistanceScore(to: searchString)
-        })
-}
-
-fileprivate func __partialSearch(searchString: String, originalSearchString: String? = nil, dropNumber: Int = 0, partialSearchCache: inout [String: Set<DatabaseWord>]) -> Set<DatabaseWord> {
-    //    if searchString.count <= 2 {
-    //        return []
-    //    }
-    if partialSearchCache.keys.contains(searchString) {
-        return partialSearchCache[searchString]!
-    }
-    if originalSearchString == nil && partialSearchGlobalCache.keys.contains(searchString) {
-        return partialSearchGlobalCache[searchString]!
-    }
-    if searchString.isEmpty || (
-        originalSearchString != nil &&
-        (originalSearchString?.count ?? 0) - dropNumber - 1 < 1
-    ){
-        return []
-    }
-    print("Calling partial with \(searchString) \(originalSearchString ?? " ") \(dropNumber)")
-    
-    var searchResults: Set<DatabaseWord> = []
-    searchResults.formUnion(exactSearchDatabase(for: searchString))
-    
-    let deconjugationAttempt = ConjugationManager.sharedInstance.deconjugate(searchString)
-    for conjugation in deconjugationAttempt {
-        if conjugation.verbDictionaryForm != searchString {
-            var newPartialSearchCache: [String: Set<DatabaseWord>] = [:]
-            searchResults.formUnion(__partialSearch(searchString: conjugation.verbDictionaryForm, partialSearchCache: &newPartialSearchCache))
-        }
-    }
-    
-    let focusString = (originalSearchString ?? searchString)
-    let dropSearch = (__partialSearch(searchString: String(focusString.prefix(focusString.count - dropNumber - 1)), originalSearchString: originalSearchString ?? searchString, dropNumber: dropNumber + 1, partialSearchCache: &partialSearchCache))
-    if !searchResults.isEmpty {
-        var newPartialSearchCache: [String: Set<DatabaseWord>] = [:]
-        let newSearchString = String(focusString.suffix(dropNumber))
-        searchResults.formUnion(__partialSearch(searchString: newSearchString, partialSearchCache: &newPartialSearchCache))
-    }
-    searchResults.formUnion(dropSearch)
-    
-    partialSearchCache[searchString] = searchResults
-    if originalSearchString == nil {
-        partialSearchGlobalCache[searchString] = searchResults
-    }
-    return searchResults
-}
-
 func exactSearchDatabase(for searchString: String) -> Set<DatabaseWord> {
     var searchResults: Set<DatabaseWord> = []
     if let iterator = searchDatabaseExact(databaseName: .jitendex, for: searchString) {
@@ -620,14 +483,14 @@ let DEBUG_DATABASE = 0
 
 func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> RowIterator? {
     do {
-        let db = DatabaseConnections[dictName]!
+        let db = DatabaseConnections[dictName]
         let query = "SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE '\(searchString)'"
         if DEBUG_DATABASE != 0 {
-            try db.prepare("explain query plan " + query).forEach { a in
+            try db?.prepare("explain query plan " + query).forEach { a in
                 print(a)
             }
         }
-        return try db.prepareRowIterator(query)
+        return try db?.prepareRowIterator(query)
     } catch {
         return nil
     }
@@ -635,26 +498,20 @@ func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchStri
 
 func searchDatabaseGeneral(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> [RowIterator?] {
     do {
-        let db = DatabaseConnections[dictName]!
+        let db = DatabaseConnections[dictName]
         let queries = __generateSQLiteQuery(for: searchString, exact: false).sorted(by: { $0.levenshteinDistanceScore(to: searchString) > $1.levenshteinDistanceScore(to: searchString) })
-        var iterators: [RowIterator] = []
+        var iterators: [RowIterator?] = []
         for query in queries {
             if DEBUG_DATABASE != 0 {
-                try db.prepare("explain query plan " + query).forEach { a in
+                try db?.prepare("explain query plan " + query).forEach { a in
                     print(a)
                 }
             }
-            iterators.append(try db.prepareRowIterator(query))
+            iterators.append(try db?.prepareRowIterator(query))
         }
         return iterators
     } catch {
         return []
-    }
-}
-
-extension String {
-    var containsChineseCharacters: Bool {
-        return self.range(of: "\\p{Han}", options: .regularExpression) != nil
     }
 }
 
@@ -692,6 +549,10 @@ extension String {
         }
         
         return 0.0
+    }
+    
+    var containsChineseCharacters: Bool {
+        return self.range(of: "\\p{Han}", options: .regularExpression) != nil
     }
 }
 
