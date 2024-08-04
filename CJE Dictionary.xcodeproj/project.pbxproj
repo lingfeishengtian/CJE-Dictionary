@@ -23,7 +23,7 @@
 		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
 		965318252C5F9B060046D2C1 /* KANJIDIC2_cleaned.db in Resources */ = {isa = PBXBuildFile; fileRef = 965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */; };
 		965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */; };
-		9653182D2C5F9D9E0046D2C1 /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 9653182C2C5F9D9E0046D2C1 /* jitendexDB.zip */; };
+		9653182F2C5F9FB70046D2C1 /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */; };
 		967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */; };
 		967ECED22C5F318C009DFD72 /* DefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECED12C5F318C009DFD72 /* DefinitionView.swift */; };
 		968A95D82C5C957E005B2C5D /* jp-cn.realm in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E482B4B781700862861 /* jp-cn.realm */; };
@@ -59,7 +59,7 @@
 		964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
 		965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = KANJIDIC2_cleaned.db; sourceTree = "<group>"; };
 		965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictionarySearch.swift; sourceTree = "<group>"; };
-		9653182C2C5F9D9E0046D2C1 /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
+		9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
 		967ECED12C5F318C009DFD72 /* DefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionView.swift; sourceTree = "<group>"; };
 		96AE7E292B480B0900862861 /* conjo.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo.csv; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 			children = (
 				96AE7E482B4B781700862861 /* jp-cn.realm */,
 				964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */,
-				9653182C2C5F9D9E0046D2C1 /* jitendexDB.zip */,
+				9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */,
 				965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */,
 			);
 			path = Dictionaries;
@@ -293,7 +293,7 @@
 				96AE7E322B480B0900862861 /* conj.csv in Resources */,
 				96AE7E312B480B0900862861 /* conotes.csv in Resources */,
 				961242782B4147B9009D6E05 /* Localizable.xcstrings in Resources */,
-				9653182D2C5F9D9E0046D2C1 /* jitendexDB.zip in Resources */,
+				9653182F2C5F9FB70046D2C1 /* jitendexDB.zip in Resources */,
 				96AE7E2E2B480B0900862861 /* conjo.csv in Resources */,
 				964394B02B43A22E009D377E /* Shogakukanjcv3DB.zip in Resources */,
 				96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */,
