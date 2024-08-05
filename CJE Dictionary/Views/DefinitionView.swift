@@ -53,6 +53,7 @@ struct DefinitionView: View {
     private let conjugations: [ConjugatedVerb]
     @State var selectedLangugae: Language
     @Environment(\.colorScheme) var colorScheme
+    private let kanjiInfo: [KanjiInfo]
     
     init(dbWord: DatabaseWord, definitions: [(LanguageToLanguage, [DefinitionGroup])]) {
         self.dbWord = dbWord
@@ -73,7 +74,7 @@ struct DefinitionView: View {
         }
         
         self.conjugations = conj
-        print(conjugations)
+        self.kanjiInfo = getKanjiInfo(for: dbWord.readings)
     }
     
     var body: some View {
@@ -83,8 +84,10 @@ struct DefinitionView: View {
                     RubyDisplay(attributedString: dbWord.generateAttributedStringTitle(), screenWidth: geo.maxWidth)
                         .padding([.top], 10)
                     if conjugations.count > 1 {
-                        ConjugationViewer(conjugatedVerbs: conjugations).padding([.bottom], 10)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        ConjugationViewer(conjugatedVerbs: conjugations)
+                            .frame(height: 38, alignment: .center)
+                            .padding([.leading, .trailing], 35)
+                            .padding([.bottom])
                     }
                     Picker("Language", selection: $selectedLangugae) {
                         ForEach(Language.allCases) { lang in
@@ -125,6 +128,12 @@ struct DefinitionView: View {
                                     .padding([.leading, .trailing], 10)
                             }
                         }
+                    }
+                    List{
+//                        ForEach(kanjiInfo) { kanji in
+//                            
+//                        }
+                        // TODO: Kanji section
                     }
                 }
             }

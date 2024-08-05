@@ -242,6 +242,28 @@
         }
       }
     },
+    "Frequency" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "頻度"
+          }
+        }
+      }
+    },
+    "Grade Level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等級"
+          }
+        }
+      }
+    },
     "Imperative" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -255,6 +277,51 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "命令形"
+          }
+        }
+      }
+    },
+    "ja_kun" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunyomi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訓読み"
+          }
+        }
+      }
+    },
+    "ja_on" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onyomi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音読み"
+          }
+        }
+      }
+    },
+    "JLPT Level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JLPTレベル"
           }
         }
       }
@@ -294,6 +361,43 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "语言"
+          }
+        }
+      }
+    },
+    "Meanings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "意味"
+          }
+        }
+      }
+    },
+    "Miscellaneous " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと"
+          }
+        }
+      }
+    },
+    "nanori" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nanori"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名乗り"
           }
         }
       }
@@ -397,6 +501,23 @@
         }
       }
     },
+    "pinyin" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pinyin"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拼音"
+          }
+        }
+      }
+    },
     "Please wait for app resources to unload, this will take a little bit of time on the first app launch." : {
       "localizations" : {
         "ja" : {
@@ -463,6 +584,16 @@
         }
       }
     },
+    "Simplified Chinese Form " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "簡体字"
+          }
+        }
+      }
+    },
     "Start searching!" : {
       "localizations" : {
         "en" : {
@@ -481,6 +612,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "調べ始めましょう！"
+          }
+        }
+      }
+    },
+    "Stroke Counts " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画数"
           }
         }
       }

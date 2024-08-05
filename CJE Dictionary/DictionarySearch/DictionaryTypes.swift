@@ -98,3 +98,13 @@ let CONFIGURATION = {
     configuration.schemaVersion = 5
     return configuration
 }()
+
+enum YomikataForms : String {
+    case Onyomi = "ja_on"
+    case Kunyomi = "ja_kun"
+    case Nanori = "nanori"
+    case Pinyin = "pinyin"
+}
+
+// TODO: KANJI stuff (show simplified chinese character)
+// TODO: search with chinese simplified characters (auto convert to japanese)

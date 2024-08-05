@@ -8,11 +8,120 @@
 import SwiftUI
 
 struct KanjiDefinition: View {
+    let kanjiInfo: KanjiInfo
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        let _ = print(kanjiInfo.description)
+        VStack (alignment: .leading) {
+            HStack {
+                Text(String(kanjiInfo.kanjiCharacter))
+                    .bold()
+                    .font(.system(size: 120))
+                VStack  (alignment:.leading){
+                    if let onReadings = kanjiInfo.readings["ja_on"] {
+                        HStack{
+                            Label(
+                                // TODO: Create icon 音
+                                title: { Text(String(localized: "ja_on")) },
+                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
+                            )
+                            Text(onReadings.joined(separator: ", "))
+                        }
+                    }
+                    
+                    if let kunReadings = kanjiInfo.readings["ja_kun"] {
+                        HStack{
+                            Label(
+                                // TODO: Create icon 音
+                                title: { Text(String(localized: "ja_kun")) },
+                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
+                            )
+                            Text(kunReadings.joined(separator: ", "))
+                        }
+                    }
+                    
+                    if let nanoriReadings = kanjiInfo.readings["nanori"], nanoriReadings.count > 0 {
+                        HStack{
+                            Label(
+                                // TODO: Create icon 音
+                                title: { Text(String(localized: "nanori")) },
+                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
+                            )
+                            Text(nanoriReadings.joined(separator: ", "))
+                        }
+                    }
+                    
+                    if let pinyin = kanjiInfo.readings["pinyin"] {
+                        HStack{
+                            Label(
+                                // TODO: Create icon 音
+                                title: { Text(String(localized: "pinyin")) },
+                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
+                            )
+                            Text(pinyin.joined(separator: ", "))
+                        }
+                    }
+                }
+                Spacer()
+            }.padding([.leading, .trailing], 20)
+                .padding([.bottom], 5)
+            if !kanjiInfo.meaning.isEmpty {
+                VStack(alignment: .leading) {
+                    Text(String(localized: "Meanings")).font(.headline)
+                    HStack {
+                        Text(kanjiInfo.meaning.joined(separator: ", "))
+                    }
+                }.padding([.leading, .trailing], 25)
+                    .padding([.bottom], 5)
+            }
+            if let hanzi = convertKanjiToHanzi(character: kanjiInfo.kanjiCharacter) {
+                HStack {
+                    Text(String(localized: "Simplified Chinese Form ")).font(.headline)
+                    Text(String(hanzi))
+                        .bold()
+                }.padding([.leading, .trailing], 25)
+                    .padding([.bottom], 5)
+            }
+            if !kanjiInfo.strokeCount.isEmpty {
+                HStack {
+                    Text(String(localized: "Stroke Counts ")).font(.headline)
+                    Text(kanjiInfo.strokeCount.map({ String($0) }).joined(separator: ", "))
+                }.padding([.leading, .trailing], 25)
+                    .padding([.bottom], 5)
+            }
+            VStack(alignment: .leading) {
+                Text(String(localized: "Miscellaneous ")).font(.headline)
+                HStack {
+                    if let jlpt = kanjiInfo.jlpt {
+                        Text(String(localized: "JLPT Level"))
+                        Text(String(jlpt))
+                    }
+                }
+                HStack {
+                    if let grade = kanjiInfo.grade {
+                        Text(String(localized: "Grade Level"))
+                        Text(String(grade))
+                    }
+                }
+                HStack {
+                    if let frequency = kanjiInfo.frequency {
+                        Text(String(localized: "Frequency"))
+                        Text(String(frequency))
+                    }
+                }
+            }.padding([.leading, .trailing], 25)
+                .padding([.bottom], 5)
+            
+            Spacer()
+        }
     }
 }
 
 #Preview {
-    KanjiDefinition()
+    KanjiDefinition(kanjiInfo: KanjiInfo(kanjiCharacter: "雲", jlpt: 2, grade: 2, frequency: 1256, readings: [
+        "ja_on": ["ウン"],
+        "ja_kun": ["くも", "-ぐも"],
+        "pinyin": ["yun2"],
+        "nanori": ["き", "ずも", "のめ"]
+    ], strokeCount: [12], meaning: ["cloud"]))
 }

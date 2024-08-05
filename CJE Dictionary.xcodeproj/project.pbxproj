@@ -24,6 +24,8 @@
 		965318252C5F9B060046D2C1 /* KANJIDIC2_cleaned.db in Resources */ = {isa = PBXBuildFile; fileRef = 965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */; };
 		965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */; };
 		9653182F2C5F9FB70046D2C1 /* jitendexDB.zip in Resources */ = {isa = PBXBuildFile; fileRef = 9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */; };
+		965318312C601CC10046D2C1 /* HanziToKanji.txt in Resources */ = {isa = PBXBuildFile; fileRef = 965318302C601CC10046D2C1 /* HanziToKanji.txt */; };
+		965318342C6072230046D2C1 /* KanjiDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318332C6072230046D2C1 /* KanjiDefinition.swift */; };
 		967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */; };
 		967ECED22C5F318C009DFD72 /* DefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECED12C5F318C009DFD72 /* DefinitionView.swift */; };
 		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
@@ -59,6 +61,8 @@
 		965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = KANJIDIC2_cleaned.db; sourceTree = "<group>"; };
 		965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictionarySearch.swift; sourceTree = "<group>"; };
 		9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
+		965318302C601CC10046D2C1 /* HanziToKanji.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = HanziToKanji.txt; sourceTree = "<group>"; };
+		965318332C6072230046D2C1 /* KanjiDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinition.swift; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
 		967ECED12C5F318C009DFD72 /* DefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionView.swift; sourceTree = "<group>"; };
 		96AE7E292B480B0900862861 /* conjo.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo.csv; sourceTree = "<group>"; };
@@ -124,8 +128,6 @@
 				9612427B2B414BC6009D6E05 /* Dictionaries */,
 				961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */,
 				96AE7E412B4A02CF00862861 /* HTMLParser.swift */,
-				961242622B412A46009D6E05 /* ContentView.swift */,
-				967ECED12C5F318C009DFD72 /* DefinitionView.swift */,
 				961242742B413DB6009D6E05 /* HistoryManager.swift */,
 				961242872B4250A0009D6E05 /* DictionaryManager.swift */,
 				961242642B412A47009D6E05 /* Assets.xcassets */,
@@ -157,6 +159,7 @@
 				964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */,
 				9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */,
 				965318242C5F9B060046D2C1 /* KANJIDIC2_cleaned.db */,
+				965318302C601CC10046D2C1 /* HanziToKanji.txt */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
@@ -187,8 +190,11 @@
 		96AE7E432B4A924800862861 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				961242622B412A46009D6E05 /* ContentView.swift */,
 				96AE7E442B4A926E00862861 /* DictionaryHelperViews.swift */,
 				96AE7E462B4A991C00862861 /* ConjugationViewer.swift */,
+				967ECED12C5F318C009DFD72 /* DefinitionView.swift */,
+				965318332C6072230046D2C1 /* KanjiDefinition.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -294,6 +300,7 @@
 				9653182F2C5F9FB70046D2C1 /* jitendexDB.zip in Resources */,
 				96AE7E2E2B480B0900862861 /* conjo.csv in Resources */,
 				964394B02B43A22E009D377E /* Shogakukanjcv3DB.zip in Resources */,
+				965318312C601CC10046D2C1 /* HanziToKanji.txt in Resources */,
 				96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -312,6 +319,7 @@
 				9612427A2B414A53009D6E05 /* SearchDictionary.swift in Sources */,
 				961242632B412A46009D6E05 /* ContentView.swift in Sources */,
 				96AE7E422B4A02CF00862861 /* HTMLParser.swift in Sources */,
+				965318342C6072230046D2C1 /* KanjiDefinition.swift in Sources */,
 				961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */,
 				967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */,
 				96AE7E472B4A991C00862861 /* ConjugationViewer.swift in Sources */,

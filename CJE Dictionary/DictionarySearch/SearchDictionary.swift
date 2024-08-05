@@ -473,6 +473,7 @@ fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = f
         guard let string = transformation else {
             continue
         }
+        // TODO: Convert to bindings
         finalQueries.append("SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE '\(string + (exact ? "" : "%"))'")
     }
         
@@ -484,6 +485,7 @@ let DEBUG_DATABASE = 0
 func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> RowIterator? {
     do {
         let db = DatabaseConnections[dictName]
+        // TODO: Convert to bindings
         let query = "SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE '\(searchString)'"
         if DEBUG_DATABASE != 0 {
             try db?.prepare("explain query plan " + query).forEach { a in
