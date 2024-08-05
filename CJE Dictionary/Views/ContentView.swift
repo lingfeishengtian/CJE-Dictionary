@@ -36,7 +36,7 @@ struct ContentView: View {
             searchResults.partialSearch = []
         } else {
             let timeRn = Date.now
-            searchResults.searchEnumerator = CJE_Dictionary.searchText(searchString: searchString)
+            searchResults.searchEnumerator = CJE_Dictionary.searchText(searchString: convertHanziStringToKanji(str: searchString))
             let tookToRun = (Date.now.timeIntervalSince(timeRn) * 1000 * 1000).rounded() / 1000
             print("\(tookToRun) ms")
             
