@@ -59,10 +59,10 @@ struct DictionarySearchView: View {
         })
         
         let arraySelected = (searchResults.lazyArray.isEmpty && searchText.isEmpty) ? HistoryArray : searchResults.lazyArray
-        
+        let kanjiInfo = (searchText.count == 1) ? getKanjiInfo(for: [convertHanziStringToKanji(str: searchText)]).first : nil
         NavigationStack {
             VStack {
-                if HistoryArray.isEmpty && searchResults.lazyArray.isEmpty && searchResults.partialSearch.isEmpty
+                if HistoryArray.isEmpty && searchResults.lazyArray.isEmpty && searchResults.partialSearch.isEmpty && kanjiInfo == nil
                 {
                     Text("Welcome to CJE Dictionary")
                         .font(.largeTitle)
@@ -74,10 +74,10 @@ struct DictionarySearchView: View {
                         .multilineTextAlignment(.center)
                 } else {
                     List {
-                        if searchText.count == 1, let kanjiInfo = getKanjiInfo(for: [searchText]).first {
-                            NavigationLink(String(kanjiInfo.kanjiCharacter)) {
+                        if kanjiInfo != nil {
+                            NavigationLink(String(kanjiInfo!.kanjiCharacter)) {
                                 NavigationLazyView (
-                                    KanjiDefinition(kanjiInfo: kanjiInfo)
+                                    KanjiDefinition(kanjiInfo: kanjiInfo!)
                                 ).navigationBarTitleDisplayMode(.inline)
                             }
                         }
