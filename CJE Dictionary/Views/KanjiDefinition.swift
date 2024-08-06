@@ -82,10 +82,10 @@ struct KanjiDefinition: View {
                 }.padding([.leading, .trailing], 25)
                     .padding([.bottom], 5)
             }
-            if !kanjiInfo.strokeCount.isEmpty {
+            if (kanjiInfo.strokeCount != nil) {
                 HStack {
                     Text(String(localized: "Stroke Counts ")).font(.headline)
-                    Text(kanjiInfo.strokeCount.map({ String($0) }).joined(separator: ", "))
+                    Text(String(kanjiInfo.strokeCount!))
                 }.padding([.leading, .trailing], 25)
                     .padding([.bottom], 5)
             }
@@ -123,5 +123,5 @@ struct KanjiDefinition: View {
         "ja_kun": ["くも", "-ぐも"],
         "pinyin": ["yun2"],
         "nanori": ["き", "ずも", "のめ"]
-    ], strokeCount: [12], meaning: ["cloud"]))
+    ], strokeCount: 12, meaning: ["cloud"]))
 }

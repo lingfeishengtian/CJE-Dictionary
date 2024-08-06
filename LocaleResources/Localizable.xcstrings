@@ -604,6 +604,17 @@
         }
       }
     },
+    "no_internet_connection" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It seems you are offline, please reconnect to the internet and restart the app to install the required dictionaries. After the required dictionaries are installed, internet is no longer needed to launch the application."
+          }
+        }
+      }
+    },
     "Non-past" : {
       "extractionState" : "manual",
       "localizations" : {

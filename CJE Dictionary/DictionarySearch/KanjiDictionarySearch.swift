@@ -47,16 +47,16 @@ class KanjiInfo : Identifiable {
     let grade: Int?
     let frequency: Int?
     let readings: [String:[String]]
-    let strokeCount: [Int]
+    let strokeCount: Int?
     let meaning: [String]
     
     let id: Character
     
     var description : String {
-        return "\(kanjiCharacter): JLPT \(String(describing: jlpt)) Grade \(grade ?? -1) Freq \(String(describing: frequency)) StrokeCount\(strokeCount)\nReadings \(readings)\nMeanings \(meaning)"
+        return "\(kanjiCharacter): JLPT \(String(describing: jlpt)) Grade \(grade ?? -1) Freq \(String(describing: frequency)) StrokeCount\(String(describing: strokeCount))\nReadings \(readings)\nMeanings \(meaning)"
     }
     
-    init(kanjiCharacter: Character, jlpt: Int?, grade: Int?, frequency: Int?, readings: [String : [String]], strokeCount: [Int], meaning: [String]) {
+    init(kanjiCharacter: Character, jlpt: Int?, grade: Int?, frequency: Int?, readings: [String : [String]], strokeCount: Int?, meaning: [String]) {
         self.kanjiCharacter = kanjiCharacter
         self.jlpt = jlpt
         self.grade = grade
@@ -69,53 +69,53 @@ class KanjiInfo : Identifiable {
     }
     
     init(for kanji: Character) throws {
-        let rowIt = try KanjiDB?.prepareRowIterator("SELECT * FROM character WHERE literal == ?", bindings: String(kanji))
+        let rowIt = try KanjiDB?.prepareRowIterator("select * from kanjidic where literal == ?;", bindings: String(kanji))
         if let a = rowIt?.next() {
             kanjiCharacter = kanji
             jlpt = try a.get(Expression<Int?>("jlpt"))
             grade = try a.get(Expression<Int?>("grade"))
             frequency = try a.get(Expression<Int?>("freq"))
+            strokeCount = try a.get(Expression<Int?>("stroke_count"))
             
-            let id = try a.get(Expression<Int>("id"))
+            let meaningsJSON = jsonSerializeString(forColumn: "meaning", row: a)
+            meaning = (meaningsJSON as? [String]) ?? []
             
-            let meanings = try KanjiDB?.prepareRowIterator("SELECT * FROM meaning WHERE fk == ?", bindings: id)
-            var meaningStrings = [String]()
-            while let m = meanings?.next() {
-                meaningStrings.append(try m.get(Expression<String>("value")))
-            }
-            self.meaning = meaningStrings
-            
-            let readingQuery = try KanjiDB?.prepareRowIterator("SELECT * FROM reading WHERE fk == ?", bindings: id)
+            let readingsJSON = jsonSerializeString(forColumn: "reading", row: a)
             var readings = [String:[String]]()
-            while let r = readingQuery?.next() {
-                let t = try r.get(Expression<String>("type"))
-                let v = try r.get(Expression<String>("value"))
-                if readings[t] == nil {
-                    readings[t] = [v]
-                } else {
-                    readings[t]?.append(v)
+            for readingJSON in readingsJSON {
+                if let reading = readingJSON as? [String: String], let type = reading["r_type"], let pronounce = reading["$t"] {
+                    if readings[type] != nil {
+                        readings[type]?.append(pronounce)
+                    } else {
+                        readings[type] = [pronounce]
+                    }
                 }
             }
             
-            let nanoris = try KanjiDB?.prepareRowIterator("SELECT * FROM nanori WHERE fk == ?", bindings: id)
+            let nanorisJSON = jsonSerializeString(forColumn: "nanori", row: a)
             readings[YomikataForms.Nanori.rawValue] = []
-            while let m = nanoris?.next() {
-                readings[YomikataForms.Nanori.rawValue]?.append(try m.get(Expression<String>("value")))
+            if let nanoris = nanorisJSON as? [String] {
+                for nanori in nanoris {
+                    readings[YomikataForms.Nanori.rawValue]?.append(nanori)
+                }
             }
             self.readings = readings
-            
-            let stroke_counts = try KanjiDB?.prepareRowIterator("SELECT * FROM stroke_count WHERE fk == ?", bindings: id)
-            var strokeCounts = [Int]()
-            while let stroke_count = stroke_counts?.next() {
-                strokeCounts.append(try stroke_count.get(Expression<Int>("count")))
-            }
-            self.strokeCount = strokeCounts
         } else {
             throw KanjiError.runtimeError("Kanji character not found")
         }
         
         self.id = kanjiCharacter
     }
+}
+
+@inlinable
+func jsonSerializeString(forColumn columnName: String, row: Row) -> [Any] {
+    do {
+        return try JSONSerialization.jsonObject(with: (try row.get(Expression<String?>(columnName)) ?? "[]")?.data(using: .utf16) ?? Data()) as? [Any] ?? []
+    } catch {
+        print("\(error)")
+    }
+    return []
 }
 
 var hanziKanji: [Character: [Character]] = {

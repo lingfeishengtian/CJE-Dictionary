@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Network
 
 @main
 struct CJE_DictionaryApp: App {
@@ -19,16 +20,20 @@ struct CJE_DictionaryApp: App {
 
 struct InitialView : View {
     @StateObject var dictionaryManager: DictionaryManager = DictionaryManager(sessions: 3)
+    let monitor = NWPathMonitor()
     
     var body: some View {
-        if dictionaryManager.progress < 1.0 {
+        if dictionaryManager.progress < 1.0 || (monitor.currentPath.status != .satisfied && dictionaryManager.getCurrentlyInstalledDictionaries().count == 0) {
             ProgressView(value: dictionaryManager.progress)
             {
-                HStack {
-                    Spacer()
+                VStack {
+                    if monitor.currentPath.status != .satisfied {
+                        Text(String(localized: "no_internet_connection"))
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.red)
+                    }
                     Text(String(localized: "Please wait for app resources to unload, this will take a little bit of time on the first app launch."))
                         .multilineTextAlignment(.center)
-                    Spacer()
                 }
             }.progressViewStyle(.linear)
                 .padding()
