@@ -56,6 +56,59 @@ class DownloadSessionQueue {
     }
 }
 
+struct DictionaryVersion {
+    let version: Int
+    let minAppVersion: String
+    let minBuildNumber: Int
+}
+
+struct Versions {
+    var dictionary: [String: DictionaryVersion]
+    
+    init() {
+        dictionary = [:]
+    }
+    
+    init(versionFile: String) {
+        self.init()
+        for line in versionFile.split(separator: "\n") {
+            let splitBySpaces = line.split(separator: " ")
+            if splitBySpaces.count == 3 {
+                dictionary[String(splitBySpaces[0])] = DictionaryVersion(version: Int(splitBySpaces[1]) ?? 0, minAppVersion: String(splitBySpaces[2].split(separator: "+")[0]), minBuildNumber: Int(splitBySpaces[2].split(separator: "+")[1]) ?? 0)
+            }
+        }
+    }
+    
+    // Second is used as reference
+    func compareWith(other: Versions) -> [String] {
+        var finalUpdates: [String] = []
+        for val in other.dictionary.keys {
+            let dictionaryVersion = other.dictionary[val]
+            if let currentDictionaryVersion = self.dictionary[val] {
+                let appVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+                print("Comparing \(val) of dict version \(String(describing: dictionaryVersion?.version)) with \(currentDictionaryVersion.version) and minimumBuildNumber \(String(describing: dictionaryVersion?.minBuildNumber)) with current build number \(String(describing: appVersion))")
+                if dictionaryVersion?.version ?? 0 > currentDictionaryVersion.version && dictionaryVersion?.minBuildNumber ?? 0 <= (Int(appVersion ?? "0") ?? 0) {
+                    finalUpdates.append(val)
+                }
+            } else {
+                finalUpdates.append(val)
+            }
+        }
+        return finalUpdates
+    }
+    
+    func saveVersionsFile() throws {
+        if dictionary.count > 0 {
+            var versionsString = ""
+            for (key, value) in dictionary {
+                versionsString.append("\(key) \(value.version) \(value.minAppVersion)+\(value.minBuildNumber)\n")
+            }
+            let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            try versionsString.write(to: documentsDir.appending(path: "versions", directoryHint: .notDirectory), atomically: true, encoding: .utf8)
+        }
+    }
+}
+
 class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate {
     @Published var progress = Float(0.0)
     let queue = OperationQueue()
@@ -63,6 +116,7 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
     
     let sessions: Int
     var completed = 0
+    private var updatedVersions = Versions()
     
     init(sessions: Int) {
         self.sessions = sessions
@@ -80,13 +134,40 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: queue)
     }
     
-    func downloadAllAvailableLinks() {
+    func compareVersions() async -> [String] {
+        if let url = URL(string: "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/versions") {
+            do {
+                let contents = try String(contentsOf: url)
+                let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                var localVersions = Versions()
+                if FileManager.default.fileExists(atPath: documentsDir.appending(path: "versions", directoryHint: .notDirectory).path()) {
+                    localVersions = Versions(versionFile: try String(contentsOf: documentsDir.appending(path: "versions", directoryHint: .notDirectory)))
+                }
+                updatedVersions = Versions(versionFile: contents)
+                
+                print(updatedVersions.dictionary)
+                print(localVersions.dictionary)
+                
+                return localVersions.compareWith(other: updatedVersions)
+            } catch {
+                print("Versions cannot be loaded, returning nothing \(error)")
+            }
+        } else {
+            print("Version link is invalid")
+        }
+        return []
+    }
+    
+    func downloadAllAvailableLinks() async {
         if downloadSessionQueue.numberOfSessions() > 0 {
             print("Already downloading")
             return
         }
+        
+        let versionCheck = await compareVersions()
+        print(versionCheck)
         for (name, url) in dictionaryLinks {
-            if !doesDictionaryExist(dictName: name), let urlType = URL(string: url) {
+            if !doesDictionaryExist(dictName: name) || versionCheck.contains(name), let urlType = URL(string: url) {
                 download(with: urlType, dictionaryName: name)
             } else {
                 completed += 1
@@ -150,6 +231,12 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         let isZip = isFileZip(pathToFile: location.path())
         let baseFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: currentDictionaryName, directoryHint: .notDirectory)
         let finalDestination = isZip ? baseFilePath.appendingPathExtension("zip") : baseFilePath.appendingPathExtension("db")
+        let finalFile = isZip ? baseFilePath : baseFilePath.appendingPathExtension("db")
+        do {
+            try FileManager.default.removeItem(at: finalFile)
+        } catch {
+            print("Cant remove file \(error)")
+        }
         do {
             try FileManager.default.copyItem(at: location, to: finalDestination)
             if isZip {
@@ -176,6 +263,11 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
             completed = 0
             self.progress = 1.0
             setupDictionaries()
+            do {
+                try updatedVersions.saveVersionsFile()
+            } catch {
+                print("Could not save versions file \(error)")
+            }
         }
     }
     

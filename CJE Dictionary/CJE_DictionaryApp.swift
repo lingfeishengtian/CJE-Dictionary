@@ -33,7 +33,9 @@ struct InitialView : View {
             }.progressViewStyle(.linear)
                 .padding()
                 .onAppear() {
-                     dictionaryManager.downloadAllAvailableLinks()
+                    Task.init {
+                        await dictionaryManager.downloadAllAvailableLinks()
+                    }
                 }
         } else {
             AppView()
