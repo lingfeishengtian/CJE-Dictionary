@@ -53,6 +53,7 @@
 		9606584E2C62066D0006DC4C /* versions */ = {isa = PBXFileReference; lastKnownFileType = text; path = versions; sourceTree = "<group>"; };
 		960658532C6235D60006DC4C /* CJE-Dictionary-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CJE-Dictionary-Info.plist"; sourceTree = SOURCE_ROOT; };
 		960658562C6238080006DC4C /* STSong.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = STSong.TTF; sourceTree = "<group>"; };
+		960658582C62409B0006DC4C /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		9612425D2B412A46009D6E05 /* CJE Dictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CJE Dictionary.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CJE_DictionaryApp.swift; sourceTree = "<group>"; };
 		961242622B412A46009D6E05 /* DictionarySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionarySearchView.swift; sourceTree = "<group>"; };
@@ -64,7 +65,6 @@
 		961242872B4250A0009D6E05 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
 		964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
 		965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictionarySearch.swift; sourceTree = "<group>"; };
-		9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		965318302C601CC10046D2C1 /* HanziToKanji.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = HanziToKanji.txt; sourceTree = "<group>"; };
 		965318332C6072230046D2C1 /* KanjiDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinition.swift; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 			children = (
 				960658492C61C7670006DC4C /* jp-cn.realm.zip */,
 				964394AF2B43A22E009D377E /* Shogakukanjcv3DB.zip */,
-				9653182E2C5F9FB70046D2C1 /* jitendexDB.zip */,
+				960658582C62409B0006DC4C /* jitendexDB.zip */,
 				9606584B2C62056E0006DC4C /* KANJIDIC2_cleaned.db */,
 				965318302C601CC10046D2C1 /* HanziToKanji.txt */,
 				9606584E2C62066D0006DC4C /* versions */,
