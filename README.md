@@ -7,6 +7,8 @@ As a trilingual, there's not many choices for Chinese-Japanese-English dictionar
 
 This app is for those attempting to learn Japanese, or those who are bilingual in English and Chinese already and want to learn Japanese.
 
+[Join the public beta!](https://testflight.apple.com/join/OawrajTJ)
+
 ## Features
 
 * Search for words in Chinese, Japanese, or English
