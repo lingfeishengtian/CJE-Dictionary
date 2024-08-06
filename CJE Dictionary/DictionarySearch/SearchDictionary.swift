@@ -12,86 +12,19 @@ import IPADic
 import Mecab_Swift
 import OrderedCollections
 
-let DatabaseConnections: [DICTIONARY_NAMES:Connection] = {
-    var ret: [DICTIONARY_NAMES:Connection] = [:]
-    for dictName in DICTIONARY_NAMES.allCases {
-        do {
-            ret[dictName] = try Connection(exportFolderOf(dictionary: dictName).appending(path: dictName.rawValue.dropLast("DB".count), directoryHint: .notDirectory).appendingPathExtension("db").path())
-        } catch {
-            print("Unable to connect to \(dictName)")
-        }
-    }
-    return ret
-}()
-
-@inline(__always) func exportFolderOf(dictionary dictName: DICTIONARY_NAMES) -> URL {
-    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: dictName.rawValue, directoryHint: .isDirectory)
+@inline(__always) func exportFolderOf(dictionary dictName: String) -> URL {
+    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: dictName, directoryHint: .isDirectory)
 }
 
-let realm: Realm = try! Realm(configuration: CONFIGURATION)
-
-func createDictionaryIfNotPresent() {
-    if let existingRealm = BUNDLE_CN_JP_DICT {
-        do {
-            if (!FileManager.default.fileExists(atPath: LOCAL_REALM_URL.path())) {
-                try FileManager.default.copyItem(at: existingRealm, to: LOCAL_REALM_URL)
-            }
-        } catch {
-            print("Error occured while copying: \(error)")
+var realmStore: Realm?
+var cnRealm: Realm? {
+    do {
+        if realmStore == nil {
+            realmStore = try Realm(configuration: CONFIGURATION)
         }
-    }
-    
-    for dictName in DICTIONARY_NAMES.allCases {
-        let exportFolder = exportFolderOf(dictionary: dictName)
-        
-        if FileManager.default.fileExists(atPath: exportFolder.path()) {
-            print("\(dictName) already exists")
-            continue
-        }
-        do {
-            try unzipDatabase(urlOfZip: Bundle.main.url(forResource: dictName.rawValue, withExtension: "zip")!, exportFolder: exportFolder)
-        } catch {
-            print("Error occurred while adding dictionary entries")
-            // TODO: Show error to user indicating that they have a corrupted binary
-        }
-    }
-    
-    for dbConnection in DatabaseConnections.values {
-        do {
-            // ENSURE SEARCH IS USING INDEX
-            //            let plan = try dbConnection.prepareRowIterator("EXPLAIN QUERY PLAN SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE wort LIKE \"あ%\";")
-            //            while let a = plan.next() {
-            //                print(a)
-            //            }
-            
-            // Substring works differently here, you need to -1 at the end for some reason
-            try dbConnection.execute("""
-            CREATE TABLE "wordIndex" (
-                            "id"    INTEGER NOT NULL,
-                            "wort"    TEXT NOT NULL,
-                            FOREIGN KEY(id) REFERENCES word(id)
-                        );
-            WITH cte AS (
-                                SELECT id, '' w, w || '|' s
-                                FROM word
-                                UNION ALL
-                                SELECT id,
-                                       SUBSTR(s, 0, INSTR(s, '|') - 1),
-                                       SUBSTR(s, INSTR(s, '|') + 1)
-                                FROM cte
-                                WHERE s <> ''
-                            )
-                            INSERT INTO wordIndex (id, wort)
-                            SELECT id, w
-                            FROM cte
-                            WHERE w <> '';
-            DELETE FROM wordIndex WHERE wort LIKE "%【%】%";
-            CREATE INDEX wordIndex_w_idx ON wordIndex(wort COLLATE NOCASE);
-            ANALYZE;
-            """)
-        } catch {
-            print("failed?")
-        }
+        return realmStore
+    } catch {
+        return nil
     }
 }
 
@@ -165,7 +98,7 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
     print("Start lookup: \(Date.now.timeIntervalSince1970)")
     for dict in DICTIONARY_NAMES.allCases {
         var priority = -1
-        if dict.type().1 == .CN {
+        if dict.type().1 == .CN, let realm = cnRealm {
             var potential: (LanguageToLanguage, [DefinitionGroup]) = (dict.type(), [])
             let readingsContainsKanji = word.readings.contains(where: { $0.containsKanjiCharacters })
             for reading in word.readings {

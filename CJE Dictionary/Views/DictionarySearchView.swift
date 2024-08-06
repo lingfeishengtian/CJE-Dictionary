@@ -23,7 +23,7 @@ class SearchEnumeratorWrapper: ObservableObject {
     }
 }
 
-struct ContentView: View {
+struct DictionarySearchView: View {
     @State private var searchText = ""
     @ObservedObject var searchResults: SearchEnumeratorWrapper = SearchEnumeratorWrapper()
     
@@ -98,10 +98,11 @@ struct ContentView: View {
                     }.id(searchResults.searchEnumerator?.id ?? UUID())
                 }
             }
+            .searchable(text: searchStringBinding)
             .navigationTitle(LocalizedStringKey("dictionary"))
+            .navigationBarTitleDisplayMode(.inline)
         }
         .autocorrectionDisabled()
-        .searchable(text: searchStringBinding)
         .alert(isPresented: Binding<Bool> (get: {
             ConjugationManager.sharedInstance.error
         }, set: {_ in
@@ -149,7 +150,7 @@ let sampleWord = DatabaseWord(id: 1, dict: DICTIONARY_NAMES.jitendex, word: "為
 """)
 
 #Preview {
-    let view = ContentView()
+    let view = DictionarySearchView()
     view.searchResults.searchEnumerator = SearchResultsEnumerator()
     view.searchResults.searchEnumerator?.lazyArray = [sampleWord]
     view.searchResults.partialSearch = [sampleWord]

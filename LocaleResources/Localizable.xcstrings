@@ -74,6 +74,17 @@
         }
       }
     },
+    "CJE Dictionary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中和英辞書"
+          }
+        }
+      }
+    },
     "CN" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -93,6 +104,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "中文"
+          }
+        }
+      }
+    },
+    "Complete" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
           }
         }
       }
@@ -164,6 +185,23 @@
         }
       }
     },
+    "deleteCustomDictWarn" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete all custom dictionaries?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム辞書は全部削除しますか？"
+          }
+        }
+      }
+    },
     "dictionary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -187,6 +225,99 @@
         }
       }
     },
+    "Dictionary name already exists" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書の名はすでにありました"
+          }
+        }
+      }
+    },
+    "Dictionary name too long" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名は長過ぎます"
+          }
+        }
+      }
+    },
+    "Dictionary name too short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名は短過ぎます"
+          }
+        }
+      }
+    },
+    "Download" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロード"
+          }
+        }
+      }
+    },
+    "download_section_footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zip files containing database files are supported. However, there is no current search support for any other dictionaries other than the ones preinstalled."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データベースがあるZIPファイルで辞書を取り込むことができますが、単語検索の機能は固定された辞書だけできます。"
+          }
+        }
+      }
+    },
+    "Downloaded Dictionaries" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードした辞書"
+          }
+        }
+      }
+    },
+    "Downloading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロード中"
+          }
+        }
+      }
+    },
+    "DOWNLOADS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロード"
+          }
+        }
+      }
+    },
     "EN" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -206,6 +337,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "英文"
+          }
+        }
+      }
+    },
+    "Enter dictionary name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書名"
+          }
+        }
+      }
+    },
+    "Enter download link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リンク"
           }
         }
       }
@@ -281,6 +434,28 @@
         }
       }
     },
+    "Install dictionary from the Web" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辞書はネットからインストールする"
+          }
+        }
+      }
+    },
+    "Invalid website URL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リンクは利用できません"
+          }
+        }
+      }
+    },
     "ja_kun" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -349,6 +524,17 @@
         }
       }
     },
+    "Kanji Information" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漢字情報"
+          }
+        }
+      }
+    },
     "Language" : {
       "localizations" : {
         "ja" : {
@@ -380,7 +566,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "もっと"
+            "value" : "詳しい内容"
           }
         }
       }
@@ -518,6 +704,17 @@
         }
       }
     },
+    "Please enter website URL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リンクを入力してください"
+          }
+        }
+      }
+    },
     "Please wait for app resources to unload, this will take a little bit of time on the first app launch." : {
       "localizations" : {
         "ja" : {
@@ -580,6 +777,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ば形"
+          }
+        }
+      }
+    },
+    "settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
           }
         }
       }

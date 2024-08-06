@@ -10,10 +10,7 @@ import SQLite
 
 let KanjiDB: Connection? = {
     do {
-        let newPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: "KANJIDIC2_cleaned.db", directoryHint: .notDirectory)
-        if !FileManager.default.fileExists(atPath: newPath.path()) {
-            try FileManager.default.copyItem(at: Bundle.main.url(forResource: "KANJIDIC2_cleaned", withExtension: "db")!, to: newPath)
-        }
+        let newPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: "kanjidict2.db", directoryHint: .notDirectory)
         return try Connection(newPath.path())
     } catch {
         print("Can't connect to Kanjidict \(error)")
@@ -44,7 +41,7 @@ func getKanjiInfo(for strings: [String]) -> [KanjiInfo] {
     return searchedKanjis
 }
 
-class KanjiInfo {
+class KanjiInfo : Identifiable {
     let kanjiCharacter: Character
     let jlpt: Int?
     let grade: Int?
@@ -52,6 +49,8 @@ class KanjiInfo {
     let readings: [String:[String]]
     let strokeCount: [Int]
     let meaning: [String]
+    
+    let id: Character
     
     var description : String {
         return "\(kanjiCharacter): JLPT \(String(describing: jlpt)) Grade \(grade ?? -1) Freq \(String(describing: frequency)) StrokeCount\(strokeCount)\nReadings \(readings)\nMeanings \(meaning)"
@@ -65,6 +64,8 @@ class KanjiInfo {
         self.readings = readings
         self.strokeCount = strokeCount
         self.meaning = meaning
+        
+        self.id = kanjiCharacter
     }
     
     init(for kanji: Character) throws {
@@ -112,6 +113,8 @@ class KanjiInfo {
         } else {
             throw KanjiError.runtimeError("Kanji character not found")
         }
+        
+        self.id = kanjiCharacter
     }
 }
 

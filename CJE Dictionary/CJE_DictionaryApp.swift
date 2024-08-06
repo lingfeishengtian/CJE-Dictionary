@@ -9,23 +9,74 @@ import SwiftUI
 
 @main
 struct CJE_DictionaryApp: App {
-    @State private var progress: Double = 0.0
     
     var body: some Scene {
         WindowGroup {
-            if progress < 1.0 {
-                ProgressView("Please wait for app resources to unload, this will take a little bit of time on the first app launch.")
-                    .progressViewStyle(.circular)
-                    .padding()
-                    .task {
-                        createDictionaryIfNotPresent()
-                        progress = 1.0
-                    }
-            } else {
-                ContentView()
+            InitialView()
+        }
+    }
+}
+
+struct InitialView : View {
+    @StateObject var dictionaryManager: DictionaryManager = DictionaryManager(sessions: 3)
+    
+    var body: some View {
+        if dictionaryManager.progress < 1.0 {
+            ProgressView(value: dictionaryManager.progress)
+            {
+                HStack {
+                    Spacer()
+                    Text(String(localized: "Please wait for app resources to unload, this will take a little bit of time on the first app launch."))
+                        .multilineTextAlignment(.center)
+                    Spacer()
+                }
+            }.progressViewStyle(.linear)
+                .padding()
+                .onAppear() {
+                     dictionaryManager.downloadAllAvailableLinks()
+                }
+        } else {
+            AppView()
+        }
+    }
+}
+
+struct AppView: View {
+    @State var selectedMenu: String? = "dictionary"
+    let menus = [
+        "dictionary",
+        "settings"
+    ]
+    
+    var body: some View {
+        NavigationSplitView {
+            List(menus, id: \.self, selection: $selectedMenu) { menu in
+                Text(LocalizedStringKey(menu))
+            }
+            .navigationTitle(String(localized: "CJE Dictionary"))
+        } detail: {
+            switch selectedMenu {
+            case menus[0]:
+                DictionarySearchView()
+            case menus[1]:
+                Settings()
+            default:
+                DictionarySearchView()
             }
         }
     }
+}
+
+#Preview {
+    ProgressView(value: 0.5)
+    {
+        Text(String(localized: "Please wait for app resources to unload, this will take a little bit of time on the first app launch."))
+            .multilineTextAlignment(.center)
+    }.progressViewStyle(.linear)
+        .padding()
+        .onAppear() {
+            
+        }
 }
 
 extension UserDefaults {

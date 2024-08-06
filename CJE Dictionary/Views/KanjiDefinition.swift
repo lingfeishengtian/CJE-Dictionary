@@ -19,7 +19,7 @@ struct KanjiDefinition: View {
                     .font(.system(size: 120))
                 VStack  (alignment:.leading){
                     if let onReadings = kanjiInfo.readings["ja_on"] {
-                        HStack{
+                        HStack (alignment: .top){
                             Label(
                                 // TODO: Create icon 音
                                 title: { Text(String(localized: "ja_on")) },
@@ -30,7 +30,7 @@ struct KanjiDefinition: View {
                     }
                     
                     if let kunReadings = kanjiInfo.readings["ja_kun"] {
-                        HStack{
+                        HStack (alignment: .top){
                             Label(
                                 // TODO: Create icon 音
                                 title: { Text(String(localized: "ja_kun")) },
@@ -41,7 +41,7 @@ struct KanjiDefinition: View {
                     }
                     
                     if let nanoriReadings = kanjiInfo.readings["nanori"], nanoriReadings.count > 0 {
-                        HStack{
+                        HStack (alignment: .top){
                             Label(
                                 // TODO: Create icon 音
                                 title: { Text(String(localized: "nanori")) },
@@ -52,7 +52,7 @@ struct KanjiDefinition: View {
                     }
                     
                     if let pinyin = kanjiInfo.readings["pinyin"] {
-                        HStack{
+                        HStack (alignment: .top){
                             Label(
                                 // TODO: Create icon 音
                                 title: { Text(String(localized: "pinyin")) },

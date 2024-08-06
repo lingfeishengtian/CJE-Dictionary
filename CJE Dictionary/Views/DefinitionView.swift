@@ -53,7 +53,7 @@ struct DefinitionView: View {
     private let conjugations: [ConjugatedVerb]
     @State var selectedLangugae: Language
     @Environment(\.colorScheme) var colorScheme
-    private let kanjiInfo: [KanjiInfo]
+    private let kanjiInfos: [KanjiInfo]
     
     init(dbWord: DatabaseWord, definitions: [(LanguageToLanguage, [DefinitionGroup])]) {
         self.dbWord = dbWord
@@ -74,7 +74,7 @@ struct DefinitionView: View {
         }
         
         self.conjugations = conj
-        self.kanjiInfo = getKanjiInfo(for: dbWord.readings)
+        self.kanjiInfos = getKanjiInfo(for: dbWord.readings)
     }
     
     var body: some View {
@@ -129,11 +129,13 @@ struct DefinitionView: View {
                             }
                         }
                     }
-                    List{
-//                        ForEach(kanjiInfo) { kanji in
-//                            
-//                        }
-                        // TODO: Kanji section
+                    if kanjiInfos.count > 0 {
+                        Text (String(localized: "Kanji Information"))
+                            .font(.headline)
+                            .padding([.trailing, .leading], 20)
+                        ForEach(kanjiInfos) { kanjiInfo in
+                            KanjiNavigationListElement(kanjiInfo: kanjiInfo).padding([.trailing, .leading], 30)
+                        }
                     }
                 }
             }
@@ -153,4 +155,34 @@ extension GeometryProxy {
     DefinitionView(dbWord: sampleWord, definitions: [((Language.JP, Language.EN), sampleWord.parseDefinitionHTML()), ((Language.JP, Language.CN), sampleWord.parseDefinitionHTML(otherHTML: """
 <link rel='stylesheet' href='common.css' type='text/css'><br><link rel='stylesheet' href='jitendex.css' type='text/css'><br><div><div class="headline priority"><span class="headword" lang="ja"><span><ruby>何<rt>なに</rt></ruby></span></span><span class="priority-symbol" title="high priority entry">★</span></div><ul class="sense-groups" data-sense-count="8" data-sense-group-count="6"><li class="pronunciation"><span class="tag pronunciation-label" title="pronunciation audio">pronunciation</span><ul class="audio-list"><li class="audio"><a href="sound://kanji_alive_audio/07175-1.opus"><span class="play-button">▶</span></a>なに</li></ul></li><li class="sense-group"><span class="part-of-speech-container"><span class="tag part-of-speech-info" data-code="pn" title="pronoun">pronoun</span></span><ol class="sense-list"><li class="sense" data-sense-number="1" style="list-style-type: '①';"><ul class="glossary"><li class="gloss">what</li></ul><div class="extra-info"><div class="example-container"><div class="ex-sent extra-box" data-sentence-key="何" data-source="172752" data-source-type="tat"><div class="ex-sent-ja"><span class="ex-sent-ja-content" lang="ja"><ruby>今<rt>いま</rt></ruby>のアナウンスは<span class="ex-sent-ja-keyword">何</span>だったのですか。</span></div><div class="ex-sent-en"><span class="ex-sent-en-content" lang="en">What did the announcement just say?</span><span class="ex-sent-ja-footnote">[1]</span></div></div></div></div></li><li class="sense" data-sense-number="2" style="list-style-type: '②';"><ul class="glossary"><li class="gloss">you-know-what</li><li class="gloss">that thing</li></ul></li><li class="sense" data-sense-number="3" style="list-style-type: '③';"><ul class="glossary"><li class="gloss">whatsit</li><li class="gloss">whachamacallit</li><li class="gloss">what's-his-name</li><li class="gloss">what's-her-name</li></ul></li></ol></li><li class="sense-group"><span class="part-of-speech-container"><span class="tag part-of-speech-info" data-code="n" title="noun (common) (futsuumeishi)">noun</span></span><span class="misc-container"><span class="tag misc-info" data-code="col" title="colloquial">colloquial</span><span class="tag misc-info" data-code="uk" title="word usually written using kana alone">kana</span></span><ol class="sense-list"><li class="sense" data-sense-number="4" style="list-style-type: '④';"><ul class="glossary"><li class="gloss">penis</li><li class="gloss">(one's) thing</li><li class="gloss">dick</li></ul><div class="extra-info"><div class="sense-note-container extra-box"><div class="sense-note-label extra-label">Note</div><div class="sense-note-content extra-content">esp. ナニ</div></div><div class="example-container"><div class="ex-sent extra-box" data-sentence-key="ナニ" data-source="77004" data-source-type="tat"><div class="ex-sent-ja"><span class="ex-sent-ja-content" lang="ja">「や、それほどでも。せいぜい、大きさ比べたり、わい談するくらいだし」「大きさって何の？」「<span class="ex-sent-ja-keyword">ナニ</span>の」</span></div><div class="ex-sent-en"><span class="ex-sent-en-content" lang="en">"No, not so much. At most comparing sizes, telling dirty stories." "Sizes of what?" "Of 'that'."</span><span class="ex-sent-ja-footnote">[2]</span></div></div></div></div></li></ol></li><li class="sense-group"><span class="part-of-speech-container"><span class="tag part-of-speech-info" data-code="adv" title="adverb (fukushi)">adverb</span></span><ol class="sense-list"><li class="sense" data-sense-number="5" style="list-style-type: '⑤';"><ul class="glossary"><li class="gloss">(not) at all</li><li class="gloss">(not) in the slightest</li></ul><div class="extra-info"><div class="sense-note-container extra-box"><div class="sense-note-label extra-label">Note</div><div class="sense-note-content extra-content">with neg. sentence</div></div></div></li></ol></li><li class="sense-group"><span class="part-of-speech-container"><span class="tag part-of-speech-info" data-code="int" title="interjection (kandoushi)">interjection</span></span><ol class="sense-list"><li class="sense" data-sense-number="6" style="list-style-type: '⑥';"><ul class="glossary"><li class="gloss">what?</li><li class="gloss">huh?</li></ul><div class="extra-info"><div class="sense-note-container extra-box"><div class="sense-note-label extra-label">Note</div><div class="sense-note-content extra-content">indicates surprise</div></div><div class="example-container"><div class="ex-sent extra-box" data-sentence-key="なに" data-source="75472" data-source-type="tat"><div class="ex-sent-ja"><span class="ex-sent-ja-content" lang="ja"><span class="ex-sent-ja-keyword">なに</span>よ！<ruby>出<rt>で</rt></ruby><ruby>来<rt>き</rt></ruby>ないの？この<ruby>度<rt>ど</rt></ruby><ruby>胸<rt>きょう</rt></ruby>なし！<ruby>腰<rt>こし</rt></ruby><ruby>抜<rt>ぬ</rt></ruby>けッ！</span></div><div class="ex-sent-en"><span class="ex-sent-en-content" lang="en">What? You can't do it? You coward! Chicken!</span><span class="ex-sent-ja-footnote">[3]</span></div></div></div></div></li><li class="sense" data-sense-number="7" style="list-style-type: '⑦';"><ul class="glossary"><li class="gloss">hey!</li><li class="gloss">come on!</li></ul><div class="extra-info"><div class="sense-note-container extra-box"><div class="sense-note-label extra-label">Note</div><div class="sense-note-content extra-content">indicates anger or irritability</div></div></div></li><li class="sense" data-sense-number="8" style="list-style-type: '⑧';"><ul class="glossary"><li class="gloss">oh, no (it's fine)</li><li class="gloss">why (it's nothing)</li><li class="gloss">oh (certainly not)</li></ul><div class="extra-info"><div class="sense-note-container extra-box"><div class="sense-note-label extra-label">Note</div><div class="sense-note-content extra-content">used to dismiss someone's worries, concerns, etc.</div></div></div></li></ol></li><li class="forms"><span class="tag forms-label" title="spelling and reading variants">other forms</span><ul><li>何</li><li>ナニ</li></ul></li></ul><div class="entry-footnotes"><a href="https://www.edrdg.org/jmwsgi/entr.py?svc=jmdict&amp;q=1577100">JMdict</a> | Tatoeba <a href="https://tatoeba.org/en/sentences/show/172752">[1]</a><a href="https://tatoeba.org/en/sentences/show/77004">[2]</a><a href="https://tatoeba.org/en/sentences/show/75472">[3]</a></div></div>
 """))])
+}
+
+struct KanjiNavigationListElement: View {
+    @Environment(\.colorScheme) var colorScheme
+    let kanjiInfo: KanjiInfo
+    
+    var body: some View {
+        NavigationLink(destination: {
+            KanjiDefinition(kanjiInfo: kanjiInfo)
+        }, label: {
+            HStack {
+                Text(String(kanjiInfo.kanjiCharacter))
+                    .font(Font.custom("HiraMinProN-W3", size: 30))
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                Divider().padding([.leading, .trailing], 10)
+                Text(kanjiInfo.meaning.joined(separator: ", "))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .font(Font.custom("HiraMinProN-W3", size: 15))
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                Spacer()
+                Image(systemName: "arrow.forward")
+                    .fontWeight(.medium)
+                    .foregroundStyle(
+                        .gray
+                    )
+                    .font(.caption2)
+            }
+        })
+    }
 }

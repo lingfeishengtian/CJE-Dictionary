@@ -74,23 +74,7 @@ enum Language: String, CaseIterable, Identifiable {
     case EN
 }
 
-let LOCAL_REALM_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appending(component: "dict.realm", directoryHint: .notDirectory)
-let BUNDLE_CN_JP_DICT = Bundle.main.url(forResource: "jp-cn", withExtension: "realm")
-
-enum DICTIONARY_NAMES: String, CaseIterable, Codable {
-    case jitendex = "jitendexDB"
-    case shogakukanjcv3 = "Shogakukanjcv3DB"
-    
-    // from $0 to $1
-    func type() -> LanguageToLanguage {
-        switch self {
-        case .jitendex:
-            return (.JP, .EN)
-        case .shogakukanjcv3:
-            return (.JP, .CN)
-        }
-    }
-}
+let LOCAL_REALM_URL = exportFolderOf(dictionary: "jp-cn").appending(component: "jp-cn.realm", directoryHint: .notDirectory)
 
 let CONFIGURATION = {
     var configuration = Realm.Configuration.defaultConfiguration
