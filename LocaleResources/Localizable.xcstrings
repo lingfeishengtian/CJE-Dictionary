@@ -610,7 +610,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It seems you are offline, please reconnect to the internet and restart the app to install the required dictionaries. After the required dictionaries are installed, internet is no longer needed to launch the application."
+            "value" : "It seems you are offline, please reconnect to the internet to install the required dictionaries. After the required dictionaries are installed, internet is no longer needed to launch the application."
           }
         }
       }

@@ -18,30 +18,65 @@ struct CJE_DictionaryApp: App {
     }
 }
 
+class NetworkMonitor: ObservableObject {
+    @Published var connected: Bool = false
+    let monitor: NWPathMonitor
+    var startedDownloads = false
+    
+    init() {
+        monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                if path.status == .satisfied {
+                    self.connected = true
+                } else {
+                    self.connected = false
+                }
+            }
+            
+            print(path.isExpensive)
+        }
+        
+        let queue = DispatchQueue(label: "Monitor")
+        monitor.start(queue: queue)
+    }
+}
+
 struct InitialView : View {
     @StateObject var dictionaryManager: DictionaryManager = DictionaryManager(sessions: 3)
-    let monitor = NWPathMonitor()
+    @StateObject var networkMonitor = NetworkMonitor()
     
     var body: some View {
-        if dictionaryManager.progress < 1.0 || (monitor.currentPath.status != .satisfied && dictionaryManager.getCurrentlyInstalledDictionaries().count == 0) {
+        let _ = Task.init {
+            if (!networkMonitor.connected && dictionaryManager.getCurrentlyInstalledDictionaries().count == 0) || (networkMonitor.startedDownloads) {
+                return
+            }
+            await dictionaryManager.downloadAllAvailableLinks()
+            networkMonitor.startedDownloads = true
+        }
+        
+        if dictionaryManager.progress < 1.0 || (!networkMonitor.connected && dictionaryManager.getCurrentlyInstalledDictionaries().count == 0) {
             ProgressView(value: dictionaryManager.progress)
             {
-                VStack {
-                    if monitor.currentPath.status != .satisfied {
+                
+                HStack {
+                    Spacer()
+                    let _ = print(networkMonitor.connected)
+                    if !networkMonitor.connected {
                         Text(String(localized: "no_internet_connection"))
                             .multilineTextAlignment(.center)
                             .foregroundStyle(.red)
                     }
+                    Spacer()
+                }
+                HStack {
+                    Spacer()
                     Text(String(localized: "Please wait for app resources to unload, this will take a little bit of time on the first app launch."))
                         .multilineTextAlignment(.center)
+                    Spacer()
                 }
             }.progressViewStyle(.linear)
                 .padding()
-                .onAppear() {
-                    Task.init {
-                        await dictionaryManager.downloadAllAvailableLinks()
-                    }
-                }
         } else {
             AppView()
         }

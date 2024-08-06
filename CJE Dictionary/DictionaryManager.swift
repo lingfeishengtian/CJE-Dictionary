@@ -158,12 +158,14 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         return []
     }
     
+    var downloading = false
     func downloadAllAvailableLinks() async {
-        if downloadSessionQueue.numberOfSessions() > 0 {
+        if downloading {
             print("Already downloading")
             return
         }
         
+        downloading = true
         let versionCheck = await compareVersions()
         print(versionCheck)
         for (name, url) in dictionaryLinks {
@@ -176,13 +178,15 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         
         if completed == sessions {
             self.progress = 1.0
+            downloading = false
         }
     }
     
     func getCurrentlyInstalledDictionaries(filterPreinstalled: Bool = false) -> [String] {
         let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let filteredOutFiles = [".DS_Store", "versions"]
         do {
-            var installedDictionaries = try FileManager.default.contentsOfDirectory(atPath: documentsDir.path()).filter({ $0 != ".DS_Store" })
+            var installedDictionaries = try FileManager.default.contentsOfDirectory(atPath: documentsDir.path()).filter({ !filteredOutFiles.contains($0) })
             if filterPreinstalled {
                 for dict in dictionaryLinks.keys {
                     installedDictionaries.removeAll(where: { $0 == dict || $0 == dict + ".db" })
@@ -262,6 +266,7 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         if (sessions == completed) {
             completed = 0
             self.progress = 1.0
+            downloading = false
             setupDictionaries()
             do {
                 try updatedVersions.saveVersionsFile()
