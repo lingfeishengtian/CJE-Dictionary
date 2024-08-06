@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		960658482C61B23D0006DC4C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960658472C61B23D0006DC4C /* Settings.swift */; };
-		9606584A2C61C7670006DC4C /* jp-cn.realm.zip in Resources */ = {isa = PBXBuildFile; fileRef = 960658492C61C7670006DC4C /* jp-cn.realm.zip */; };
 		961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */; };
 		961242632B412A46009D6E05 /* DictionarySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242622B412A46009D6E05 /* DictionarySearchView.swift */; };
 		961242652B412A47009D6E05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 961242642B412A47009D6E05 /* Assets.xcassets */; };
@@ -294,7 +293,6 @@
 				96AE7E2F2B480B0900862861 /* types.csv in Resources */,
 				961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */,
 				961242652B412A47009D6E05 /* Assets.xcassets in Resources */,
-				9606584A2C61C7670006DC4C /* jp-cn.realm.zip in Resources */,
 				96AE7E322B480B0900862861 /* conj.csv in Resources */,
 				96AE7E312B480B0900862861 /* conotes.csv in Resources */,
 				961242782B4147B9009D6E05 /* Localizable.xcstrings in Resources */,
