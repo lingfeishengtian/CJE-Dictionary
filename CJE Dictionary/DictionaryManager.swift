@@ -177,7 +177,9 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         }
         
         if completed == sessions {
-            self.progress = 1.0
+            DispatchQueue.main.async {
+                self.progress = 1.0
+            }
             downloading = false
         }
     }
@@ -219,7 +221,10 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         print("Start download")
         
         errorMessage = ""
-        progress = 0.01
+        
+        DispatchQueue.main.async {
+            self.progress = 0.01
+        }
         let task = downloadSession.downloadTask(with: url)
         downloadSessionQueue.push(task, dictName: dictionaryName)
     }
@@ -265,7 +270,10 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         
         if (sessions == completed) {
             completed = 0
-            self.progress = 1.0
+            
+            DispatchQueue.main.async {
+                self.progress = 1.0
+            }
             downloading = false
             setupDictionaries()
             do {
@@ -294,7 +302,10 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
             return
         }
         errorMessage = error?.localizedDescription ?? ""
-        self.progress = (Float(1.0) / Float(sessions)) * Float(completed)
+        
+        DispatchQueue.main.async {
+            self.progress = (Float(1.0) / Float(self.sessions)) * Float(self.completed)
+        }
         print("Error: \(String(describing: error))")
         completed += 1
         downloadSessionQueue.pop()
