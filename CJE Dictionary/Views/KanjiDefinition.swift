@@ -16,7 +16,7 @@ struct KanjiDefinition: View {
             HStack {
                 Text(String(kanjiInfo.kanjiCharacter))
                     .bold()
-                    .font(.system(size: 120))
+                    .font(Font.custom("HiraMinProN-W3", size: 120))
                 VStack  (alignment:.leading){
                     if let onReadings = kanjiInfo.readings["ja_on"] {
                         HStack (alignment: .top){

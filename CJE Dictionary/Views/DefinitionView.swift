@@ -10,9 +10,11 @@ import SwiftUI
 fileprivate struct ExampleSentenceTextView: View {
     let attributedString: AttributedString
     let screenWidth: CGFloat
+    let language: Language?
 
     init(attributedString: AttributedString, screenWidth: CGFloat, language: Language?) {
         let fontFamilyNames = UIFont.familyNames
+        print(fontFamilyNames)
         var flagEmoji: String {
             switch language {
             case .CN:
@@ -25,15 +27,16 @@ fileprivate struct ExampleSentenceTextView: View {
                 ""
             }
         }
+        self.language = language
         var beginning = AttributedString(stringLiteral: flagEmoji + " ")
         beginning.append(attributedString)
-        beginning.mergeAttributes(try! AttributeContainer([.font: UIFont(name: "HiraMinProN-W3", size: 15)!], including: \.uiKit))
+        beginning.mergeAttributes(try! AttributeContainer([.font: UIFont(name: language == .CN ? "STSong" : "HiraMinProN-W3", size: 15)!], including: \.uiKit))
         self.attributedString = beginning
         self.screenWidth = screenWidth
     }
     
     var body: some View {
-        RubyDisplay(attributedString: attributedString, screenWidth: screenWidth)
+        RubyDisplay(attributedString: attributedString, screenWidth: screenWidth).padding([.bottom], language == .CN ? 10 : 0)
     }
 }
 

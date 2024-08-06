@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		960658482C61B23D0006DC4C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960658472C61B23D0006DC4C /* Settings.swift */; };
+		960658572C6238080006DC4C /* STSong.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 960658562C6238080006DC4C /* STSong.TTF */; };
 		961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */; };
 		961242632B412A46009D6E05 /* DictionarySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242622B412A46009D6E05 /* DictionarySearchView.swift */; };
 		961242652B412A47009D6E05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 961242642B412A47009D6E05 /* Assets.xcassets */; };
@@ -50,6 +51,8 @@
 		960658492C61C7670006DC4C /* jp-cn.realm.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "jp-cn.realm.zip"; sourceTree = "<group>"; };
 		9606584B2C62056E0006DC4C /* KANJIDIC2_cleaned.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = KANJIDIC2_cleaned.db; sourceTree = "<group>"; };
 		9606584E2C62066D0006DC4C /* versions */ = {isa = PBXFileReference; lastKnownFileType = text; path = versions; sourceTree = "<group>"; };
+		960658532C6235D60006DC4C /* CJE-Dictionary-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CJE-Dictionary-Info.plist"; sourceTree = SOURCE_ROOT; };
+		960658562C6238080006DC4C /* STSong.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = STSong.TTF; sourceTree = "<group>"; };
 		9612425D2B412A46009D6E05 /* CJE Dictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CJE Dictionary.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CJE_DictionaryApp.swift; sourceTree = "<group>"; };
 		961242622B412A46009D6E05 /* DictionarySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionarySearchView.swift; sourceTree = "<group>"; };
@@ -101,6 +104,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		960658502C6235920006DC4C /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				960658562C6238080006DC4C /* STSong.TTF */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		961242542B412A46009D6E05 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +133,8 @@
 		9612425F2B412A46009D6E05 /* CJE Dictionary */ = {
 			isa = PBXGroup;
 			children = (
+				960658532C6235D60006DC4C /* CJE-Dictionary-Info.plist */,
+				960658502C6235920006DC4C /* Fonts */,
 				967ECECC2C5F1001009DFD72 /* DictionarySearch */,
 				96AE7E432B4A924800862861 /* Views */,
 				96AE7E282B480AED00862861 /* ConjugationResources */,
@@ -294,6 +307,7 @@
 			files = (
 				96AE7E2F2B480B0900862861 /* types.csv in Resources */,
 				961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */,
+				960658572C6238080006DC4C /* STSong.TTF in Resources */,
 				961242652B412A47009D6E05 /* Assets.xcassets in Resources */,
 				96AE7E322B480B0900862861 /* conj.csv in Resources */,
 				96AE7E312B480B0900862861 /* conotes.csv in Resources */,
@@ -461,6 +475,7 @@
 				DEVELOPMENT_TEAM = N74E93PMQ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CJE-Dictionary-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "CJE Dict";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -493,6 +508,7 @@
 				DEVELOPMENT_TEAM = N74E93PMQ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CJE-Dictionary-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "CJE Dict";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
