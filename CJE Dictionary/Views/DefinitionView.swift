@@ -13,8 +13,6 @@ fileprivate struct ExampleSentenceTextView: View {
     let language: Language?
 
     init(attributedString: AttributedString, screenWidth: CGFloat, language: Language?) {
-        let fontFamilyNames = UIFont.familyNames
-        print(fontFamilyNames)
         var flagEmoji: String {
             switch language {
             case .CN:

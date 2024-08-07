@@ -12,6 +12,7 @@ import SQLite
 enum DICTIONARY_NAMES: String, CaseIterable, Codable {
     case jitendex = "jitendexDB"
     case shogakukanjcv3 = "Shogakukanjcv3DB"
+    case suupaadaijirin = "suupaadaijirin"
     
     // from $0 to $1
     func type() -> LanguageToLanguage {
@@ -20,6 +21,8 @@ enum DICTIONARY_NAMES: String, CaseIterable, Codable {
             return (.JP, .EN)
         case .shogakukanjcv3:
             return (.JP, .CN)
+        case .suupaadaijirin:
+            return (.JP, .JP)
         }
     }
 }
@@ -145,9 +148,6 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
                 }
                 updatedVersions = Versions(versionFile: contents)
                 
-                print(updatedVersions.dictionary)
-                print(localVersions.dictionary)
-                
                 return localVersions.compareWith(other: updatedVersions)
             } catch {
                 print("Versions cannot be loaded, returning nothing \(error)")
@@ -265,7 +265,7 @@ class DictionaryManager : NSObject, ObservableObject, URLSessionDownloadDelegate
         }
         
         downloadSessionQueue.pop()
-        print(self.progress)
+        print("Progress: ", self.progress)
         completed += 1
         
         if (sessions == completed) {
@@ -336,7 +336,11 @@ let DatabaseConnections: [DICTIONARY_NAMES:Connection] = {
     var ret: [DICTIONARY_NAMES:Connection] = [:]
     for dictName in DICTIONARY_NAMES.allCases {
         do {
-            ret[dictName] = try Connection(exportFolderOf(dictionary: dictName.rawValue).appending(path: dictName.rawValue.dropLast("DB".count), directoryHint: .notDirectory).appendingPathExtension("db").path())
+            var dbName = dictName.rawValue
+            if dictName == .jitendex || dictName == .shogakukanjcv3 {
+                dbName = String(dbName.dropLast("DB".count))
+            }
+            ret[dictName] = try Connection(exportFolderOf(dictionary: dictName.rawValue).appending(path: dbName, directoryHint: .notDirectory).appendingPathExtension("db").path())
         } catch {
             print("Unable to connect to \(dictName)")
         }

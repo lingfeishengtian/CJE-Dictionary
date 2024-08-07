@@ -26,6 +26,7 @@ class SearchEnumeratorWrapper: ObservableObject {
 struct DictionarySearchView: View {
     @State private var searchText = ""
     @ObservedObject var searchResults: SearchEnumeratorWrapper = SearchEnumeratorWrapper()
+    @State private var showHelp = false
     
     func makeSearchQuery(searchString: String) {
         if searchString == self.searchText {
@@ -101,6 +102,14 @@ struct DictionarySearchView: View {
             .searchable(text: searchStringBinding)
             .navigationTitle(LocalizedStringKey("dictionary"))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                Button(action: {
+                    showHelp = true
+                }, label: {
+                    Image(systemName: "info.circle")
+                })
+            })
+            .alert(LocalizedStringKey("dictionary_search_help"), isPresented: $showHelp, actions: { })
         }
         .autocorrectionDisabled()
         .alert(isPresented: Binding<Bool> (get: {
@@ -134,13 +143,25 @@ struct DefinitionNavigationLink: View {
     }
     
     var body: some View {
-        NavigationLink(labelTxt) {
+        NavigationLink {
             NavigationLazyView(
                 DefinitionView(dbWord: name, definitions: lookupWord(word: name).definitions).onAppear {
                     HistoryArray.removeAll(where: { $0.readings == name.readings })
                     HistoryArray.insert(name, at: 0)
                 }
             ).navigationBarTitleDisplayMode(.inline)
+        } label: {
+            HStack {
+                Text(labelTxt)
+                Spacer()
+                if name.dict != DICTIONARY_NAMES.jitendex {
+                    Text(String(name.dict.rawValue.prefix(2).uppercased()))
+                        .font(.system(size: 12))
+                        .padding(6)
+                        .background(.purple)
+                        .clipShape(Circle())
+                }
+            }
         }
     }
 }

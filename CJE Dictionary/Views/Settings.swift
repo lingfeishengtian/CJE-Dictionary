@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+enum KanjiSettingsKeys: String {
+    case showIconText = "kanjiSettingsShowIconText"
+}
+
 struct Settings: View {
     @StateObject var dictionaryManager = DictionaryManager(sessions: 1)
     @State var websiteURLString: String = ""
@@ -16,6 +20,16 @@ struct Settings: View {
     @State var deleteAllDictionariesWarning = false
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @inlinable
+    func getBoolDefaultsKey(key: String) -> Bool {
+        (UserDefaults.standard.value(forKey: key) as? Bool) ?? false
+    }
+    
+    @inlinable
+    func setDefaultsKey(key: String, val: Any) {
+        UserDefaults.standard.set(val, forKey: key)
+    }
     
     var body: some View {
         return Form{
@@ -110,6 +124,20 @@ struct Settings: View {
                 Text(LocalizedStringKey("DOWNLOADS"))
             } footer: {
                 Text(LocalizedStringKey("download_section_footer"))
+            }
+            
+            Section() {
+                HStack {
+                    Toggle(isOn: Binding(get: {
+                        getBoolDefaultsKey(key: KanjiSettingsKeys.showIconText.rawValue)
+                    }, set: { val in
+                        setDefaultsKey(key: KanjiSettingsKeys.showIconText.rawValue, val: val)
+                    }), label: {
+                        Text(LocalizedStringKey(KanjiSettingsKeys.showIconText.rawValue))
+                    })
+                }
+            } header: {
+                Text(LocalizedStringKey("KANJI DEFINITIONS"))
             }
         }.navigationTitle(LocalizedStringKey("settings"))
             .alert(LocalizedStringKey(errorMessageKey), isPresented: $showError) {

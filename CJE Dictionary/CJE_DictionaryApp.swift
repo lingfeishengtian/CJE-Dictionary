@@ -33,8 +33,6 @@ class NetworkMonitor: ObservableObject {
                     self.connected = false
                 }
             }
-            
-            print(path.isExpensive)
         }
         
         let queue = DispatchQueue(label: "Monitor")
@@ -61,7 +59,6 @@ struct InitialView : View {
                 
                 HStack {
                     Spacer()
-                    let _ = print(networkMonitor.connected)
                     if !networkMonitor.connected {
                         Text(String(localized: "no_internet_connection"))
                             .multilineTextAlignment(.center)
@@ -78,6 +75,7 @@ struct InitialView : View {
             }.progressViewStyle(.linear)
                 .padding()
         } else {
+            let _ = networkMonitor.monitor.cancel()
             AppView()
         }
     }

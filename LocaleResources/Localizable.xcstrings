@@ -258,6 +258,17 @@
         }
       }
     },
+    "dictionary_search_help" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type in the search bar to start searching (if the search bar isn't showing, swipe down). Purple indicators on the right of your result indicates the dictionary the search comes from (by default all searches first come from jitendex)."
+          }
+        }
+      }
+    },
     "Download" : {
       "localizations" : {
         "ja" : {
@@ -524,6 +535,17 @@
         }
       }
     },
+    "KANJI DEFINITIONS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漢字辞書"
+          }
+        }
+      }
+    },
     "Kanji Information" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -531,6 +553,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "漢字情報"
+          }
+        }
+      }
+    },
+    "kanjiSettingsShowIconText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanji Readings Icon Label"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み方アイコンを表示する"
           }
         }
       }
@@ -611,6 +650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "It seems you are offline, please reconnect to the internet to install the required dictionaries. After the required dictionaries are installed, internet is no longer needed to launch the application."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフライン状態です。辞書をインストールするためにインタネットに再接続する必要があります。辞書を完全にンストールされると、アプリの起動にインタネットの必要はなくなります。"
           }
         }
       }

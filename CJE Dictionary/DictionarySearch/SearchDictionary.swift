@@ -294,7 +294,7 @@ var it: AnySequence<Row>.Iterator? = nil
 func searchText(searchString: String) -> SearchResultsEnumerator {
     // TODO: Deconjugate and smart search
     let ret = SearchResultsEnumerator()
-    for dict in [DICTIONARY_NAMES.jitendex] {
+    for dict in DICTIONARY_NAMES.allCases {
         let iterators = searchDatabaseGeneral(databaseName: dict, for: searchString)
         for f in iterators {
             if let it = f {

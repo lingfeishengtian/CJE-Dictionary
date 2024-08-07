@@ -7,7 +7,7 @@
 
 import Foundation
 
-let HISTORY_KEY = "searchHistory"
+fileprivate let HISTORY_KEY = "searchHistory"
 let MAX_HISTORY_COUNT = 50
 
 var HistoryArray: [DatabaseWord] {

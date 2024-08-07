@@ -7,59 +7,51 @@
 
 import SwiftUI
 
+struct ExtractedView: View {
+    let shouldShowText: Bool = (UserDefaults.standard.value(forKey: KanjiSettingsKeys.showIconText.rawValue) as? Bool) ?? false
+    let iconChar: Character
+    let readings: [String]
+    let iconText: String.LocalizationValue
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        HStack (alignment: .top){
+            Text(String(iconChar))
+                .padding(4)
+                .background(colorScheme == .dark ? .blue : .yellow)
+                .clipShape(Circle())
+            if shouldShowText {
+                Text(String(localized: iconText)).padding([.top, .bottom], 4)
+            }
+            Text(readings.joined(separator: ", ")).padding(4)
+        }
+    }
+}
+
 struct KanjiDefinition: View {
     let kanjiInfo: KanjiInfo
     
     var body: some View {
-        let _ = print(kanjiInfo.description)
         VStack (alignment: .leading) {
             HStack {
                 Text(String(kanjiInfo.kanjiCharacter))
                     .bold()
                     .font(Font.custom("HiraMinProN-W3", size: 120))
-                VStack  (alignment:.leading){
+                VStack  (alignment:.leading, spacing: 2){
                     if let onReadings = kanjiInfo.readings["ja_on"] {
-                        HStack (alignment: .top){
-                            Label(
-                                // TODO: Create icon 音
-                                title: { Text(String(localized: "ja_on")) },
-                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
-                            )
-                            Text(onReadings.joined(separator: ", "))
-                        }
+                        ExtractedView(iconChar: "音", readings: onReadings, iconText: "ja_on")
                     }
                     
                     if let kunReadings = kanjiInfo.readings["ja_kun"] {
-                        HStack (alignment: .top){
-                            Label(
-                                // TODO: Create icon 音
-                                title: { Text(String(localized: "ja_kun")) },
-                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
-                            )
-                            Text(kunReadings.joined(separator: ", "))
-                        }
+                        ExtractedView(iconChar: "訓", readings: kunReadings, iconText: "ja_kun")
                     }
                     
                     if let nanoriReadings = kanjiInfo.readings["nanori"], nanoriReadings.count > 0 {
-                        HStack (alignment: .top){
-                            Label(
-                                // TODO: Create icon 音
-                                title: { Text(String(localized: "nanori")) },
-                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
-                            )
-                            Text(nanoriReadings.joined(separator: ", "))
-                        }
+                        ExtractedView(iconChar: "名", readings: nanoriReadings, iconText: "nanori")
                     }
                     
                     if let pinyin = kanjiInfo.readings["pinyin"] {
-                        HStack (alignment: .top){
-                            Label(
-                                // TODO: Create icon 音
-                                title: { Text(String(localized: "pinyin")) },
-                                icon: { /*@START_MENU_TOKEN@*/Image(systemName: "42.circle")/*@END_MENU_TOKEN@*/ }
-                            )
-                            Text(pinyin.joined(separator: ", "))
-                        }
+                        ExtractedView(iconChar: "拼", readings: pinyin, iconText: "pinyin")
                     }
                 }
                 Spacer()

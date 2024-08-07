@@ -10,24 +10,21 @@ import SwiftSoup
 import RubyAttribute
 import CoreText
 import UIKit
+import WebKit
 
-struct DefinitionEntry {
-    
-}
-
-struct ExampleSentence: Identifiable {
-    let id = UUID()
+struct ExampleSentence: Identifiable, Codable {
+    var id = UUID()
     let language: Language?
     let attributedString: AttributedString
 }
 
-struct DefinitionGroup: Identifiable {
-    let id = UUID()
+struct DefinitionGroup: Identifiable, Codable {
+    var id = UUID()
     let tags: [Tag]
     let definitions: [Definition]
 }
 
-struct Tag : Identifiable, Hashable {
+struct Tag : Identifiable, Hashable, Codable {
     let shortName: String
     let longName: String
     var id: String {
@@ -39,8 +36,8 @@ struct Tag : Identifiable, Hashable {
     }
 }
 
-struct Definition : Identifiable {
-    let id = UUID()
+struct Definition : Identifiable, Codable {
+    var id = UUID()
     let definition: String
     let exampleSentences: [ExampleSentence]
 }
@@ -60,7 +57,43 @@ fileprivate func generateFuriganaFor(word: String, furigana: String) throws -> A
     try AttributedString(markdown: "^[\(word)](CTRubyAnnotation: '\(furigana)')", including: \.coreText, options: .init(allowsExtendedAttributes: true))
 }
 
+class ParserNavigationDelegate: NSObject, WKNavigationDelegate, ObservableObject {
+    @Published var returnDefinitionGroups: [DefinitionGroup] = []
+    @Published var errorMessage: String = ""
+    var dictName: String?
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if dictName == nil {
+            errorMessage = "No dictionary name found"
+            return
+        }
+        do {
+            let jsString = try String(contentsOf: exportFolderOf(dictionary: dictName!).appending(path: "Script.js", directoryHint: .notDirectory))
+            webView.evaluateJavaScript(jsString) { retString, error in
+                if error == nil {
+                    self.errorMessage = error?.localizedDescription ?? ""
+                } else {
+                    do {
+                        self.returnDefinitionGroups = try JSONDecoder().decode([DefinitionGroup].self, from: (retString as? String)?.data(using: .utf16) ?? Data())
+                    } catch {
+                        self.errorMessage = error.localizedDescription
+                    }
+                }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+
 extension DatabaseWord {
+    func initiateHTMLParse(dictName: String, parserDelegate: ParserNavigationDelegate) {
+        let webView = WKWebView()
+        webView.navigationDelegate = parserDelegate
+        parserDelegate.dictName = dictName
+        webView.loadHTMLString(self.meaning, baseURL: nil)
+    }
+    
     func generateAttributedStringTitle() -> AttributedString {
         var wordAttributedString = AttributedString(word)
         // wordAttributedString.font = .custom("HiraMinProN-W3", size: 45)
@@ -74,6 +107,7 @@ extension DatabaseWord {
         return wordAttributedString
     }
     
+    @available(*, deprecated, renamed: "initiateHTMLParse", message: "HTML Parser Plugin")
     func parseDefinitionHTML(otherHTML: String? = nil) -> [DefinitionGroup] {
         let html = otherHTML ?? meaning
         var definitionGroupArrays: [DefinitionGroup] = []
