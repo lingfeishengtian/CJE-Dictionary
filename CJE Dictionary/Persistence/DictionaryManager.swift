@@ -18,11 +18,11 @@ enum DICTIONARY_NAMES: String, CaseIterable, Codable {
     func type() -> LanguageToLanguage {
         switch self {
         case .jitendex:
-            return (.JP, .EN)
+            return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .EN)
         case .shogakukanjcv3:
-            return (.JP, .CN)
+            return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .CN)
         case .suupaadaijirin:
-            return (.JP, .JP)
+            return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .JP)
         }
     }
 }

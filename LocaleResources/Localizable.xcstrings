@@ -40,6 +40,9 @@
         }
       }
     },
+    "Available Dictionaries" : {
+      "extractionState" : "manual"
+    },
     "Causative" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -85,7 +88,7 @@
         }
       }
     },
-    "CN" : {
+    "cn" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -329,7 +332,7 @@
         }
       }
     },
-    "EN" : {
+    "en" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -467,6 +470,29 @@
         }
       }
     },
+    "ja" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japanese"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日本語"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日语"
+          }
+        }
+      }
+    },
     "ja_kun" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -508,29 +534,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "JLPTレベル"
-          }
-        }
-      }
-    },
-    "JP" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Japanese"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日本語"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日语"
           }
         }
       }

@@ -85,12 +85,14 @@ class DatabaseWord: Hashable, Codable {
 struct CJE_Definition {
     // TODO: Change to something like Wort
     let word: DatabaseWord
-    let definitions: [(LanguageToLanguage, [DefinitionGroup])]
+    let definitions: [LanguageToLanguage: [DefinitionGroup]]
+    let queuedDefinitions: [LanguageToLanguage: DatabaseWord]
 }
 
 func lookupWord(word: DatabaseWord) -> CJE_Definition {
     // TODO: Allow user to select dictionaries
-    var finDefs: [(LanguageToLanguage, [DefinitionGroup])] = []
+    var finDefs: [LanguageToLanguage: [DefinitionGroup]] = [:]
+    var finQueuedDefinitions: [LanguageToLanguage: DatabaseWord] = [:]
     //title CONTAINS[c] "同:" OR title contains[c] "同："
     //    guard let wordDef = getDefinition(databasename: word.dict, for: word.id) else {
     //        return CJE_Definition(word: word, definitions: [])
@@ -98,7 +100,7 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
     print("Start lookup: \(Date.now.timeIntervalSince1970)")
     for dict in DICTIONARY_NAMES.allCases {
         var priority = -1
-        if dict.type().1 == .CN, let realm = cnRealm {
+        if dict.type().resultsLanguage == .CN, let realm = cnRealm {
             var potential: (LanguageToLanguage, [DefinitionGroup]) = (dict.type(), [])
             let readingsContainsKanji = word.readings.contains(where: { $0.containsKanjiCharacters })
             for reading in word.readings {
@@ -160,18 +162,18 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
             }
             
             if priority >= 1 {
-                finDefs.append(potential)
+                finDefs[potential.0] = potential.1
                 continue
             }
         }
         print("End lookup moji: \(Date.now.timeIntervalSince1970)")
         if dict == word.dict {
             print("Start parsing \(Date.now.timeIntervalSince1970)")
-            finDefs.append((dict.type(), word.parseDefinitionHTML()))
+            finQueuedDefinitions[dict.type()] = word
             print("End parsing \(Date.now.timeIntervalSince1970)")
             continue
         }
-        print("Start lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
+        print("Start lookup for \(dict.type().resultsLanguage.rawValue): \(Date.now.timeIntervalSince1970)")
         let wordList = eliminateSpecialCasesFromWordlist(wordList: word.readings)
         do {
             let res: [DatabaseWord] = __lookupWordHelper(wordList: wordList, dict: dict)
@@ -199,13 +201,13 @@ func lookupWord(word: DatabaseWord) -> CJE_Definition {
             })
             
             if finalList.count > 0 {
-                finDefs.append((dict.type(), word.parseDefinitionHTML(otherHTML: finalList.first?.0.meaning)))
+                finQueuedDefinitions[dict.type()] = finalList.first!.0
             }
         }
-        print("End lookup for \(dict.type().1.rawValue): \(Date.now.timeIntervalSince1970)")
+        print("End lookup for \(dict.type().resultsLanguage.rawValue): \(Date.now.timeIntervalSince1970)")
     }
     print("End lookup final: \(Date.now.timeIntervalSince1970)")
-    return CJE_Definition(word: word, definitions: finDefs)
+    return CJE_Definition(word: word, definitions: finDefs, queuedDefinitions: finQueuedDefinitions)
 }
 
 func eliminateSpecialCasesFromWordlist(wordList: [String]) -> [String] {

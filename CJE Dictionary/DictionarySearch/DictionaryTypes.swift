@@ -63,15 +63,19 @@ class WordBank: Object {
     @Persisted var dict: String?
 }
 
-typealias LanguageToLanguage = (Language, Language)
-enum Language: String, CaseIterable, Identifiable, Codable {
+struct LanguageToLanguage: Hashable {
+    let searchLanguage: Language
+    let resultsLanguage: Language
+}
+
+enum Language: String, CaseIterable, Hashable, Identifiable, Codable {
     var id: Language {
         self
     }
     
-    case CN = "CN"
-    case JP = "JP"
-    case EN = "EN"
+    case CN = "cn"
+    case JP = "ja"
+    case EN = "en"
 }
 
 let LOCAL_REALM_URL = exportFolderOf(dictionary: "jp-cn").appending(component: "jp-cn.realm", directoryHint: .notDirectory)

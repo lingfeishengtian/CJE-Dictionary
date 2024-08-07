@@ -13,15 +13,39 @@ import UIKit
 import WebKit
 
 struct ExampleSentence: Identifiable, Codable {
-    var id = UUID()
+    var id: String {
+        (language?.rawValue ?? "") + attributedString.description
+    }
     let language: Language?
     let attributedString: AttributedString
+    
+    private enum CodingKeys: String, CodingKey { case language = "language", attributedString = "sentence" }
+    
+    init(language: Language?, attributedString: AttributedString) {
+        self.language = language
+        self.attributedString = attributedString
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.language = try container.decodeIfPresent(Language.self, forKey: .language)
+        self.attributedString = try AttributedString(markdown: try container.decode(String.self, forKey: .attributedString), including: \.coreText, options: .init(allowsExtendedAttributes: true))
+    }
 }
 
 struct DefinitionGroup: Identifiable, Codable {
-    var id = UUID()
     let tags: [Tag]
     let definitions: [Definition]
+    var id: String {
+        var d = ""
+        for definition in definitions {
+            d.append(definition.id)
+        }
+        if d.isEmpty {
+            return "emptyDefinitions"
+        }
+        return d
+    }
 }
 
 struct Tag : Identifiable, Hashable, Codable {
@@ -36,8 +60,10 @@ struct Tag : Identifiable, Hashable, Codable {
     }
 }
 
-struct Definition : Identifiable, Codable {
-    var id = UUID()
+struct Definition : Codable {
+    var id: String {
+        return definition
+    }
     let definition: String
     let exampleSentences: [ExampleSentence]
 }
@@ -58,42 +84,72 @@ fileprivate func generateFuriganaFor(word: String, furigana: String) throws -> A
 }
 
 class ParserNavigationDelegate: NSObject, WKNavigationDelegate, ObservableObject {
-    @Published var returnDefinitionGroups: [DefinitionGroup] = []
+    @Published var showShowErrorMessage = false
     @Published var errorMessage: String = ""
-    var dictName: String?
+    @Published var showLoading = true
+    var cachedDefinitions: [LanguageToLanguage: [DefinitionGroup]] = [:]
+    var dbWord: DatabaseWord?
+    let webView: WKWebView
+    
+    override init() {
+        let configuration = WKWebViewConfiguration()
+        webView = WKWebView(frame: .zero, configuration: configuration)
+    }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        if dictName == nil {
+        var returnDefinitionGroups: [DefinitionGroup] = []
+        errorMessage = ""
+        if dbWord == nil {
             errorMessage = "No dictionary name found"
             return
         }
         do {
-            let jsString = try String(contentsOf: exportFolderOf(dictionary: dictName!).appending(path: "Script.js", directoryHint: .notDirectory))
+            let jsString = try String(contentsOf: exportFolderOf(dictionary: dbWord!.dict.rawValue).appending(path: "Script.js", directoryHint: .notDirectory))
             webView.evaluateJavaScript(jsString) { retString, error in
-                if error == nil {
+                if error != nil {
                     self.errorMessage = error?.localizedDescription ?? ""
                 } else {
                     do {
-                        self.returnDefinitionGroups = try JSONDecoder().decode([DefinitionGroup].self, from: (retString as? String)?.data(using: .utf16) ?? Data())
+                        returnDefinitionGroups = try JSONDecoder().decode([DefinitionGroup].self, from: (retString as? String)?.data(using: .utf16) ?? Data())
+                        
+                        self.cachedDefinitions[self.dbWord!.dict.type()] = returnDefinitionGroups
                     } catch {
                         self.errorMessage = error.localizedDescription
                     }
+                }
+                
+                self.showLoading = false
+                if !self.errorMessage.isEmpty {
+                    self.showShowErrorMessage = true
                 }
             }
         } catch {
             errorMessage = error.localizedDescription
         }
     }
+    
+    func doesLanguageExistInCache(lang: Language) -> Bool{
+        return cachedDefinitions.contains(where: { $0.key.resultsLanguage == lang })
+    }
+    
+    func getDefinitionGroupInCache(for lang: Language) -> [DefinitionGroup] {
+        if doesLanguageExistInCache(lang: lang) {
+            return cachedDefinitions.first(where: { $0.key.resultsLanguage == lang })?.value ?? []
+        } else {
+            return []
+        }
+    }
+    
+    func initiateHTMLParse(dbWord: DatabaseWord) {
+        //TODO: implement checking if dict exist logic here
+        self.showLoading = true
+        webView.navigationDelegate = self
+        self.dbWord = dbWord
+        webView.loadHTMLString(dbWord.meaning, baseURL: nil)
+    }
 }
 
 extension DatabaseWord {
-    func initiateHTMLParse(dictName: String, parserDelegate: ParserNavigationDelegate) {
-        let webView = WKWebView()
-        webView.navigationDelegate = parserDelegate
-        parserDelegate.dictName = dictName
-        webView.loadHTMLString(self.meaning, baseURL: nil)
-    }
-    
     func generateAttributedStringTitle() -> AttributedString {
         var wordAttributedString = AttributedString(word)
         // wordAttributedString.font = .custom("HiraMinProN-W3", size: 45)

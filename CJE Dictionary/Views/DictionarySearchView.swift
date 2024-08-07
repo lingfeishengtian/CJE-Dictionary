@@ -145,7 +145,7 @@ struct DefinitionNavigationLink: View {
     var body: some View {
         NavigationLink {
             NavigationLazyView(
-                DefinitionView(dbWord: name, definitions: lookupWord(word: name).definitions).onAppear {
+                DefinitionView(dbWord: name).onAppear {
                     HistoryArray.removeAll(where: { $0.readings == name.readings })
                     HistoryArray.insert(name, at: 0)
                 }

@@ -21,6 +21,10 @@ struct Settings: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    let additionalDictionaries = [
+        "suupaadaijirin": "https://github.com/lingfeishengtian/CJE-Dictionary/raw/main/CJE%20Dictionary/Dictionaries/suupaadaijirin.zip"
+    ]
+    
     @inlinable
     func getBoolDefaultsKey(key: String) -> Bool {
         (UserDefaults.standard.value(forKey: key) as? Bool) ?? false
@@ -32,6 +36,7 @@ struct Settings: View {
     }
     
     var body: some View {
+        let additionalDictionariesUninstalled: [String] = additionalDictionaries.filter({ !dictionaryManager.getCurrentlyInstalledDictionaries(filterPreinstalled: true).contains($0.key) }).keys.uniqueElements
         return Form{
             Section() {
                 VStack{
@@ -67,6 +72,31 @@ struct Settings: View {
                         }
                     }
                     Divider().padding([.bottom], 5)
+                    if additionalDictionariesUninstalled.count > 0 {
+                        HStack{
+                            Image(systemName: "book.fill")
+                            Text(LocalizedStringKey("Available Dictionaries"))
+                            Spacer()
+                        }
+                    }
+                    ForEach(additionalDictionariesUninstalled, id: \.self) { additionalDictOption in
+                        HStack {
+                            Text(additionalDictOption)
+                            Spacer()
+                            Button(action: {
+                                dictionaryManager.download(with: URL(string: additionalDictionaries[additionalDictOption]!)!, dictionaryName: additionalDictOption)
+                            }, label: {
+                                Image(systemName: "arrow.down.square")
+                                    .foregroundStyle(dictionaryManager.progress != 0 && dictionaryManager.progress != 1.0 ? .gray : .green)
+                                    .font(.title2)
+                            })
+                            .disabled(dictionaryManager.progress != 0 && dictionaryManager.progress != 1.0)
+                        }.padding([.bottom], 5)
+                    }
+                    if additionalDictionariesUninstalled.count > 0 {
+                        Divider().padding([.bottom], 5)
+                    }
+                    
                     HStack{
                         Image(systemName: "network")
                         Text(LocalizedStringKey("Install dictionary from the Web"))
