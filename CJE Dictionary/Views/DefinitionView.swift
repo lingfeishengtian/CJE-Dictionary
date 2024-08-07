@@ -11,7 +11,7 @@ fileprivate struct ExampleSentenceTextView: View {
     let attributedString: AttributedString
     let screenWidth: CGFloat
     let language: Language?
-
+    
     init(attributedString: AttributedString, screenWidth: CGFloat, language: Language?) {
         var flagEmoji: String {
             switch language {
@@ -96,26 +96,21 @@ struct DefinitionView: View {
         }
         return GeometryReader { geo in
             ScrollView {
-                VStack(alignment: (navigationDelegate.showLoading || navigationDelegate.showShowErrorMessage) ? .center : .leading) {
+                VStack(alignment: (navigationDelegate.showLoading) ? .center : .leading) {
                     RubyDisplay(attributedString: dbWord.generateAttributedStringTitle(), screenWidth: geo.maxWidth)
                         .padding([.top], 10)
+                    if conjugations.count > 1 {
+                        ConjugationViewer(conjugatedVerbs: conjugations)
+                            .frame(height: 38, alignment: .center)
+                            .padding([.leading, .trailing], 35)
+                            .padding([.bottom])
+                    }
                     if navigationDelegate.showLoading {
                         Spacer()
                         ProgressView()
                             .progressViewStyle(.circular)
                         Spacer()
-                    } else if navigationDelegate.showShowErrorMessage {
-                        Spacer()
-                        Text(navigationDelegate.errorMessage)
-                            .foregroundStyle(.red)
-                        Spacer()
                     } else {
-                        if conjugations.count > 1 {
-                            ConjugationViewer(conjugatedVerbs: conjugations)
-                                .frame(height: 38, alignment: .center)
-                                .padding([.leading, .trailing], 35)
-                                .padding([.bottom])
-                        }
                         Picker("Language", selection: $selectedLangugae) {
                             ForEach(Language.allCases) { lang in
                                 if self.navigationDelegate.doesLanguageExistInCache(lang: lang) || locateSelectedLanguageInQueue(language: lang) != nil {
@@ -126,8 +121,17 @@ struct DefinitionView: View {
                         .pickerStyle(.segmented)
                         .padding([.leading, .trailing], 20)
                         .onChange(of: selectedLangugae) { a, b in
+                            self.navigationDelegate.errorMessage = ""
                             if !self.navigationDelegate.doesLanguageExistInCache(lang: b) {
                                 navigationDelegate.initiateHTMLParse(dbWord: locateSelectedLanguageInQueue()!)
+                            }
+                        }
+                        if navigationDelegate.errorMessage.count > 0 {
+                            HStack {
+                                Spacer()
+                                Text(navigationDelegate.errorMessage)
+                                    .foregroundStyle(.red)
+                                Spacer()
                             }
                         }
                         ForEach(self.navigationDelegate.getDefinitionGroupInCache(for: selectedLangugae)) { definitionGroup in

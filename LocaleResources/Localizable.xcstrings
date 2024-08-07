@@ -41,7 +41,15 @@
       }
     },
     "Available Dictionaries" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードできる辞書"
+          }
+        }
+      }
     },
     "Causative" : {
       "extractionState" : "manual",
@@ -269,6 +277,12 @@
             "state" : "translated",
             "value" : "Type in the search bar to start searching (if the search bar isn't showing, swipe down). Purple indicators on the right of your result indicates the dictionary the search comes from (by default all searches first come from jitendex)."
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索欄に入力して検索できます（検索欄が見えなければ下へスクロールしてください）。紫色の丸はどの辞書から検索されましたと表示します（アプリは先ずjitendexで検索します）"
+          }
         }
       }
     },
@@ -288,13 +302,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zip files containing database files are supported. However, there is no current search support for any other dictionaries other than the ones preinstalled."
+            "value" : "Zip files containing database files are supported. You may have to restart the app after installing a new dictionary."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データベースがあるZIPファイルで辞書を取り込むことができますが、単語検索の機能は固定された辞書だけできます。"
+            "value" : "データベースがあるZIPファイルで辞書を取り込むことができます。インストールが終了するとアプリを再起動する必要があります。"
           }
         }
       }

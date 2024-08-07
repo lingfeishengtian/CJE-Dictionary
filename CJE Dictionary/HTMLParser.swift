@@ -84,7 +84,6 @@ fileprivate func generateFuriganaFor(word: String, furigana: String) throws -> A
 }
 
 class ParserNavigationDelegate: NSObject, WKNavigationDelegate, ObservableObject {
-    @Published var showShowErrorMessage = false
     @Published var errorMessage: String = ""
     @Published var showLoading = true
     var cachedDefinitions: [LanguageToLanguage: [DefinitionGroup]] = [:]
@@ -119,11 +118,9 @@ class ParserNavigationDelegate: NSObject, WKNavigationDelegate, ObservableObject
                 }
                 
                 self.showLoading = false
-                if !self.errorMessage.isEmpty {
-                    self.showShowErrorMessage = true
-                }
             }
         } catch {
+            self.showLoading = false
             errorMessage = error.localizedDescription
         }
     }
