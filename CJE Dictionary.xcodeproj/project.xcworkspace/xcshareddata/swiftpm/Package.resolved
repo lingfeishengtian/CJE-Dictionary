@@ -1,4 +1,5 @@
 {
+  "originHash" : "49a277088bde95c45039fd12459c00a0e0c73c11d00cd784d72821f6a9048821",
   "pins" : [
     {
       "identity" : "mecab-swift",
@@ -64,6 +65,15 @@
       }
     },
     {
+      "identity" : "swiftui-flow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tevelee/SwiftUI-Flow",
+      "state" : {
+        "revision" : "0f3e7f2706a42637448600b2b9d7041605042ba8",
+        "version" : "2.4.0"
+      }
+    },
+    {
       "identity" : "zipfoundation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/weichsel/ZIPFoundation",
@@ -73,5 +83,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

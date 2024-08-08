@@ -21,6 +21,7 @@
 		961242882B4250A0009D6E05 /* DictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242872B4250A0009D6E05 /* DictionaryManager.swift */; };
 		9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9612428E2B4262FE009D6E05 /* ZIPFoundation */; };
 		961242922B428091009D6E05 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 961242912B428091009D6E05 /* SwiftSoup */; };
+		9617EB7F2C64860C003A2CC3 /* Flow in Frameworks */ = {isa = PBXBuildFile; productRef = 9617EB7E2C64860C003A2CC3 /* Flow */; };
 		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
 		965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */; };
 		965318312C601CC10046D2C1 /* HanziToKanji.txt in Resources */ = {isa = PBXBuildFile; fileRef = 965318302C601CC10046D2C1 /* HanziToKanji.txt */; };
@@ -90,6 +91,7 @@
 				96AE7E402B48EEAE00862861 /* RubyAttribute in Frameworks */,
 				96AE7E372B4839EC00862861 /* CharacterFilter in Frameworks */,
 				964394B52B43A827009D377E /* SQLite in Frameworks */,
+				9617EB7F2C64860C003A2CC3 /* Flow in Frameworks */,
 				96AE7E522B4E278C00862861 /* Collections in Frameworks */,
 				96AE7E542B4E278D00862861 /* DequeModule in Frameworks */,
 				961242732B4130E6009D6E05 /* RealmSwift in Frameworks */,
@@ -261,6 +263,7 @@
 				96AE7E512B4E278C00862861 /* Collections */,
 				96AE7E532B4E278D00862861 /* DequeModule */,
 				96AE7E552B4E278D00862861 /* OrderedCollections */,
+				9617EB7E2C64860C003A2CC3 /* Flow */,
 			);
 			productName = "CJE Dictionary";
 			productReference = 9612425D2B412A46009D6E05 /* CJE Dictionary.app */;
@@ -300,6 +303,7 @@
 				96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 				96AE7E3E2B48EEAE00862861 /* XCRemoteSwiftPackageReference "RubyAttribute" */,
 				96AE7E502B4E278C00862861 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				9617EB7D2C64860C003A2CC3 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
 			);
 			productRefGroup = 9612425E2B412A46009D6E05 /* Products */;
 			projectDirPath = "";
@@ -588,6 +592,14 @@
 				minimumVersion = 2.6.1;
 			};
 		};
+		9617EB7D2C64860C003A2CC3 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tevelee/SwiftUI-Flow";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
 		964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
@@ -642,6 +654,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 961242902B428091009D6E05 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		9617EB7E2C64860C003A2CC3 /* Flow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9617EB7D2C64860C003A2CC3 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */;
+			productName = Flow;
 		};
 		964394B42B43A827009D377E /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;

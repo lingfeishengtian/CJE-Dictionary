@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Flow
 
 fileprivate struct ExampleSentenceTextView: View {
     let attributedString: AttributedString
@@ -50,32 +51,19 @@ struct NavigationLazyView<Content: View>: View {
 
 struct DefinitionView: View {
     let dbWord: DatabaseWord
-    private let queue: [LanguageToLanguage: DatabaseWord]
-    let cached: [LanguageToLanguage: [DefinitionGroup]]
     @State private var conjugations: [ConjugatedVerb]
-    @State var selectedLangugae: Language
+    @State var selectedLanguage: Language
     @Environment(\.colorScheme) var colorScheme
     private let kanjiInfos: [KanjiInfo]
-    @StateObject var navigationDelegate = ParserNavigationDelegate()
+    @StateObject var navigationDelegate: ParserNavigationDelegate
     
     init(dbWord: DatabaseWord) {
         self.dbWord = dbWord
-        let lookupResults = lookupWord(word: dbWord)
-        self.cached = lookupResults.definitions
-        self.queue = lookupResults.queuedDefinitions
-        
-        var tmpLang = queue[LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .EN)] != nil ? .EN : queue.first?.key.resultsLanguage
-        if tmpLang == nil {
-            tmpLang = lookupResults.definitions.first!.key.resultsLanguage
-        }
-        self.selectedLangugae = tmpLang!
-        
+        let parserObject = ParserNavigationDelegate(databaseWord: dbWord)
+        _navigationDelegate = StateObject(wrappedValue: parserObject)
+        self.selectedLanguage = parserObject.getResultingLanguages().first!
         self.conjugations = []
         self.kanjiInfos = getKanjiInfo(for: dbWord.readings)
-    }
-    
-    func locateSelectedLanguageInQueue(language: Language? = nil) -> DatabaseWord? {
-        return queue.first(where: { $0.key.resultsLanguage == (language ?? selectedLangugae) })?.value
     }
     
     var body: some View {
@@ -111,19 +99,19 @@ struct DefinitionView: View {
                             .progressViewStyle(.circular)
                         Spacer()
                     } else {
-                        Picker("Language", selection: $selectedLangugae) {
+                        Picker("Language", selection: $selectedLanguage) {
                             ForEach(Language.allCases) { lang in
-                                if self.navigationDelegate.doesLanguageExistInCache(lang: lang) || locateSelectedLanguageInQueue(language: lang) != nil {
+                                if navigationDelegate.getResultingLanguages().contains(lang) {
                                     Text(LocalizedStringKey(lang.rawValue)).tag(lang)
                                 }
                             }
                         }
                         .pickerStyle(.segmented)
                         .padding([.leading, .trailing], 20)
-                        .onChange(of: selectedLangugae) { a, b in
+                        .onChange(of: selectedLanguage) { a, b in
                             self.navigationDelegate.errorMessage = ""
                             if !self.navigationDelegate.doesLanguageExistInCache(lang: b) {
-                                navigationDelegate.initiateHTMLParse(dbWord: locateSelectedLanguageInQueue()!)
+                                navigationDelegate.initiateHTMLParse(language: b)
                             }
                         }
                         if navigationDelegate.errorMessage.count > 0 {
@@ -134,17 +122,9 @@ struct DefinitionView: View {
                                 Spacer()
                             }
                         }
-                        ForEach(self.navigationDelegate.getDefinitionGroupInCache(for: selectedLangugae)) { definitionGroup in
-                            HStack {
-                                ForEach(definitionGroup.tags) { tag in
-                                    Text(tag.longName)
-                                        .font(Font.caption2)
-                                        .padding(7)
-                                        .background(colorScheme == .dark ? Color(.gray).brightness(-0.3) : Color(.gray).brightness(0.3))
-                                        .clipShape(.rect(cornerRadius: 16))
-                                        .padding([.trailing], 2)
-                                }
-                            }.padding([.leading, .trailing], 20)
+                        ForEach(self.navigationDelegate.getDefinitionGroupInCache(for: selectedLanguage)) { definitionGroup in
+                            TagList(tags: definitionGroup.tags)
+                                .padding([.leading, .trailing], 20)
                             if definitionGroup.tags.isEmpty {
                                 Spacer(minLength: 7)
                             }
@@ -153,12 +133,7 @@ struct DefinitionView: View {
                                 Text("\(index + 1). \(definition.definition)")
                                     .padding([.bottom], 5)
                                     .contentMargins(10)
-                                // .background(Color(.green))
-                                // .clipShape(.rect(cornerRadius: 16))
                                     .padding([.leading, .trailing], 20)
-                                //                        if !definition.exampleSentences.isEmpty {
-                                //                            Spacer(minLength: 20)
-                                //                        }
                                 ForEach(definition.exampleSentences) { elem in
                                     ExampleSentenceTextView(attributedString: elem.attributedString, screenWidth: geo.maxWidth, language: elem.language)
                                         .padding([.leading, .trailing], 10)
@@ -175,12 +150,6 @@ struct DefinitionView: View {
                         }
                     }
                 }
-            }
-        }.onAppear() {
-            self.navigationDelegate.cachedDefinitions = cached
-            let getDictWord = locateSelectedLanguageInQueue()
-            if getDictWord != nil {
-                navigationDelegate.initiateHTMLParse(dbWord: getDictWord!)
             }
         }
     }
@@ -219,5 +188,82 @@ struct KanjiNavigationListElement: View {
                     .font(.caption2)
             }
         })
+    }
+}
+
+struct FlowLayout: Layout {
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+        
+        var totalHeight: CGFloat = 0
+        var totalWidth: CGFloat = 0
+        
+        var lineWidth: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        
+        for size in sizes {
+            if lineWidth + size.width > proposal.width ?? 0 {
+                totalHeight += lineHeight
+                lineWidth = size.width
+                lineHeight = size.height
+            } else {
+                lineWidth += size.width
+                lineHeight = max(lineHeight, size.height)
+            }
+            
+            totalWidth = max(totalWidth, lineWidth)
+        }
+        
+        totalHeight += lineHeight
+        
+        return .init(width: totalWidth, height: totalHeight)
+    }
+    
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+        
+        var lineX = bounds.minX
+        var lineY = bounds.minY
+        var lineHeight: CGFloat = 0
+        
+        for index in subviews.indices {
+            if lineX + sizes[index].width > (proposal.width ?? 0) {
+                lineY += lineHeight
+                lineHeight = 0
+                lineX = bounds.minX
+            }
+            
+            subviews[index].place(
+                at: .init(
+                    x: lineX + sizes[index].width / 2,
+                    y: lineY + sizes[index].height / 2
+                ),
+                anchor: .center,
+                proposal: ProposedViewSize(sizes[index])
+            )
+            
+            lineHeight = max(lineHeight, sizes[index].height)
+            lineX += sizes[index].width
+        }
+    }
+}
+
+struct TagList: View {
+    @Environment(\.colorScheme) var colorScheme
+    let tags: [Tag]
+    var body: some View {
+        HFlow(spacing: 5) {
+            ForEach(tags) { tag in
+                VStack {
+                    Text(tag.longName)
+                        .font(Font.caption2)
+                        .padding(7)
+                        .lineLimit(nil)
+                }
+                .background(colorScheme == .dark ? Color(.gray).brightness(-0.3) : Color(.gray).brightness(0.3))
+                .clipShape(.rect(cornerRadius: 13))
+            }
+        }
     }
 }

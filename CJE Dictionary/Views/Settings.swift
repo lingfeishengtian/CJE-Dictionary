@@ -89,6 +89,7 @@ struct Settings: View {
                                 Image(systemName: "arrow.down.square")
                                     .foregroundStyle(dictionaryManager.progress != 0 && dictionaryManager.progress != 1.0 ? .gray : .green)
                                     .font(.title2)
+                                    .buttonStyle(.plain)
                             })
                             .disabled(dictionaryManager.progress != 0 && dictionaryManager.progress != 1.0)
                         }.padding([.bottom], 5)

@@ -73,6 +73,14 @@ enum Language: String, CaseIterable, Hashable, Identifiable, Codable {
         self
     }
     
+    var ordered: Int {
+        switch (self) {
+        case .EN: 1
+        case .CN: 2
+        case .JP: 3
+        }
+    }
+    
     case CN = "cn"
     case JP = "ja"
     case EN = "en"
