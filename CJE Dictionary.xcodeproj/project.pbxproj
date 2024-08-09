@@ -63,7 +63,7 @@
 		961242772B4147B9009D6E05 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		961242792B414A53009D6E05 /* SearchDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDictionary.swift; sourceTree = "<group>"; };
 		961242872B4250A0009D6E05 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
-		96444DD12C65A4BF003C7015 /* suupaadaijirin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = suupaadaijirin.zip; sourceTree = "<group>"; };
+		96444DD32C65A8CF003C7015 /* suupaadaijirin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = suupaadaijirin.zip; sourceTree = "<group>"; };
 		965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictionarySearch.swift; sourceTree = "<group>"; };
 		965318302C601CC10046D2C1 /* HanziToKanji.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = HanziToKanji.txt; sourceTree = "<group>"; };
 		965318332C6072230046D2C1 /* KanjiDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinition.swift; sourceTree = "<group>"; };
@@ -172,7 +172,7 @@
 			children = (
 				960658492C61C7670006DC4C /* jp-cn.realm.zip */,
 				967670CA2C632DCE008CC50E /* jitendexDB.zip */,
-				96444DD12C65A4BF003C7015 /* suupaadaijirin.zip */,
+				96444DD32C65A8CF003C7015 /* suupaadaijirin.zip */,
 				967670CC2C63352B008CC50E /* Shogakukanjcv3DB.zip */,
 				9606584B2C62056E0006DC4C /* KANJIDIC2_cleaned.db */,
 				965318302C601CC10046D2C1 /* HanziToKanji.txt */,
