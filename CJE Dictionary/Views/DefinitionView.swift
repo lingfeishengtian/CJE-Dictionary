@@ -108,7 +108,7 @@ struct DefinitionView: View {
                         }
                         .pickerStyle(.segmented)
                         .padding([.leading, .trailing], 20)
-                        .onChange(of: selectedLanguage) { a, b in
+                        .onChange(of: selectedLanguage) { b in
                             self.navigationDelegate.errorMessage = ""
                             if !self.navigationDelegate.doesLanguageExistInCache(lang: b) {
                                 navigationDelegate.initiateHTMLParse(language: b)
@@ -132,7 +132,6 @@ struct DefinitionView: View {
                                 let definition = definitionGroup.definitions[index]
                                 Text("\(index + 1). \(definition.definition)")
                                     .padding([.bottom], 5)
-                                    .contentMargins(10)
                                     .padding([.leading, .trailing], 20)
                                 ForEach(definition.exampleSentences) { elem in
                                     ExampleSentenceTextView(attributedString: elem.attributedString, screenWidth: geo.maxWidth, language: elem.language)
