@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftSoup
 import RubyAttribute
 import CoreText
 import UIKit

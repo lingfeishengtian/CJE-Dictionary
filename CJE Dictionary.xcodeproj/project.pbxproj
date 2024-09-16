@@ -20,7 +20,6 @@
 		9612427A2B414A53009D6E05 /* SearchDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242792B414A53009D6E05 /* SearchDictionary.swift */; };
 		961242882B4250A0009D6E05 /* DictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242872B4250A0009D6E05 /* DictionaryManager.swift */; };
 		9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9612428E2B4262FE009D6E05 /* ZIPFoundation */; };
-		961242922B428091009D6E05 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 961242912B428091009D6E05 /* SwiftSoup */; };
 		9617EB7F2C64860C003A2CC3 /* Flow in Frameworks */ = {isa = PBXBuildFile; productRef = 9617EB7E2C64860C003A2CC3 /* Flow */; };
 		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
 		965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */; };
@@ -95,7 +94,6 @@
 				96AE7E522B4E278C00862861 /* Collections in Frameworks */,
 				96AE7E542B4E278D00862861 /* DequeModule in Frameworks */,
 				961242732B4130E6009D6E05 /* RealmSwift in Frameworks */,
-				961242922B428091009D6E05 /* SwiftSoup in Frameworks */,
 				96AE7E3B2B4839EC00862861 /* Mecab-Swift in Frameworks */,
 				961242712B4130E6009D6E05 /* Realm in Frameworks */,
 				9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */,
@@ -253,7 +251,6 @@
 				961242702B4130E6009D6E05 /* Realm */,
 				961242722B4130E6009D6E05 /* RealmSwift */,
 				9612428E2B4262FE009D6E05 /* ZIPFoundation */,
-				961242912B428091009D6E05 /* SwiftSoup */,
 				964394B42B43A827009D377E /* SQLite */,
 				96AE7E362B4839EC00862861 /* CharacterFilter */,
 				96AE7E382B4839EC00862861 /* IPADic */,
@@ -298,7 +295,6 @@
 			packageReferences = (
 				9612426F2B4130E6009D6E05 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				9612428D2B4262FE009D6E05 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				961242902B428091009D6E05 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */,
 				96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 				96AE7E3E2B48EEAE00862861 /* XCRemoteSwiftPackageReference "RubyAttribute" */,
@@ -584,14 +580,6 @@
 				minimumVersion = 0.9.17;
 			};
 		};
-		961242902B428091009D6E05 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/scinfu/SwiftSoup";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.1;
-			};
-		};
 		9617EB7D2C64860C003A2CC3 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tevelee/SwiftUI-Flow";
@@ -649,11 +637,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9612428D2B4262FE009D6E05 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
-		};
-		961242912B428091009D6E05 /* SwiftSoup */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 961242902B428091009D6E05 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
-			productName = SwiftSoup;
 		};
 		9617EB7E2C64860C003A2CC3 /* Flow */ = {
 			isa = XCSwiftPackageProductDependency;
