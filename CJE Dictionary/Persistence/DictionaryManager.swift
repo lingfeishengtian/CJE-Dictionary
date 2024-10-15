@@ -333,6 +333,7 @@ enum DictionaryParserError: Error {
 }
 
 let DatabaseConnections: [DICTIONARY_NAMES:Connection] = {
+    print("getting connections")
     var ret: [DICTIONARY_NAMES:Connection] = [:]
     for dictName in DICTIONARY_NAMES.allCases {
         do {

@@ -11,6 +11,10 @@ enum KanjiSettingsKeys: String {
     case showIconText = "kanjiSettingsShowIconText"
 }
 
+enum DictionaryStyleSettingsKeys: String {
+    case ListStyleCondensed = "dictionaryStyleListStyleCondensed"
+}
+
 struct Settings: View {
     @StateObject var dictionaryManager = DictionaryManager(sessions: 1)
     @State var websiteURLString: String = ""
@@ -169,6 +173,19 @@ struct Settings: View {
                 }
             } header: {
                 Text(LocalizedStringKey("KANJI DEFINITIONS"))
+            }
+            Section() {
+                HStack {
+                    Toggle(isOn: Binding(get: {
+                        getBoolDefaultsKey(key: DictionaryStyleSettingsKeys.ListStyleCondensed.rawValue)
+                    }, set: { val in
+                        setDefaultsKey(key: DictionaryStyleSettingsKeys.ListStyleCondensed.rawValue, val: val)
+                    }), label: {
+                        Text(LocalizedStringKey(DictionaryStyleSettingsKeys.ListStyleCondensed.rawValue))
+                    })
+                }
+            } header: {
+                Text(LocalizedStringKey("DICTIONARY SEARCH"))
             }
         }.navigationTitle(LocalizedStringKey("settings"))
             .alert(LocalizedStringKey(errorMessageKey), isPresented: $showError) {

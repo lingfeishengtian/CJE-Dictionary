@@ -269,6 +269,17 @@
         }
       }
     },
+    "DICTIONARY SEARCH" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーチリスト"
+          }
+        }
+      }
+    },
     "dictionary_search_help" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -282,6 +293,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索欄に入力して検索できます（検索欄が見えなければ下へスクロールしてください）。紫色の丸はどの辞書から検索されましたと表示します（アプリは先ずjitendexで検索します）"
+          }
+        }
+      }
+    },
+    "dictionaryStyleListStyleCondensed" : {
+      "comment" : "dw bout the naming",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wide Search Results"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最大間隔"
           }
         }
       }
@@ -853,6 +882,9 @@
           }
         }
       }
+    },
+    "search" : {
+
     },
     "settings" : {
       "extractionState" : "manual",

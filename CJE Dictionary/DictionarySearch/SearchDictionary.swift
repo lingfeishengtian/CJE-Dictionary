@@ -250,7 +250,6 @@ class SearchResultsEnumerator: ObservableObject {
     
     func initSQueryForDict(dict: DICTIONARY_NAMES, sQuery: RowIterator) {
         sQueryIterators.append((dict, sQuery))
-        print("initializing dict: \(dict.rawValue) at \(Date.now.timeIntervalSince1970)")
         addToLazyArray()
     }
     
@@ -260,6 +259,7 @@ class SearchResultsEnumerator: ObservableObject {
         for _ in 1...pollingLimit {
             let statsTimeStart = Date.now
             do {
+//                lazyArray.append(DatabaseWord(id: Int.random(in: 1..<100000), dict: .jitendex, word: String(Int.random(in: 1..<100000)), readingsString: "", meaning: ""))
                 if sQueryIterators.isEmpty {
                     return
                 }
@@ -274,11 +274,10 @@ class SearchResultsEnumerator: ObservableObject {
                                            word: try! row.get(Expression<String>("wort")),
                                            readingsString: try! row.get(Expression<String>("w")),
                                            meaning: try! row.get(Expression<String>("m")))
-                let msToRun = (Date.now.timeIntervalSince(statsTimeStart) * 1000 * 1000).rounded() / 1000
-                if msToRun > 1 {
-                    print("TOO LONG")
-                }
-                print("\(msToRun) ms to add word \(newWord.word)")
+//                                           readingsString: "",
+//                                           meaning: "")
+                
+//                print("\(msToRun) ms to add word \(newWord.word)")
                 lazyArray.append(newWord)
                 objectWillChange.send()
             } catch {
@@ -286,8 +285,8 @@ class SearchResultsEnumerator: ObservableObject {
                 sQueryIterators.removeFirst()
             }
         }
-        print("Exiting adding to lazy array \(Date.now.timeIntervalSince1970)")
     }
+
 }
 
 var sQuery: AnySequence<Row>? = nil
@@ -415,6 +414,30 @@ fileprivate func __generateSQLiteQuery(for searchString: String, exact: Bool = f
     return finalQueries
 }
 
+fileprivate func __generateSingleSQLiteQuery(for searchString: String, exact: Bool = false) -> String {
+    let stringTranformations = Set([
+        searchString.applyingTransform(.hiraganaToKatakana, reverse: false),
+        searchString.applyingTransform(.hiraganaToKatakana, reverse: true),
+        searchString.applyingTransform(.latinToHiragana, reverse: false),
+        searchString.applyingTransform(.latinToKatakana, reverse: false)
+    ]).sorted(by: { $0?.levenshteinDistanceScore(to: searchString) ?? 0 > $1?.levenshteinDistanceScore(to: searchString) ?? 0 })
+    print(stringTranformations)
+    
+    var finalQueries = "SELECT * FROM wordIndex INNER JOIN \"word\" USING (\"id\") WHERE"
+//    var finalQueries = "SELECT * FROM wordIndex WHERE"
+
+    for transformation in stringTranformations {
+        guard let string = transformation else {
+            continue
+        }
+        // TODO: Convert to bindings
+        finalQueries.append(" wort LIKE '\(string + (exact ? "" : "%"))' OR ")
+    }
+        
+    let endq = finalQueries.endIndex
+    return String(finalQueries[..<finalQueries.index(endq, offsetBy: -4)])
+}
+
 let DEBUG_DATABASE = 0
 
 func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> RowIterator? {
@@ -436,16 +459,18 @@ func searchDatabaseExact(databaseName dictName: DICTIONARY_NAMES, for searchStri
 func searchDatabaseGeneral(databaseName dictName: DICTIONARY_NAMES, for searchString: String) -> [RowIterator?] {
     do {
         let db = DatabaseConnections[dictName]
-        let queries = __generateSQLiteQuery(for: searchString, exact: false).sorted(by: { $0.levenshteinDistanceScore(to: searchString) > $1.levenshteinDistanceScore(to: searchString) })
+
+        let queries = __generateSingleSQLiteQuery(for: searchString, exact: false)
+            //.sorted(by: { $0.levenshteinDistanceScore(to: searchString) > $1.levenshteinDistanceScore(to: searchString) })
         var iterators: [RowIterator?] = []
-        for query in queries {
+            //for query in queries {
             if DEBUG_DATABASE != 0 {
-                try db?.prepare("explain query plan " + query).forEach { a in
+                try db?.prepare("explain query plan " + queries).forEach { a in
                     print(a)
                 }
             }
-            iterators.append(try db?.prepareRowIterator(query))
-        }
+            iterators.append(try db?.prepareRowIterator(queries))
+       // }
         return iterators
     } catch {
         return []

@@ -63,8 +63,11 @@ struct DictionarySearchView: View {
         let kanjiInfo = (searchText.count == 1) ? getKanjiInfo(for: [convertHanziStringToKanji(str: searchText)]).first : nil
         NavigationStack {
             VStack {
-                if HistoryArray.isEmpty && searchResults.lazyArray.isEmpty && searchResults.partialSearch.isEmpty && kanjiInfo == nil
-                {
+                TextField(text: searchStringBinding, prompt: Text("search")) {}.padding()
+                    .background(Color.gray.opacity(0.25))
+                    .cornerRadius(15)
+                    .padding([.leading, .trailing])
+                if HistoryArray.isEmpty && searchResults.lazyArray.isEmpty && searchResults.partialSearch.isEmpty && kanjiInfo == nil {
                     Text("Welcome to CJE Dictionary")
                         .font(.largeTitle)
                         .fontWeight(.bold)
@@ -96,10 +99,9 @@ struct DictionarySearchView: View {
                                 DefinitionNavigationLink(name: name)
                             }
                         }
-                    }.id(searchResults.searchEnumerator?.id ?? UUID())
+                    }.adaptiveListStyle()
                 }
             }
-            .searchable(text: searchStringBinding)
             .navigationTitle(LocalizedStringKey("dictionary"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
@@ -163,6 +165,27 @@ struct DefinitionNavigationLink: View {
                 }
             }
         }
+    }
+}
+
+struct AdaptiveListStyle: ViewModifier {
+    func getCondensed() -> Bool {
+        return ((UserDefaults.standard.value(forKey: DictionaryStyleSettingsKeys.ListStyleCondensed.rawValue) as? Bool) ?? false)
+    }
+    
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if (!getCondensed()) {
+            content.listStyle(.plain)
+        } else {
+            content.listStyle(.insetGrouped)
+        }
+    }
+}
+
+extension List {
+    func adaptiveListStyle() -> some View {
+        modifier(AdaptiveListStyle())
     }
 }
 
