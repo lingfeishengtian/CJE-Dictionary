@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Flow
 
 fileprivate struct ExampleSentenceTextView: View {
     let attributedString: AttributedString

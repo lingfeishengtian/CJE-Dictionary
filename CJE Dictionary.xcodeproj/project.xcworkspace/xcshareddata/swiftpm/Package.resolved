@@ -1,5 +1,5 @@
 {
-  "originHash" : "1af14bb9d30e330678a5b2163d4af07f2a915769b406cca3f473d3ef8bb3cfc6",
+  "originHash" : "17138fa06b7ef3de2b1bc5b047a2cd9cab9c6b4fc568bc4c77faef8812bb6911",
   "pins" : [
     {
       "identity" : "mecab-swift",
@@ -29,15 +29,6 @@
       }
     },
     {
-      "identity" : "rubyattribute",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ApolloZhu/RubyAttribute",
-      "state" : {
-        "branch" : "main",
-        "revision" : "144553676f66a3cd2847f8f7470f419ec69ea3bd"
-      }
-    },
-    {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift",
@@ -53,15 +44,6 @@
       "state" : {
         "revision" : "d029d9d39c87bed85b1c50adee7c41795261a192",
         "version" : "1.0.6"
-      }
-    },
-    {
-      "identity" : "swiftui-flow",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tevelee/SwiftUI-Flow",
-      "state" : {
-        "revision" : "0f3e7f2706a42637448600b2b9d7041605042ba8",
-        "version" : "2.4.0"
       }
     },
     {

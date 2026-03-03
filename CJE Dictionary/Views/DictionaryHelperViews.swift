@@ -33,13 +33,13 @@ struct RubyDisplay: UIViewRepresentable {
     }
 
     public func updateUIView(_ textView: TextView, context: UIViewRepresentableContext<RubyDisplay>) {
-        let p =  try! NSMutableAttributedString(attributedString, including: \.coreText)
+//        let p =  try! NSMutableAttributedString(attributedString, including: \.coreText)
         let pF = try! NSMutableAttributedString(attributedString, including: \.uiKit)
-        pF.enumerateAttributes(in: NSMakeRange(0, p.length), using: { attributes, range, _ in
-            p.addAttributes(attributes, range: range)
-        })
+//        pF.enumerateAttributes(in: NSMakeRange(0, p.length), using: { attributes, range, _ in
+//            p.addAttributes(attributes, range: range)
+//        })
         
-        textView.attributedText = p
+//        textView.attributedText = p
         textView.invalidateIntrinsicContentSize()
         textView.textColor = .label
         textView.maxLayoutWidth = screenWidth

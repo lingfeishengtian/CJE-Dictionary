@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import RubyAttribute
 import CoreText
 import UIKit
 import WebKit
@@ -28,7 +27,9 @@ struct ExampleSentence: Identifiable, Codable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.language = try container.decodeIfPresent(Language.self, forKey: .language)
-        self.attributedString = try AttributedString(markdown: try container.decode(String.self, forKey: .attributedString), including: \.coreText, options: .init(allowsExtendedAttributes: true))
+        // Replace the RubyAttribute keypath with a simple markdown parsing approach
+        let markdownString = try container.decode(String.self, forKey: .attributedString)
+        self.attributedString = try AttributedString(markdown: markdownString, options: .init(allowsExtendedAttributes: true))
     }
 }
 

@@ -1,0 +1,88 @@
+{
+  "workbench.colorCustomizations": {
+  "[One Dark Pro]": {
+
+    // Core editor
+    "editor.background": "#000000",
+    "editorGutter.background": "#000000",
+    "editorLineNumber.background": "#000000",
+
+    // Sidebar & panels
+    "sideBar.background": "#000000",
+    "sideBarSectionHeader.background": "#000000",
+    "panel.background": "#000000",
+
+    // Activity bar
+    "activityBar.background": "#000000",
+
+    // Activity bar indicator
+    "activityBar.activeBorder": "#000000",
+    "activityBar.activeFocusBorder": "#000000",
+    "activityBar.border": "#000000",
+
+    // Tab highlight line (this is the big one)
+    "tab.activeBorderTop": "#000000",
+    "tab.activeBorder": "#000000",
+    "tab.unfocusedActiveBorder": "#000000",
+    "tab.unfocusedActiveBorderTop": "#000000",
+
+    // If there’s still a thin separator
+    "editorGroup.border": "#000000",
+    "editorGroupHeader.border": "#000000",
+
+    // Sometimes needed
+    "sideBar.border": "#000000",
+
+    // Status bar
+    "statusBar.background": "#000000",
+    "statusBar.noFolderBackground": "#000000",
+    "statusBar.debuggingBackground": "#000000",
+
+    // Title bar
+    "titleBar.activeBackground": "#000000",
+    "titleBar.inactiveBackground": "#000000",
+
+    // Tabs
+    "tab.activeBackground": "#000000",
+    "tab.inactiveBackground": "#000000",
+    "tab.unfocusedActiveBackground": "#000000",
+    "tab.border": "#000000",
+
+    // Dropdowns / menus
+    "dropdown.background": "#000000",
+    "menu.background": "#000000",
+
+    // Command palette
+    "quickInput.background": "#000000",
+
+    // Notifications
+    "notifications.background": "#000000",
+
+    // Terminal
+    "terminal.background": "#000000",
+
+    // Command Center (top search bar area)
+    "commandCenter.background": "#000000",
+    "commandCenter.border": "#000000",
+    "commandCenter.inactiveBackground": "#000000",
+
+    // Title bar edges
+    "titleBar.border": "#000000",
+    "window.activeBorder": "#000000",
+    "window.inactiveBorder": "#000000",
+
+    "editorGroupHeader.tabsBackground": "#000000",
+  }
+},
+"editor.gotoLocation.alternativeDeclarationCommand": "editor.action.revealDefinition",
+"editor.gotoLocation.alternativeDefinitionCommand": "editor.action.revealDefinition",
+"editor.gotoLocation.alternativeTypeDefinitionCommand": "editor.action.revealDefinition",
+"editor.selectionHighlight": false,
+"files.autoSave": "onFocusChange",
+"editor.suggest.snippetsPreventQuickSuggestions": false,
+"editor.quickSuggestions": {
+  "other": "on",
+  "comments": "off",
+  "strings": "on"
+}
+}

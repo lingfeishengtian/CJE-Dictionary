@@ -13,6 +13,7 @@ enum DICTIONARY_NAMES: String, CaseIterable, Codable {
     case jitendex = "jitendexDB"
     case shogakukanjcv3 = "Shogakukanjcv3DB"
     case suupaadaijirin = "suupaadaijirin"
+    case mdictOptimized = "mdictOptimized"
     
     // from $0 to $1
     func type() -> LanguageToLanguage {
@@ -23,6 +24,9 @@ enum DICTIONARY_NAMES: String, CaseIterable, Codable {
             return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .CN)
         case .suupaadaijirin:
             return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .JP)
+        case .mdictOptimized:
+            // This will be determined at runtime based on the actual dictionary
+            return LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .EN)
         }
     }
 }
