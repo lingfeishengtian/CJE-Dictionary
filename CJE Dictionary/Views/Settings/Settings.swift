@@ -34,6 +34,7 @@ struct Settings: View {
 
             AvailableDictionariesSection(
                 items: sortedAvailableItems,
+                installedIDs: Set(coordinator.installedRecords.keys),
                 onInstall: { id in
                     Task { await viewModel.install(id) }
                 }

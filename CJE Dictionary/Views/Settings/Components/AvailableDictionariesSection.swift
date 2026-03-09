@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AvailableDictionariesSection: View {
     let items: [DictionaryManifestItem]
+    let installedIDs: Set<DictionaryID>
     let onInstall: (DictionaryID) -> Void
 
     var body: some View {
@@ -15,13 +16,18 @@ struct AvailableDictionariesSection: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Button {
-                        onInstall(item.id)
-                    } label: {
-                        Image(systemName: "arrow.down.circle.fill")
-                            .foregroundStyle(.green)
+                    if installedIDs.contains(item.id) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Button {
+                            onInstall(item.id)
+                        } label: {
+                            Image(systemName: "arrow.down.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
