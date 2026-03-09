@@ -15,7 +15,7 @@ struct SearchResultsView: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(Array(streamManager.results.enumerated()), id: \.element) { index, key in
-                    NavigationLink(destination: DefinitionPage(key: key)) {
+                    NavigationLink(destination: DefinitionPage(key: key, dictionary: streamManager.dictionary(for: key))) {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(key.keyText)
@@ -31,9 +31,12 @@ struct SearchResultsView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 6)
                         .padding(.horizontal)
+                        .contentShape(Rectangle())
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .buttonStyle(.plain)
                     .onAppear {
                         // load next page when last cell appears

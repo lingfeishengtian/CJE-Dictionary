@@ -1,5 +1,5 @@
 {
-  "originHash" : "17138fa06b7ef3de2b1bc5b047a2cd9cab9c6b4fc568bc4c77faef8812bb6911",
+  "originHash" : "93dbe54c1489be767c55e458159a2ef3416e5b53f5d359c776a55f06a8e69065",
   "pins" : [
     {
       "identity" : "mecab-swift",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift",
       "state" : {
-        "revision" : "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
-        "version" : "0.14.1"
+        "revision" : "0c08856385fe24f7b76d8c51842d78a196e8e817",
+        "version" : "0.15.5"
       }
     },
     {

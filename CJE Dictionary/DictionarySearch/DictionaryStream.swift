@@ -80,41 +80,31 @@ struct DictionaryStream: DictionaryStreamProtocol {
 }
 
 /// Composite stream that merges multiple streams and yields results until all sources are exhausted.
-/// Results are emitted in source-order round robin and deduplicated by SearchResultKey.
+/// Results are emitted in source order by exhausting each stream before moving to the next,
+/// and deduplicated by SearchResultKey.
 struct CombinedDictionaryStream: DictionaryStreamProtocol {
-    private var streams: [DictionaryStreamProtocol]
-    private var exhausted: [Bool]
-    private var sourceIndex: Int = 0
+    private var streamStack: [DictionaryStreamProtocol]
     private var seenResults: Set<SearchResultKey> = []
 
     init(streams: [DictionaryStreamProtocol]) {
-        self.streams = streams
-        self.exhausted = Array(repeating: false, count: streams.count)
+        self.streamStack = streams.reversed()
     }
 
     mutating func next() -> SearchResultKey? {
-        guard !streams.isEmpty else {
+        guard !streamStack.isEmpty else {
             return nil
         }
 
-        while exhausted.contains(false) {
-            let currentIndex = sourceIndex
-            sourceIndex = (sourceIndex + 1) % streams.count
-
-            if exhausted[currentIndex] {
-                continue
-            }
-
-            var currentStream = streams[currentIndex]
+        while !streamStack.isEmpty {
+            var currentStream = streamStack.removeLast()
             if let nextKey = currentStream.next() {
-                streams[currentIndex] = currentStream
+                streamStack.append(currentStream)
                 if seenResults.insert(nextKey).inserted {
                     return nextKey
                 }
-            } else {
-                streams[currentIndex] = currentStream
-                exhausted[currentIndex] = true
+                continue
             }
+            // exhausted stream is intentionally not pushed back onto stack
         }
 
         return nil

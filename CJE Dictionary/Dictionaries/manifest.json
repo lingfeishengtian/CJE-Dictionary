@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": "jitendex-optimized",
+      "displayName": "jitendex",
+      "downloadURL": "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/jitendex-optimized.zip",
+      "artifactType": "zip",
+      "version": 1,
+      "minAppVersion": "2.0.0",
+      "minBuildNumber": 1
+    },
+    {
+      "id": "kanjidict2",
+      "displayName": "kanjidict2",
+      "downloadURL": "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/kanjidict2.zip",
+      "artifactType": "zip",
+      "version": 1,
+      "minAppVersion": "2.0.0",
+      "minBuildNumber": 1
+    }
+  ]
+}

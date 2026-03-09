@@ -7,25 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		960658482C61B23D0006DC4C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960658472C61B23D0006DC4C /* Settings.swift */; };
 		960658572C6238080006DC4C /* STSong.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 960658562C6238080006DC4C /* STSong.TTF */; };
 		961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */; };
-		961242632B412A46009D6E05 /* DictionarySearchViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242622B412A46009D6E05 /* DictionarySearchViewOld.swift */; };
 		961242652B412A47009D6E05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 961242642B412A47009D6E05 /* Assets.xcassets */; };
 		961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 961242672B412A47009D6E05 /* Preview Assets.xcassets */; };
 		961242712B4130E6009D6E05 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 961242702B4130E6009D6E05 /* Realm */; };
 		961242732B4130E6009D6E05 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 961242722B4130E6009D6E05 /* RealmSwift */; };
-		961242752B413DB6009D6E05 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242742B413DB6009D6E05 /* HistoryManager.swift */; };
 		961242782B4147B9009D6E05 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 961242772B4147B9009D6E05 /* Localizable.xcstrings */; };
-		9612427A2B414A53009D6E05 /* SearchDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242792B414A53009D6E05 /* SearchDictionary.swift */; };
-		961242882B4250A0009D6E05 /* DictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961242872B4250A0009D6E05 /* DictionaryManager.swift */; };
 		9612428F2B4262FE009D6E05 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9612428E2B4262FE009D6E05 /* ZIPFoundation */; };
-		964394B52B43A827009D377E /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 964394B42B43A827009D377E /* SQLite */; };
-		965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */; };
 		965318312C601CC10046D2C1 /* HanziToKanji.txt in Resources */ = {isa = PBXBuildFile; fileRef = 965318302C601CC10046D2C1 /* HanziToKanji.txt */; };
-		965318342C6072230046D2C1 /* KanjiDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965318332C6072230046D2C1 /* KanjiDefinition.swift */; };
+		966009FB2F5CF3A5003588FD /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 966009FA2F5CF3A5003588FD /* SQLite */; };
+		966009FF2F5CF3EB003588FD /* KanjiDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966009FE2F5CF3EB003588FD /* KanjiDefinition.swift */; };
+		96600A042F5E4142003588FD /* KanjiDictSQLiteDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A032F5E4142003588FD /* KanjiDictSQLiteDictionary.swift */; };
+		96600A062F5E4C13003588FD /* KanjiSectionDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A052F5E4C13003588FD /* KanjiSectionDataLoader.swift */; };
+		96600A082F5E4C13003588FD /* KanjiInformationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A072F5E4C13003588FD /* KanjiInformationSectionView.swift */; };
+		96600A0D2F5E4F2F003588FD /* KanjiHeaderCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A0C2F5E4F2F003588FD /* KanjiHeaderCard.swift */; };
+		96600A0F2F5E4F2F003588FD /* KanjiDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A0E2F5E4F2F003588FD /* KanjiDetailsSection.swift */; };
+		96600A112F5E4F2F003588FD /* KanjiDefinitionUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A102F5E4F2F003588FD /* KanjiDefinitionUtilities.swift */; };
+		96600A152F5E5671003588FD /* KanjiDetailsSectionUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A142F5E5671003588FD /* KanjiDetailsSectionUtilities.swift */; };
+		96600A172F5E6A55003588FD /* DictionaryMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A162F5E6A54003588FD /* DictionaryMetadata.swift */; };
+		96600A192F5E7301003588FD /* DictionaryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A182F5E7301003588FD /* DictionaryFactory.swift */; };
 		967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */; };
-		967ECED22C5F318C009DFD72 /* DefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECED12C5F318C009DFD72 /* DefinitionView.swift */; };
 		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
 		96AE7E2F2B480B0900862861 /* types.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2A2B480B0900862861 /* types.csv */; };
 		96AE7E302B480B0900862861 /* conjo_notes.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2B2B480B0900862861 /* conjo_notes.csv */; };
@@ -43,10 +45,40 @@
 		96AE7E542B4E278D00862861 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E532B4E278D00862861 /* DequeModule */; };
 		96AE7E562B4E278D00862861 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 96AE7E552B4E278D00862861 /* OrderedCollections */; };
 		96C9D96B2F53E51700906581 /* mdict_tools in Frameworks */ = {isa = PBXBuildFile; productRef = 96C9D96A2F53E51700906581 /* mdict_tools */; };
-		96D58AB32F542ABB0037922F /* RubyAnnotationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AB22F540D350037922F /* RubyAnnotationHelper.swift */; };
-		96D58AB42F542AC00037922F /* Flow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AB12F540D320037922F /* Flow.swift */; };
+		96CAAABA2F5BF101007DAE78 /* ScriptExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAB92F5BF101007DAE78 /* ScriptExecutor.swift */; };
+		96CAAABE2F5BF3DA007DAE78 /* RubyAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAABD2F5BF3DA007DAE78 /* RubyAttributes.swift */; };
+		96CAAAC02F5BF598007DAE78 /* RubyDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAABF2F5BF598007DAE78 /* RubyDisplay.swift */; };
+		96CAAAC22F5BF848007DAE78 /* DefinitionGroupSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAC12F5BF848007DAE78 /* DefinitionGroupSectionView.swift */; };
+		96CAAAC42F5BF849007DAE78 /* DefinitionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAC32F5BF849007DAE78 /* DefinitionStatusView.swift */; };
+		96CAAAC62F5BF84A007DAE78 /* DefinitionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAC52F5BF84A007DAE78 /* DefinitionHeaderView.swift */; };
+		96CAAAC82F5BF84B007DAE78 /* DefinitionGroupsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAC72F5BF84B007DAE78 /* DefinitionGroupsListView.swift */; };
+		96CAAACA2F5BF84C007DAE78 /* DefinitionItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAC92F5BF84C007DAE78 /* DefinitionItemView.swift */; };
+		96CAAACC2F5BF84D007DAE78 /* DefinitionFallbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAACB2F5BF84D007DAE78 /* DefinitionFallbackView.swift */; };
+		96CAAACF2F5C04EC007DAE78 /* FlagEmojiProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAACE2F5C04EC007DAE78 /* FlagEmojiProvider.swift */; };
+		96CAAADC2F5CA591007DAE78 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAADB2F5CA591007DAE78 /* SettingsViewModel.swift */; };
+		96CAAAE02F5CA619007DAE78 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAADF2F5CA619007DAE78 /* Settings.swift */; };
+		96CAAAE22F5CABF3007DAE78 /* DictionaryInstallPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAD72F5CA56F007DAE78 /* DictionaryInstallPaths.swift */; };
+		96CAAAE32F5CABF3007DAE78 /* UserDefaultsDictionarySettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAADE2F5CA619007DAE78 /* UserDefaultsDictionarySettingsStore.swift */; };
+		96CAAAE42F5CABF3007DAE78 /* DictionaryDownloadServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAD82F5CA57C007DAE78 /* DictionaryDownloadServiceProtocols.swift */; };
+		96CAAAE52F5CABF3007DAE78 /* DictionaryDownloadErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAD62F5CA56F007DAE78 /* DictionaryDownloadErrors.swift */; };
+		96CAAAE62F5CABF3007DAE78 /* DictionaryDownloadModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAD52F5CA56F007DAE78 /* DictionaryDownloadModels.swift */; };
+		96CAAAE72F5CABF3007DAE78 /* DictionaryDownloadCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAD92F5CA57C007DAE78 /* DictionaryDownloadCoordinator.swift */; };
+		96CAAAE92F5CAD7B007DAE78 /* FileDictionaryCatalogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAE82F5CAD7B007DAE78 /* FileDictionaryCatalogStore.swift */; };
+		96CAAAEB2F5CAD7B007DAE78 /* RemoteDictionaryManifestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAEA2F5CAD7B007DAE78 /* RemoteDictionaryManifestService.swift */; };
+		96CAAAED2F5CAD8D007DAE78 /* URLSessionDictionaryDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAEC2F5CAD8D007DAE78 /* URLSessionDictionaryDownloadService.swift */; };
+		96CAAAEF2F5CAD8D007DAE78 /* FileSystemDictionaryInstallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAEE2F5CAD8D007DAE78 /* FileSystemDictionaryInstallService.swift */; };
+		96CAAAF12F5CAD9B007DAE78 /* DefaultDictionaryDownloadCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAF02F5CAD9B007DAE78 /* DefaultDictionaryDownloadCoordinator.swift */; };
+		96CAAAFA2F5CB50F007DAE78 /* MongoEnumeratedStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAF82F5CB50F007DAE78 /* MongoEnumeratedStream.swift */; };
+		96CAAAFB2F5CB50F007DAE78 /* MongoDict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAF72F5CB50F007DAE78 /* MongoDict.swift */; };
+		96CAAAFE2F5CBB0A007DAE78 /* InstalledDictionariesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAFD2F5CBB0A007DAE78 /* InstalledDictionariesSection.swift */; };
+		96CAAB002F5CBB0A007DAE78 /* AvailableDictionariesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAAFF2F5CBB0A007DAE78 /* AvailableDictionariesSection.swift */; };
+		96CAAB022F5CBB0A007DAE78 /* InstallFromURLSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAB012F5CBB0A007DAE78 /* InstallFromURLSection.swift */; };
+		96CAAB042F5CBB0A007DAE78 /* JobsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAB032F5CBB0A007DAE78 /* JobsSection.swift */; };
+		96CAAB062F5CBB0A007DAE78 /* PreferencesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAB052F5CBB0A007DAE78 /* PreferencesSection.swift */; };
+		96CAAB0C2F5CC21C007DAE78 /* generate_manifest.py in Resources */ = {isa = PBXBuildFile; fileRef = 96CAAB0B2F5CC21C007DAE78 /* generate_manifest.py */; };
+		96CAAB0E2F5CC907007DAE78 /* MongoRealmModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAB0D2F5CC907007DAE78 /* MongoRealmModels.swift */; };
+		96CAAB112F5CE1F7007DAE78 /* SearchDictionaryUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAAB102F5CE1F7007DAE78 /* SearchDictionaryUtilities.swift */; };
 		96D58ABA2F5434620037922F /* DictionaryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AB92F5434620037922F /* DictionaryProtocol.swift */; };
-		96D58ABC2F5434730037922F /* MdictOptimizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58ABB2F5434730037922F /* MdictOptimizedDictionary.swift */; };
 		96D58ABE2F5434800037922F /* MdictOptimizedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58ABD2F5434800037922F /* MdictOptimizedManager.swift */; };
 		96D58AC02F54349A0037922F /* DictionaryIntegrationGuide.md in Resources */ = {isa = PBXBuildFile; fileRef = 96D58ABF2F54349A0037922F /* DictionaryIntegrationGuide.md */; };
 		96D58AC22F5506BC0037922F /* DictionaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AC12F5506BC0037922F /* DictionaryStream.swift */; };
@@ -56,37 +88,50 @@
 		96D58AD12F5535610037922F /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AD02F5535610037922F /* SearchBar.swift */; };
 		96D58AD62F5542D90037922F /* NoResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AD52F5542D40037922F /* NoResults.swift */; };
 		96D58AD82F55458C0037922F /* SearchStreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AD72F55458C0037922F /* SearchStreamManager.swift */; };
-		96D58ADD2F5551850037922F /* jitendex.fst in Resources */ = {isa = PBXBuildFile; fileRef = 96D58ADA2F5551850037922F /* jitendex.fst */; };
-		96D58ADE2F5551850037922F /* jitendex.def in Resources */ = {isa = PBXBuildFile; fileRef = 96D58ADC2F5551850037922F /* jitendex.def */; };
-		96D58ADF2F5551850037922F /* jitendex.rd in Resources */ = {isa = PBXBuildFile; fileRef = 96D58ADB2F5551850037922F /* jitendex.rd */; };
 		96D58AE12F555A980037922F /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AE02F555A980037922F /* SearchResultsView.swift */; };
 		96D58AE32F555AA60037922F /* DefinitionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AE22F555AA60037922F /* DefinitionPage.swift */; };
+		96D58AE82F5A8CFC0037922F /* MdictOptimized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AE72F5A8CFC0037922F /* MdictOptimized.swift */; };
+		96D58AEA2F5A8D260037922F /* MdictEnumeratedStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D58AE92F5A8D260037922F /* MdictEnumeratedStream.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		96600A012F5DE73B003588FD /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		960658472C61B23D0006DC4C /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		960658492C61C7670006DC4C /* jp-cn.realm.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "jp-cn.realm.zip"; sourceTree = "<group>"; };
-		9606584B2C62056E0006DC4C /* KANJIDIC2_cleaned.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = KANJIDIC2_cleaned.db; sourceTree = "<group>"; };
 		9606584E2C62066D0006DC4C /* versions */ = {isa = PBXFileReference; lastKnownFileType = text; path = versions; sourceTree = "<group>"; };
 		960658532C6235D60006DC4C /* CJE-Dictionary-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CJE-Dictionary-Info.plist"; sourceTree = SOURCE_ROOT; };
 		960658562C6238080006DC4C /* STSong.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = STSong.TTF; sourceTree = "<group>"; };
 		9612425D2B412A46009D6E05 /* CJE Dictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CJE Dictionary.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CJE_DictionaryApp.swift; sourceTree = "<group>"; };
-		961242622B412A46009D6E05 /* DictionarySearchViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionarySearchViewOld.swift; sourceTree = "<group>"; };
 		961242642B412A47009D6E05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		961242672B412A47009D6E05 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		961242742B413DB6009D6E05 /* HistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
 		961242772B4147B9009D6E05 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		961242792B414A53009D6E05 /* SearchDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDictionary.swift; sourceTree = "<group>"; };
-		961242872B4250A0009D6E05 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
 		96444DD32C65A8CF003C7015 /* suupaadaijirin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = suupaadaijirin.zip; sourceTree = "<group>"; };
-		965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictionarySearch.swift; sourceTree = "<group>"; };
 		965318302C601CC10046D2C1 /* HanziToKanji.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = HanziToKanji.txt; sourceTree = "<group>"; };
-		965318332C6072230046D2C1 /* KanjiDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinition.swift; sourceTree = "<group>"; };
+		966009FE2F5CF3EB003588FD /* KanjiDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinition.swift; sourceTree = "<group>"; };
+		96600A032F5E4142003588FD /* KanjiDictSQLiteDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDictSQLiteDictionary.swift; sourceTree = "<group>"; };
+		96600A052F5E4C13003588FD /* KanjiSectionDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiSectionDataLoader.swift; sourceTree = "<group>"; };
+		96600A072F5E4C13003588FD /* KanjiInformationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiInformationSectionView.swift; sourceTree = "<group>"; };
+		96600A0C2F5E4F2F003588FD /* KanjiHeaderCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiHeaderCard.swift; sourceTree = "<group>"; };
+		96600A0E2F5E4F2F003588FD /* KanjiDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDetailsSection.swift; sourceTree = "<group>"; };
+		96600A102F5E4F2F003588FD /* KanjiDefinitionUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDefinitionUtilities.swift; sourceTree = "<group>"; };
+		96600A122F5E50FA003588FD /* KANJIDIC2_cleaned.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = KANJIDIC2_cleaned.db; path = "CJE Dictionary/Dictionaries/KANJIDIC2_cleaned.db"; sourceTree = SOURCE_ROOT; };
+		96600A142F5E5671003588FD /* KanjiDetailsSectionUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDetailsSectionUtilities.swift; sourceTree = "<group>"; };
+		96600A162F5E6A54003588FD /* DictionaryMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryMetadata.swift; sourceTree = "<group>"; };
+		96600A182F5E7301003588FD /* DictionaryFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryFactory.swift; sourceTree = "<group>"; };
 		966E61582C75907E00C29CDD /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
 		967670CA2C632DCE008CC50E /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
-		967ECED12C5F318C009DFD72 /* DefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionView.swift; sourceTree = "<group>"; };
 		96AE7E292B480B0900862861 /* conjo.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo.csv; sourceTree = "<group>"; };
 		96AE7E2A2B480B0900862861 /* types.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = types.csv; sourceTree = "<group>"; };
 		96AE7E2B2B480B0900862861 /* conjo_notes.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conjo_notes.csv; sourceTree = "<group>"; };
@@ -96,10 +141,41 @@
 		96AE7E412B4A02CF00862861 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		96AE7E442B4A926E00862861 /* DictionaryHelperViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHelperViews.swift; sourceTree = "<group>"; };
 		96AE7E462B4A991C00862861 /* ConjugationViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConjugationViewer.swift; sourceTree = "<group>"; };
-		96D58AB12F540D320037922F /* Flow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flow.swift; sourceTree = "<group>"; };
-		96D58AB22F540D350037922F /* RubyAnnotationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RubyAnnotationHelper.swift; sourceTree = "<group>"; };
+		96CAAAB92F5BF101007DAE78 /* ScriptExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptExecutor.swift; sourceTree = "<group>"; };
+		96CAAABD2F5BF3DA007DAE78 /* RubyAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RubyAttributes.swift; sourceTree = "<group>"; };
+		96CAAABF2F5BF598007DAE78 /* RubyDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RubyDisplay.swift; sourceTree = "<group>"; };
+		96CAAAC12F5BF848007DAE78 /* DefinitionGroupSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionGroupSectionView.swift; sourceTree = "<group>"; };
+		96CAAAC32F5BF849007DAE78 /* DefinitionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionStatusView.swift; sourceTree = "<group>"; };
+		96CAAAC52F5BF84A007DAE78 /* DefinitionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionHeaderView.swift; sourceTree = "<group>"; };
+		96CAAAC72F5BF84B007DAE78 /* DefinitionGroupsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionGroupsListView.swift; sourceTree = "<group>"; };
+		96CAAAC92F5BF84C007DAE78 /* DefinitionItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionItemView.swift; sourceTree = "<group>"; };
+		96CAAACB2F5BF84D007DAE78 /* DefinitionFallbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionFallbackView.swift; sourceTree = "<group>"; };
+		96CAAACE2F5C04EC007DAE78 /* FlagEmojiProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagEmojiProvider.swift; sourceTree = "<group>"; };
+		96CAAAD52F5CA56F007DAE78 /* DictionaryDownloadModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryDownloadModels.swift; sourceTree = "<group>"; };
+		96CAAAD62F5CA56F007DAE78 /* DictionaryDownloadErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryDownloadErrors.swift; sourceTree = "<group>"; };
+		96CAAAD72F5CA56F007DAE78 /* DictionaryInstallPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryInstallPaths.swift; sourceTree = "<group>"; };
+		96CAAAD82F5CA57C007DAE78 /* DictionaryDownloadServiceProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryDownloadServiceProtocols.swift; sourceTree = "<group>"; };
+		96CAAAD92F5CA57C007DAE78 /* DictionaryDownloadCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryDownloadCoordinator.swift; sourceTree = "<group>"; };
+		96CAAADB2F5CA591007DAE78 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		96CAAADE2F5CA619007DAE78 /* UserDefaultsDictionarySettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsDictionarySettingsStore.swift; sourceTree = "<group>"; };
+		96CAAADF2F5CA619007DAE78 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		96CAAAE82F5CAD7B007DAE78 /* FileDictionaryCatalogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDictionaryCatalogStore.swift; sourceTree = "<group>"; };
+		96CAAAEA2F5CAD7B007DAE78 /* RemoteDictionaryManifestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDictionaryManifestService.swift; sourceTree = "<group>"; };
+		96CAAAEC2F5CAD8D007DAE78 /* URLSessionDictionaryDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDictionaryDownloadService.swift; sourceTree = "<group>"; };
+		96CAAAEE2F5CAD8D007DAE78 /* FileSystemDictionaryInstallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemDictionaryInstallService.swift; sourceTree = "<group>"; };
+		96CAAAF02F5CAD9B007DAE78 /* DefaultDictionaryDownloadCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDictionaryDownloadCoordinator.swift; sourceTree = "<group>"; };
+		96CAAAF72F5CB50F007DAE78 /* MongoDict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoDict.swift; sourceTree = "<group>"; };
+		96CAAAF82F5CB50F007DAE78 /* MongoEnumeratedStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoEnumeratedStream.swift; sourceTree = "<group>"; };
+		96CAAAFD2F5CBB0A007DAE78 /* InstalledDictionariesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledDictionariesSection.swift; sourceTree = "<group>"; };
+		96CAAAFF2F5CBB0A007DAE78 /* AvailableDictionariesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableDictionariesSection.swift; sourceTree = "<group>"; };
+		96CAAB012F5CBB0A007DAE78 /* InstallFromURLSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallFromURLSection.swift; sourceTree = "<group>"; };
+		96CAAB032F5CBB0A007DAE78 /* JobsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsSection.swift; sourceTree = "<group>"; };
+		96CAAB052F5CBB0A007DAE78 /* PreferencesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesSection.swift; sourceTree = "<group>"; };
+		96CAAB072F5CBE86007DAE78 /* jitendex-optimized.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "jitendex-optimized.zip"; sourceTree = "<group>"; };
+		96CAAB0B2F5CC21C007DAE78 /* generate_manifest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generate_manifest.py; sourceTree = "<group>"; };
+		96CAAB0D2F5CC907007DAE78 /* MongoRealmModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoRealmModels.swift; sourceTree = "<group>"; };
+		96CAAB102F5CE1F7007DAE78 /* SearchDictionaryUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDictionaryUtilities.swift; sourceTree = "<group>"; };
 		96D58AB92F5434620037922F /* DictionaryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryProtocol.swift; sourceTree = "<group>"; };
-		96D58ABB2F5434730037922F /* MdictOptimizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MdictOptimizedDictionary.swift; sourceTree = "<group>"; };
 		96D58ABD2F5434800037922F /* MdictOptimizedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MdictOptimizedManager.swift; sourceTree = "<group>"; };
 		96D58ABF2F54349A0037922F /* DictionaryIntegrationGuide.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DictionaryIntegrationGuide.md; sourceTree = "<group>"; };
 		96D58AC12F5506BC0037922F /* DictionaryStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryStream.swift; sourceTree = "<group>"; };
@@ -112,11 +188,10 @@
 		96D58AD02F5535610037922F /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		96D58AD52F5542D40037922F /* NoResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResults.swift; sourceTree = "<group>"; };
 		96D58AD72F55458C0037922F /* SearchStreamManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchStreamManager.swift; sourceTree = "<group>"; };
-		96D58ADA2F5551850037922F /* jitendex.fst */ = {isa = PBXFileReference; lastKnownFileType = file; path = jitendex.fst; sourceTree = "<group>"; };
-		96D58ADB2F5551850037922F /* jitendex.rd */ = {isa = PBXFileReference; lastKnownFileType = file; path = jitendex.rd; sourceTree = "<group>"; };
-		96D58ADC2F5551850037922F /* jitendex.def */ = {isa = PBXFileReference; lastKnownFileType = file; path = jitendex.def; sourceTree = "<group>"; };
 		96D58AE02F555A980037922F /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
 		96D58AE22F555AA60037922F /* DefinitionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionPage.swift; sourceTree = "<group>"; };
+		96D58AE72F5A8CFC0037922F /* MdictOptimized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MdictOptimized.swift; sourceTree = "<group>"; };
+		96D58AE92F5A8D260037922F /* MdictEnumeratedStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MdictEnumeratedStream.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,9 +199,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				966009FB2F5CF3A5003588FD /* SQLite in Frameworks */,
 				96AE7E392B4839EC00862861 /* IPADic in Frameworks */,
 				96AE7E372B4839EC00862861 /* CharacterFilter in Frameworks */,
-				964394B52B43A827009D377E /* SQLite in Frameworks */,
 				96AE7E522B4E278C00862861 /* Collections in Frameworks */,
 				96C9D96B2F53E51700906581 /* mdict_tools in Frameworks */,
 				96AE7E542B4E278D00862861 /* DequeModule in Frameworks */,
@@ -180,10 +255,9 @@
 				967ECECC2C5F1001009DFD72 /* DictionarySearch */,
 				96AE7E432B4A924800862861 /* Views */,
 				96AE7E282B480AED00862861 /* ConjugationResources */,
+				96CAAAD12F5CA55B007DAE78 /* DictionaryDownloadV2 */,
 				9612427B2B414BC6009D6E05 /* Dictionaries */,
 				961242602B412A46009D6E05 /* CJE_DictionaryApp.swift */,
-				96D58AB12F540D320037922F /* Flow.swift */,
-				96D58AB22F540D350037922F /* RubyAnnotationHelper.swift */,
 				96AE7E412B4A02CF00862861 /* HTMLParser.swift */,
 				961242642B412A47009D6E05 /* Assets.xcassets */,
 				961242662B412A47009D6E05 /* Preview Content */,
@@ -194,6 +268,7 @@
 		961242662B412A47009D6E05 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				96600A122F5E50FA003588FD /* KANJIDIC2_cleaned.db */,
 				961242672B412A47009D6E05 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -210,23 +285,56 @@
 		9612427B2B414BC6009D6E05 /* Dictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				96D58AD92F55516F0037922F /* jitendex-optimized */,
-				960658492C61C7670006DC4C /* jp-cn.realm.zip */,
+				96CAAB072F5CBE86007DAE78 /* jitendex-optimized.zip */,
 				967670CA2C632DCE008CC50E /* jitendexDB.zip */,
 				96444DD32C65A8CF003C7015 /* suupaadaijirin.zip */,
 				966E61582C75907E00C29CDD /* Shogakukanjcv3DB.zip */,
-				9606584B2C62056E0006DC4C /* KANJIDIC2_cleaned.db */,
 				965318302C601CC10046D2C1 /* HanziToKanji.txt */,
 				9606584E2C62066D0006DC4C /* versions */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
 		};
+		96600A022F5E4123003588FD /* KanjiDictImpl */ = {
+			isa = PBXGroup;
+			children = (
+				96600A032F5E4142003588FD /* KanjiDictSQLiteDictionary.swift */,
+				96600A052F5E4C13003588FD /* KanjiSectionDataLoader.swift */,
+			);
+			path = KanjiDictImpl;
+			sourceTree = "<group>";
+		};
+		96600A092F5E4EE9003588FD /* KanjiDefinition */ = {
+			isa = PBXGroup;
+			children = (
+				966009FE2F5CF3EB003588FD /* KanjiDefinition.swift */,
+				96600A0A2F5E4F19003588FD /* Components */,
+				96600A0B2F5E4F1C003588FD /* Utilities */,
+			);
+			path = KanjiDefinition;
+			sourceTree = "<group>";
+		};
+		96600A0A2F5E4F19003588FD /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				96600A0C2F5E4F2F003588FD /* KanjiHeaderCard.swift */,
+				96600A0E2F5E4F2F003588FD /* KanjiDetailsSection.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		96600A0B2F5E4F1C003588FD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				96600A102F5E4F2F003588FD /* KanjiDefinitionUtilities.swift */,
+				96600A142F5E5671003588FD /* KanjiDetailsSectionUtilities.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		967670C62C62B44B008CC50E /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
-				961242742B413DB6009D6E05 /* HistoryManager.swift */,
-				961242872B4250A0009D6E05 /* DictionaryManager.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -234,16 +342,19 @@
 		967ECECC2C5F1001009DFD72 /* DictionarySearch */ = {
 			isa = PBXGroup;
 			children = (
-				961242792B414A53009D6E05 /* SearchDictionary.swift */,
+				96CAAAF92F5CB50F007DAE78 /* MongoDbImpl */,
+				96D58AE62F5A8CF10037922F /* MdictOptimizedImpl */,
 				967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */,
-				965318262C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift */,
 				96D58AB92F5434620037922F /* DictionaryProtocol.swift */,
-				96D58ABB2F5434730037922F /* MdictOptimizedDictionary.swift */,
 				96D58AC82F55281E0037922F /* WordType.swift */,
 				96D58ABD2F5434800037922F /* MdictOptimizedManager.swift */,
 				96D58ABF2F54349A0037922F /* DictionaryIntegrationGuide.md */,
 				96D58AC12F5506BC0037922F /* DictionaryStream.swift */,
 				96D58AC32F551EC90037922F /* SearchResultKey.swift */,
+				96CAAAB92F5BF101007DAE78 /* ScriptExecutor.swift */,
+				96600A022F5E4123003588FD /* KanjiDictImpl */,
+				96600A162F5E6A54003588FD /* DictionaryMetadata.swift */,
+				96600A182F5E7301003588FD /* DictionaryFactory.swift */,
 			);
 			path = DictionarySearch;
 			sourceTree = "<group>";
@@ -264,13 +375,12 @@
 		96AE7E432B4A924800862861 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				96600A092F5E4EE9003588FD /* KanjiDefinition */,
+				96CAAABB2F5BF386007DAE78 /* DefinitionPage */,
 				96D58ACE2F5535430037922F /* SearchDictionaryListView */,
-				961242622B412A46009D6E05 /* DictionarySearchViewOld.swift */,
 				96AE7E442B4A926E00862861 /* DictionaryHelperViews.swift */,
 				96AE7E462B4A991C00862861 /* ConjugationViewer.swift */,
-				967ECED12C5F318C009DFD72 /* DefinitionView.swift */,
-				965318332C6072230046D2C1 /* KanjiDefinition.swift */,
-				960658472C61B23D0006DC4C /* Settings.swift */,
+				96CAAADA2F5CA590007DAE78 /* Settings */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -282,12 +392,138 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		96CAAABB2F5BF386007DAE78 /* DefinitionPage */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAABC2F5BF3CB007DAE78 /* Components */,
+				96D58AE22F555AA60037922F /* DefinitionPage.swift */,
+				96CAAACD2F5C04E4007DAE78 /* Utilities */,
+			);
+			path = DefinitionPage;
+			sourceTree = "<group>";
+		};
+		96CAAABC2F5BF3CB007DAE78 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAABD2F5BF3DA007DAE78 /* RubyAttributes.swift */,
+				96CAAABF2F5BF598007DAE78 /* RubyDisplay.swift */,
+				96CAAAC12F5BF848007DAE78 /* DefinitionGroupSectionView.swift */,
+				96CAAAC32F5BF849007DAE78 /* DefinitionStatusView.swift */,
+				96CAAAC52F5BF84A007DAE78 /* DefinitionHeaderView.swift */,
+				96CAAAC72F5BF84B007DAE78 /* DefinitionGroupsListView.swift */,
+				96CAAAC92F5BF84C007DAE78 /* DefinitionItemView.swift */,
+				96CAAACB2F5BF84D007DAE78 /* DefinitionFallbackView.swift */,
+				96600A072F5E4C13003588FD /* KanjiInformationSectionView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		96CAAACD2F5C04E4007DAE78 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAACE2F5C04EC007DAE78 /* FlagEmojiProvider.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		96CAAAD12F5CA55B007DAE78 /* DictionaryDownloadV2 */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAD22F5CA560007DAE78 /* Domain */,
+				96CAAAD32F5CA560007DAE78 /* Services */,
+				96CAAAD42F5CA560007DAE78 /* Stores */,
+				96CAAB082F5CC1B6007DAE78 /* Tools */,
+			);
+			path = DictionaryDownloadV2;
+			sourceTree = "<group>";
+		};
+		96CAAAD22F5CA560007DAE78 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAD52F5CA56F007DAE78 /* DictionaryDownloadModels.swift */,
+				96CAAAD62F5CA56F007DAE78 /* DictionaryDownloadErrors.swift */,
+				96CAAAD72F5CA56F007DAE78 /* DictionaryInstallPaths.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		96CAAAD32F5CA560007DAE78 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAD82F5CA57C007DAE78 /* DictionaryDownloadServiceProtocols.swift */,
+				96CAAAD92F5CA57C007DAE78 /* DictionaryDownloadCoordinator.swift */,
+				96CAAAEA2F5CAD7B007DAE78 /* RemoteDictionaryManifestService.swift */,
+				96CAAAEC2F5CAD8D007DAE78 /* URLSessionDictionaryDownloadService.swift */,
+				96CAAAEE2F5CAD8D007DAE78 /* FileSystemDictionaryInstallService.swift */,
+				96CAAAF02F5CAD9B007DAE78 /* DefaultDictionaryDownloadCoordinator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		96CAAAD42F5CA560007DAE78 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAADE2F5CA619007DAE78 /* UserDefaultsDictionarySettingsStore.swift */,
+				96CAAAE82F5CAD7B007DAE78 /* FileDictionaryCatalogStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		96CAAADA2F5CA590007DAE78 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAFC2F5CBAF9007DAE78 /* Components */,
+				96CAAADB2F5CA591007DAE78 /* SettingsViewModel.swift */,
+				96CAAADF2F5CA619007DAE78 /* Settings.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		96CAAAF92F5CB50F007DAE78 /* MongoDbImpl */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAF72F5CB50F007DAE78 /* MongoDict.swift */,
+				96CAAAF82F5CB50F007DAE78 /* MongoEnumeratedStream.swift */,
+				96CAAB0D2F5CC907007DAE78 /* MongoRealmModels.swift */,
+			);
+			path = MongoDbImpl;
+			sourceTree = "<group>";
+		};
+		96CAAAFC2F5CBAF9007DAE78 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAAFD2F5CBB0A007DAE78 /* InstalledDictionariesSection.swift */,
+				96CAAAFF2F5CBB0A007DAE78 /* AvailableDictionariesSection.swift */,
+				96CAAB012F5CBB0A007DAE78 /* InstallFromURLSection.swift */,
+				96CAAB032F5CBB0A007DAE78 /* JobsSection.swift */,
+				96CAAB052F5CBB0A007DAE78 /* PreferencesSection.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		96CAAB082F5CC1B6007DAE78 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAB0B2F5CC21C007DAE78 /* generate_manifest.py */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		96CAAB0F2F5CE1EF007DAE78 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				96CAAB102F5CE1F7007DAE78 /* SearchDictionaryUtilities.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		96D58ACE2F5535430037922F /* SearchDictionaryListView */ = {
 			isa = PBXGroup;
 			children = (
 				96D58ACF2F5535560037922F /* Components */,
 				96D58ACC2F5530790037922F /* SearchDictionaryListView.swift */,
 				96D58AD72F55458C0037922F /* SearchStreamManager.swift */,
+				96CAAB0F2F5CE1EF007DAE78 /* Utilities */,
 			);
 			path = SearchDictionaryListView;
 			sourceTree = "<group>";
@@ -298,19 +534,17 @@
 				96D58AD52F5542D40037922F /* NoResults.swift */,
 				96D58AD02F5535610037922F /* SearchBar.swift */,
 				96D58AE02F555A980037922F /* SearchResultsView.swift */,
-				96D58AE22F555AA60037922F /* DefinitionPage.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
 		};
-		96D58AD92F55516F0037922F /* jitendex-optimized */ = {
+		96D58AE62F5A8CF10037922F /* MdictOptimizedImpl */ = {
 			isa = PBXGroup;
 			children = (
-				96D58ADA2F5551850037922F /* jitendex.fst */,
-				96D58ADB2F5551850037922F /* jitendex.rd */,
-				96D58ADC2F5551850037922F /* jitendex.def */,
+				96D58AE72F5A8CFC0037922F /* MdictOptimized.swift */,
+				96D58AE92F5A8D260037922F /* MdictEnumeratedStream.swift */,
 			);
-			path = "jitendex-optimized";
+			path = MdictOptimizedImpl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -323,6 +557,7 @@
 				961242592B412A46009D6E05 /* Sources */,
 				9612425A2B412A46009D6E05 /* Frameworks */,
 				9612425B2B412A46009D6E05 /* Resources */,
+				96600A012F5DE73B003588FD /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -333,7 +568,6 @@
 				961242702B4130E6009D6E05 /* Realm */,
 				961242722B4130E6009D6E05 /* RealmSwift */,
 				9612428E2B4262FE009D6E05 /* ZIPFoundation */,
-				964394B42B43A827009D377E /* SQLite */,
 				96AE7E362B4839EC00862861 /* CharacterFilter */,
 				96AE7E382B4839EC00862861 /* IPADic */,
 				96AE7E3A2B4839EC00862861 /* Mecab-Swift */,
@@ -342,6 +576,7 @@
 				96AE7E532B4E278D00862861 /* DequeModule */,
 				96AE7E552B4E278D00862861 /* OrderedCollections */,
 				96C9D96A2F53E51700906581 /* mdict_tools */,
+				966009FA2F5CF3A5003588FD /* SQLite */,
 			);
 			productName = "CJE Dictionary";
 			productReference = 9612425D2B412A46009D6E05 /* CJE Dictionary.app */;
@@ -376,10 +611,10 @@
 			packageReferences = (
 				9612426F2B4130E6009D6E05 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				9612428D2B4262FE009D6E05 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */,
 				96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 				96AE7E502B4E278C00862861 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				96C9D9692F53E51700906581 /* XCLocalSwiftPackageReference "../mdict_tools/output_framework/SwiftPackage" */,
+				966009F92F5CF3A5003588FD /* XCRemoteSwiftPackageReference "SQLite" */,
 			);
 			productRefGroup = 9612425E2B412A46009D6E05 /* Products */;
 			projectDirPath = "";
@@ -399,10 +634,8 @@
 				96D58AC02F54349A0037922F /* DictionaryIntegrationGuide.md in Resources */,
 				961242682B412A47009D6E05 /* Preview Assets.xcassets in Resources */,
 				960658572C6238080006DC4C /* STSong.TTF in Resources */,
+				96CAAB0C2F5CC21C007DAE78 /* generate_manifest.py in Resources */,
 				961242652B412A47009D6E05 /* Assets.xcassets in Resources */,
-				96D58ADD2F5551850037922F /* jitendex.fst in Resources */,
-				96D58ADE2F5551850037922F /* jitendex.def in Resources */,
-				96D58ADF2F5551850037922F /* jitendex.rd in Resources */,
 				96AE7E322B480B0900862861 /* conj.csv in Resources */,
 				96AE7E312B480B0900862861 /* conotes.csv in Resources */,
 				961242782B4147B9009D6E05 /* Localizable.xcstrings in Resources */,
@@ -419,34 +652,67 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				967ECED22C5F318C009DFD72 /* DefinitionView.swift in Sources */,
-				961242752B413DB6009D6E05 /* HistoryManager.swift in Sources */,
+				96CAAB0E2F5CC907007DAE78 /* MongoRealmModels.swift in Sources */,
+				96CAAAEF2F5CAD8D007DAE78 /* FileSystemDictionaryInstallService.swift in Sources */,
+				96CAAAE92F5CAD7B007DAE78 /* FileDictionaryCatalogStore.swift in Sources */,
 				96AE7E342B480B2D00862861 /* ConjugationManager.swift in Sources */,
+				96600A0D2F5E4F2F003588FD /* KanjiHeaderCard.swift in Sources */,
+				96CAAB112F5CE1F7007DAE78 /* SearchDictionaryUtilities.swift in Sources */,
 				96D58ABE2F5434800037922F /* MdictOptimizedManager.swift in Sources */,
+				96CAAAC02F5BF598007DAE78 /* RubyDisplay.swift in Sources */,
 				96AE7E452B4A926E00862861 /* DictionaryHelperViews.swift in Sources */,
 				96D58AD12F5535610037922F /* SearchBar.swift in Sources */,
-				960658482C61B23D0006DC4C /* Settings.swift in Sources */,
-				96D58AB32F542ABB0037922F /* RubyAnnotationHelper.swift in Sources */,
-				9612427A2B414A53009D6E05 /* SearchDictionary.swift in Sources */,
-				961242632B412A46009D6E05 /* DictionarySearchViewOld.swift in Sources */,
+				96CAAAC22F5BF848007DAE78 /* DefinitionGroupSectionView.swift in Sources */,
+				96600A062F5E4C13003588FD /* KanjiSectionDataLoader.swift in Sources */,
+				96CAAADC2F5CA591007DAE78 /* SettingsViewModel.swift in Sources */,
+				96CAAAC42F5BF849007DAE78 /* DefinitionStatusView.swift in Sources */,
+				96CAAB002F5CBB0A007DAE78 /* AvailableDictionariesSection.swift in Sources */,
+				96CAAABE2F5BF3DA007DAE78 /* RubyAttributes.swift in Sources */,
 				96AE7E422B4A02CF00862861 /* HTMLParser.swift in Sources */,
-				965318342C6072230046D2C1 /* KanjiDefinition.swift in Sources */,
+				96CAAAEB2F5CAD7B007DAE78 /* RemoteDictionaryManifestService.swift in Sources */,
+				96CAAAFA2F5CB50F007DAE78 /* MongoEnumeratedStream.swift in Sources */,
+				96CAAAFB2F5CB50F007DAE78 /* MongoDict.swift in Sources */,
+				96600A192F5E7301003588FD /* DictionaryFactory.swift in Sources */,
+				96CAAAFE2F5CBB0A007DAE78 /* InstalledDictionariesSection.swift in Sources */,
+				96CAAACA2F5BF84C007DAE78 /* DefinitionItemView.swift in Sources */,
 				961242612B412A46009D6E05 /* CJE_DictionaryApp.swift in Sources */,
-				96D58ABC2F5434730037922F /* MdictOptimizedDictionary.swift in Sources */,
+				966009FF2F5CF3EB003588FD /* KanjiDefinition.swift in Sources */,
+				96CAAAC82F5BF84B007DAE78 /* DefinitionGroupsListView.swift in Sources */,
+				96CAAAC62F5BF84A007DAE78 /* DefinitionHeaderView.swift in Sources */,
 				96D58AC42F551EC90037922F /* SearchResultKey.swift in Sources */,
+				96600A0F2F5E4F2F003588FD /* KanjiDetailsSection.swift in Sources */,
 				967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */,
 				96D58AC92F55281E0037922F /* WordType.swift in Sources */,
 				96AE7E472B4A991C00862861 /* ConjugationViewer.swift in Sources */,
 				96D58ACD2F5530790037922F /* SearchDictionaryListView.swift in Sources */,
+				96CAAABA2F5BF101007DAE78 /* ScriptExecutor.swift in Sources */,
+				96600A112F5E4F2F003588FD /* KanjiDefinitionUtilities.swift in Sources */,
+				96CAAACC2F5BF84D007DAE78 /* DefinitionFallbackView.swift in Sources */,
+				96CAAAED2F5CAD8D007DAE78 /* URLSessionDictionaryDownloadService.swift in Sources */,
 				96D58AE12F555A980037922F /* SearchResultsView.swift in Sources */,
-				96D58AB42F542AC00037922F /* Flow.swift in Sources */,
-				961242882B4250A0009D6E05 /* DictionaryManager.swift in Sources */,
+				96600A082F5E4C13003588FD /* KanjiInformationSectionView.swift in Sources */,
+				96CAAAF12F5CAD9B007DAE78 /* DefaultDictionaryDownloadCoordinator.swift in Sources */,
+				96600A152F5E5671003588FD /* KanjiDetailsSectionUtilities.swift in Sources */,
+				96CAAB042F5CBB0A007DAE78 /* JobsSection.swift in Sources */,
+				96600A172F5E6A55003588FD /* DictionaryMetadata.swift in Sources */,
 				96D58ABA2F5434620037922F /* DictionaryProtocol.swift in Sources */,
+				96D58AE82F5A8CFC0037922F /* MdictOptimized.swift in Sources */,
 				96D58AD62F5542D90037922F /* NoResults.swift in Sources */,
-				965318272C5F9B4D0046D2C1 /* KanjiDictionarySearch.swift in Sources */,
+				96CAAAE02F5CA619007DAE78 /* Settings.swift in Sources */,
+				96CAAB062F5CBB0A007DAE78 /* PreferencesSection.swift in Sources */,
 				96D58AE32F555AA60037922F /* DefinitionPage.swift in Sources */,
 				96D58AC22F5506BC0037922F /* DictionaryStream.swift in Sources */,
 				96D58AD82F55458C0037922F /* SearchStreamManager.swift in Sources */,
+				96CAAAE22F5CABF3007DAE78 /* DictionaryInstallPaths.swift in Sources */,
+				96CAAAE32F5CABF3007DAE78 /* UserDefaultsDictionarySettingsStore.swift in Sources */,
+				96CAAAE42F5CABF3007DAE78 /* DictionaryDownloadServiceProtocols.swift in Sources */,
+				96CAAAE52F5CABF3007DAE78 /* DictionaryDownloadErrors.swift in Sources */,
+				96CAAAE62F5CABF3007DAE78 /* DictionaryDownloadModels.swift in Sources */,
+				96600A042F5E4142003588FD /* KanjiDictSQLiteDictionary.swift in Sources */,
+				96CAAAE72F5CABF3007DAE78 /* DictionaryDownloadCoordinator.swift in Sources */,
+				96D58AEA2F5A8D260037922F /* MdictEnumeratedStream.swift in Sources */,
+				96CAAACF2F5C04EC007DAE78 /* FlagEmojiProvider.swift in Sources */,
+				96CAAB022F5CBB0A007DAE78 /* InstallFromURLSection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,7 +862,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.hunterhansecond.CJE-Dictionary";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -629,7 +895,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.hunterhansecond.CJE-Dictionary";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -685,12 +951,12 @@
 				minimumVersion = 0.9.17;
 			};
 		};
-		964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */ = {
+		966009F92F5CF3A5003588FD /* XCRemoteSwiftPackageReference "SQLite" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.14.1;
+				minimumVersion = 0.15.5;
 			};
 		};
 		96AE7E352B4839EC00862861 /* XCRemoteSwiftPackageReference "Mecab-Swift" */ = {
@@ -727,9 +993,9 @@
 			package = 9612428D2B4262FE009D6E05 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
-		964394B42B43A827009D377E /* SQLite */ = {
+		966009FA2F5CF3A5003588FD /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 964394B32B43A827009D377E /* XCRemoteSwiftPackageReference "SQLite" */;
+			package = 966009F92F5CF3A5003588FD /* XCRemoteSwiftPackageReference "SQLite" */;
 			productName = SQLite;
 		};
 		96AE7E362B4839EC00862861 /* CharacterFilter */ = {

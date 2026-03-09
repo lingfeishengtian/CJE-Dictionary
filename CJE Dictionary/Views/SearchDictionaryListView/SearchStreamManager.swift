@@ -5,8 +5,15 @@ final class SearchStreamManager: ObservableObject {
     @Published private(set) var results: [SearchResultKey] = []
     private var stream: DictionaryStreamProtocol? = nil
     private var isLoading = false
-    // Keep a weak reference for navigation destination previews; optional
-    var dictionaryForPreview: DictionaryProtocol? = nil
+    private var dictionaryByName: [String: any DictionaryProtocol] = [:]
+
+    func setDictionaries(_ dictionaries: [any DictionaryProtocol]) {
+        dictionaryByName = Dictionary(uniqueKeysWithValues: dictionaries.map { ($0.name, $0) })
+    }
+
+    func dictionary(for key: SearchResultKey) -> (any DictionaryProtocol)? {
+        dictionaryByName[key.dictionaryName]
+    }
 
     func reset(with stream: DictionaryStreamProtocol?) {
         self.stream = stream

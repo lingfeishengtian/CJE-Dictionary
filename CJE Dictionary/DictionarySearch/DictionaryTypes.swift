@@ -7,7 +7,6 @@
 
 import Foundation
 import RealmSwift
-import SQLite
 import IPADic
 import Mecab_Swift
 import OrderedCollections
@@ -66,24 +65,145 @@ class WordBank: Object {
 struct LanguageToLanguage: Hashable {
     let searchLanguage: Language
     let resultsLanguage: Language
+
+    var searchLocaleCode: String {
+        searchLanguage.localeCode
+    }
+
+    var resultsLocaleCode: String {
+        resultsLanguage.localeCode
+    }
+
+    func asDescriptor(
+        id: String,
+        displayName: String,
+        backend: DictionaryBackendType,
+        parser: DictionaryParserType,
+        includeInCrossDictionaryLookup: Bool = true
+    ) -> DictionaryTypeDescriptor {
+        DictionaryTypeDescriptor(
+            id: id,
+            displayName: displayName,
+            searchLanguage: searchLanguage,
+            resultsLanguage: resultsLanguage,
+            backend: backend,
+            parser: parser,
+            includeInCrossDictionaryLookup: includeInCrossDictionaryLookup
+        )
+    }
 }
 
-enum Language: String, CaseIterable, Hashable, Identifiable, Codable {
-    var id: Language {
-        self
+enum DictionaryBackendType: String, Codable, Hashable, Sendable {
+    case mdictOptimized
+    case realm
+    case unknown
+}
+
+enum DictionaryParserType: String, Codable, Hashable, Sendable {
+    case scriptJS
+    case plainHTML
+    case structured
+}
+
+struct DictionaryTypeDescriptor: Hashable, Codable, Identifiable, Sendable {
+    let id: String
+    let displayName: String
+    let searchLanguage: Language
+    let resultsLanguage: Language
+    let backend: DictionaryBackendType
+    let parser: DictionaryParserType
+    let includeInCrossDictionaryLookup: Bool
+
+    init(
+        id: String,
+        displayName: String,
+        searchLanguage: Language,
+        resultsLanguage: Language,
+        backend: DictionaryBackendType,
+        parser: DictionaryParserType,
+        includeInCrossDictionaryLookup: Bool = true
+    ) {
+        self.id = id
+        self.displayName = displayName
+        self.searchLanguage = searchLanguage
+        self.resultsLanguage = resultsLanguage
+        self.backend = backend
+        self.parser = parser
+        self.includeInCrossDictionaryLookup = includeInCrossDictionaryLookup
     }
-    
-    var ordered: Int {
-        switch (self) {
-        case .EN: 1
-        case .CN: 2
-        case .JP: 3
-        }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case displayName
+        case searchLanguage
+        case resultsLanguage
+        case backend
+        case parser
+        case includeInCrossDictionaryLookup
     }
-    
-    case CN = "cn"
-    case JP = "ja"
-    case EN = "en"
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        displayName = try container.decode(String.self, forKey: .displayName)
+        searchLanguage = try container.decode(Language.self, forKey: .searchLanguage)
+        resultsLanguage = try container.decode(Language.self, forKey: .resultsLanguage)
+        backend = try container.decode(DictionaryBackendType.self, forKey: .backend)
+        parser = try container.decode(DictionaryParserType.self, forKey: .parser)
+        includeInCrossDictionaryLookup = try container.decodeIfPresent(Bool.self, forKey: .includeInCrossDictionaryLookup) ?? true
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(displayName, forKey: .displayName)
+        try container.encode(searchLanguage, forKey: .searchLanguage)
+        try container.encode(resultsLanguage, forKey: .resultsLanguage)
+        try container.encode(backend, forKey: .backend)
+        try container.encode(parser, forKey: .parser)
+        try container.encode(includeInCrossDictionaryLookup, forKey: .includeInCrossDictionaryLookup)
+    }
+
+    var languagePair: LanguageToLanguage {
+        LanguageToLanguage(searchLanguage: searchLanguage, resultsLanguage: resultsLanguage)
+    }
+}
+
+struct Language: RawRepresentable, Hashable, Identifiable, Codable, Sendable {
+    let rawValue: String
+
+    var id: String {
+        rawValue
+    }
+
+    var localeCode: String {
+        rawValue
+    }
+
+    init(rawValue: String) {
+        self.rawValue = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.init(rawValue: try container.decode(String.self))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+}
+
+private func exportFolderOf(dictionary: String) -> URL {
+    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let dictionaryFolder = documentsDirectory.appendingPathComponent(dictionary, isDirectory: true)
+
+    if !FileManager.default.fileExists(atPath: dictionaryFolder.path) {
+        try? FileManager.default.createDirectory(at: dictionaryFolder, withIntermediateDirectories: true)
+    }
+
+    return dictionaryFolder
 }
 
 let LOCAL_REALM_URL = exportFolderOf(dictionary: "jp-cn").appending(component: "jp-cn.realm", directoryHint: .notDirectory)
@@ -95,12 +215,9 @@ let CONFIGURATION = {
     return configuration
 }()
 
-enum YomikataForms : String {
+enum YomikataForms: String {
     case Onyomi = "ja_on"
     case Kunyomi = "ja_kun"
     case Nanori = "nanori"
     case Pinyin = "pinyin"
 }
-
-// TODO: KANJI stuff (show simplified chinese character)
-// TODO: search with chinese simplified characters (auto convert to japanese)

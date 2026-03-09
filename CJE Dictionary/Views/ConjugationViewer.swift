@@ -28,31 +28,75 @@ struct ConjugationSheet: View {
     
     var body: some View {
         ScrollView {
-            Text("Conjugations")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Conjugations")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Text("Grouped by politeness and polarity")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-            Text("Positive")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.trailing, .leading], 20)
-            ConjugationGrid(conjugations: positive)
-            Text("Negative")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.trailing, .leading, .top], 20)
-            ConjugationGrid(conjugations: negative)
-            Text("Formal Positive")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.trailing, .leading, .top], 20)
-            ConjugationGrid(conjugations: formalPositive)
-            Text("Formal Negative")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.trailing, .leading, .top], 20)
-            ConjugationGrid(conjugations: formalNegative)
+
+                ConjugationCategoryView(
+                    title: "Positive",
+                    systemImage: "plus.circle.fill",
+                    conjugations: positive
+                )
+
+                ConjugationCategoryView(
+                    title: "Negative",
+                    systemImage: "minus.circle.fill",
+                    conjugations: negative
+                )
+
+                ConjugationCategoryView(
+                    title: "Formal Positive",
+                    systemImage: "person.fill.checkmark",
+                    conjugations: formalPositive
+                )
+
+                ConjugationCategoryView(
+                    title: "Formal Negative",
+                    systemImage: "person.fill.xmark",
+                    conjugations: formalNegative
+                )
+            }
+            .padding(.horizontal, isCompact ? 14 : 24)
+            .padding(.vertical, 20)
+        }
+    }
+}
+
+private struct ConjugationCategoryView: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let conjugations: [ConjugatedVerb]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(.secondary)
+                Text(title)
+                    .font(.headline)
+            }
+
+            if conjugations.isEmpty {
+                Text("No forms available")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                ConjugationGrid(conjugations: conjugations)
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(.quaternary, lineWidth: 1)
         }
     }
 }
@@ -131,17 +175,21 @@ struct ConjugationGrid: View {
     let conjugations: [ConjugatedVerb]
     
     var body: some View {
-        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+        VStack(spacing: 8) {
             ForEach(conjugations) { conj in
-                GridRow(alignment: .firstTextBaseline) {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text(LocalizedStringKey(conj.form))
-                        .font(.body)
-                        .padding([.trailing, .leading], 20)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                     Text(conj.verb)
                         .font(.body)
+                        .fontWeight(.semibold)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
-        }.padding([.top], 3)
+        }
     }
 }

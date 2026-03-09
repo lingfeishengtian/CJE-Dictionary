@@ -7,14 +7,13 @@
 import SwiftUI
 import Foundation
 
-/// Full search view backed by a DictionaryProtocol. No debounce: searches run on every text change.
 struct SearchDictionaryListView: View {
-    let dictionary: DictionaryProtocol
+    let dictionaries: [any DictionaryProtocol]
     @State private var query = ""
     @StateObject private var streamManager = SearchStreamManager()
 
-    init(dictionary: DictionaryProtocol) {
-        self.dictionary = dictionary
+    init(dictionaries: [any DictionaryProtocol]) {
+        self.dictionaries = dictionaries
         // initialize the StateObject with empty manager; we'll reset on first search
         _streamManager = StateObject(wrappedValue: SearchStreamManager())
     }
@@ -34,7 +33,10 @@ struct SearchDictionaryListView: View {
                     SearchResultsView(streamManager: streamManager)
                 }
             }
-            .navigationTitle(dictionary.name)
+            .navigationTitle(navigationTitle)
+            .onAppear {
+                streamManager.setDictionaries(dictionaries)
+            }
         }
     }
 
@@ -44,50 +46,19 @@ struct SearchDictionaryListView: View {
             return
         }
 
-        let prioritizedQueries = buildPrioritizedQueries(from: s)
-        let streams = prioritizedQueries.map { query in
-            dictionary.searchPrefix(query)
-        }
+        let prioritizedQueries = SearchDictionaryUtilities.buildPrioritizedQueries(from: s)
+        let streams = SearchDictionaryUtilities.buildSearchStreams(
+            prioritizedQueries: prioritizedQueries,
+            dictionaries: dictionaries
+        )
         let stream = CombinedDictionaryStream(streams: streams)
 
-        streamManager.dictionaryForPreview = dictionary
+        streamManager.setDictionaries(dictionaries)
         streamManager.reset(with: stream)
     }
 
-    private func buildPrioritizedQueries(from input: String) -> [String] {
-        let normalizedInput = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        if normalizedInput.isEmpty {
-            return []
-        }
-
-        var queries: [String] = []
-
-        func appendUnique(_ candidate: String?) {
-            guard let value = candidate?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else {
-                return
-            }
-            if !queries.contains(value) {
-                queries.append(value)
-            }
-        }
-
-        let hiragana = normalizedInput.applyingTransform(.latinToHiragana, reverse: false)
-            ?? normalizedInput.applyingTransform(.hiraganaToKatakana, reverse: true)
-        let katakana = hiragana?.applyingTransform(.hiraganaToKatakana, reverse: false)
-            ?? normalizedInput.applyingTransform(.latinToKatakana, reverse: false)
-            ?? normalizedInput.applyingTransform(.hiraganaToKatakana, reverse: false)
-        let romaji = normalizedInput
-            .applyingTransform(.toLatin, reverse: false)?
-            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
-            .replacingOccurrences(of: " ", with: "")
-
-        // Priority order requested: input, hiragana, katakana, romaji
-        appendUnique(normalizedInput)
-        appendUnique(hiragana)
-        appendUnique(katakana)
-        appendUnique(romaji)
-
-        return queries
+    private var navigationTitle: String {
+        SearchDictionaryUtilities.navigationTitle(for: dictionaries)
     }
 }
 
@@ -97,7 +68,14 @@ struct SearchDictionaryListView: View {
 struct SearchDictionaryListView_Previews: PreviewProvider {
     struct MockDict: DictionaryProtocol {
         var name: String = "Mock"
-        var type: LanguageToLanguage = LanguageToLanguage(searchLanguage: .JP, resultsLanguage: .EN)
+        var dictionaryType: DictionaryTypeDescriptor = DictionaryTypeDescriptor(
+            id: "mock",
+            displayName: "Mock",
+            searchLanguage: Language(rawValue: "ja-JP"),
+            resultsLanguage: Language(rawValue: "en-US"),
+            backend: .unknown,
+            parser: .scriptJS
+        )
         func searchExact(_ searchString: String) -> DictionaryStreamProtocol { DictionaryStream(keys: [SearchResultKey(id: "1", dictionaryName: "mock", keyText: searchString, keyId: 1)]) }
         func searchPrefix(_ prefix: String) -> DictionaryStreamProtocol {
             // Try to initialize MdictOptimized from bundle FST/rd/def files (jitendex.*)
@@ -121,7 +99,7 @@ struct SearchDictionaryListView_Previews: PreviewProvider {
 
             if let fst = fstPath, let rd = rdPath, let def = defPath {
                 if let optimized = MdictOptimizedManager.createOptimized(fromBundle: "", fstPath: fst, readingsPath: rd, recordPath: def) {
-                    let dict = MdictOptimizedDictionary(name: "jitendex", type: type, optimizedMdict: optimized)
+                    let dict = MdictOptimizedDictionary(name: "jitendex", type: dictionaryType.languagePair, optimizedMdict: optimized)
                     return dict.searchPrefix(prefix)
                 }
             }
@@ -132,11 +110,11 @@ struct SearchDictionaryListView_Previews: PreviewProvider {
             }
             return DictionaryStream(keys: keys)
         }
-        func getWord(byId id: AnyHashable) -> Word? { Word(id: String(describing: id), dict: .jitendex, word: "Word \(id)", readings: ["r1"]) }
-        func getWord(fromKey key: SearchResultKey) -> Word? { Word(id: key.id, dict: .jitendex, word: key.keyText, readings: key.readings ?? []) }
+        func getWord(byId id: AnyHashable) -> Word? { Word(id: String(describing: id), dictionaryName: name, word: "Word \(id)", readings: ["r1"]) }
+        func getWord(fromKey key: SearchResultKey) -> Word? { Word(id: key.id, dictionaryName: name, word: key.keyText, readings: key.readings ?? []) }
     }
 
     static var previews: some View {
-        SearchDictionaryListView(dictionary: MockDict())
+        SearchDictionaryListView(dictionaries: [MockDict()])
     }
 }

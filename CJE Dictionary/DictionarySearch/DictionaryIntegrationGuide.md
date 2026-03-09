@@ -11,6 +11,8 @@ This document explains how to integrate MdictOptimized dictionaries into the exi
 
 The implementation introduces a protocol-based approach that allows different dictionary formats (SQLite, MongoDB, MdictOptimized) to be used interchangeably while maintaining consistent interfaces.
 
+For metadata-first loading and manifest design, see [docs/dictionary_metadata_spec.md](../../docs/dictionary_metadata_spec.md).
+
 ## Key Components
 
 ### 1. DictionaryProtocol.swift
