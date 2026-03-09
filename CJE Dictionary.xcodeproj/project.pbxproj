@@ -27,6 +27,9 @@
 		96600A152F5E5671003588FD /* KanjiDetailsSectionUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A142F5E5671003588FD /* KanjiDetailsSectionUtilities.swift */; };
 		96600A172F5E6A55003588FD /* DictionaryMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A162F5E6A54003588FD /* DictionaryMetadata.swift */; };
 		96600A192F5E7301003588FD /* DictionaryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A182F5E7301003588FD /* DictionaryFactory.swift */; };
+		96600A1C2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A1B2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift */; };
+		96600A1E2F5EA03F003588FD /* DefinitionContentLoadUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A1D2F5EA03F003588FD /* DefinitionContentLoadUtility.swift */; };
+		96600A212F5EA0CD003588FD /* DefinitionPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A202F5EA0CD003588FD /* DefinitionPageViewModel.swift */; };
 		967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */; };
 		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
 		96AE7E2F2B480B0900862861 /* types.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2A2B480B0900862861 /* types.csv */; };
@@ -129,6 +132,9 @@
 		96600A142F5E5671003588FD /* KanjiDetailsSectionUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanjiDetailsSectionUtilities.swift; sourceTree = "<group>"; };
 		96600A162F5E6A54003588FD /* DictionaryMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryMetadata.swift; sourceTree = "<group>"; };
 		96600A182F5E7301003588FD /* DictionaryFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryFactory.swift; sourceTree = "<group>"; };
+		96600A1B2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossDictionarySearchUtility.swift; sourceTree = "<group>"; };
+		96600A1D2F5EA03F003588FD /* DefinitionContentLoadUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionContentLoadUtility.swift; sourceTree = "<group>"; };
+		96600A202F5EA0CD003588FD /* DefinitionPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionPageViewModel.swift; sourceTree = "<group>"; };
 		966E61582C75907E00C29CDD /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
 		967670CA2C632DCE008CC50E /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
@@ -332,6 +338,14 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		96600A1F2F5EA0CD003588FD /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				96600A202F5EA0CD003588FD /* DefinitionPageViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		967670C62C62B44B008CC50E /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
@@ -398,6 +412,7 @@
 				96CAAABC2F5BF3CB007DAE78 /* Components */,
 				96D58AE22F555AA60037922F /* DefinitionPage.swift */,
 				96CAAACD2F5C04E4007DAE78 /* Utilities */,
+				96600A1F2F5EA0CD003588FD /* ViewModel */,
 			);
 			path = DefinitionPage;
 			sourceTree = "<group>";
@@ -422,6 +437,8 @@
 			isa = PBXGroup;
 			children = (
 				96CAAACE2F5C04EC007DAE78 /* FlagEmojiProvider.swift */,
+				96600A1B2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift */,
+				96600A1D2F5EA03F003588FD /* DefinitionContentLoadUtility.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -662,6 +679,7 @@
 				96CAAAC02F5BF598007DAE78 /* RubyDisplay.swift in Sources */,
 				96AE7E452B4A926E00862861 /* DictionaryHelperViews.swift in Sources */,
 				96D58AD12F5535610037922F /* SearchBar.swift in Sources */,
+				96600A212F5EA0CD003588FD /* DefinitionPageViewModel.swift in Sources */,
 				96CAAAC22F5BF848007DAE78 /* DefinitionGroupSectionView.swift in Sources */,
 				96600A062F5E4C13003588FD /* KanjiSectionDataLoader.swift in Sources */,
 				96CAAADC2F5CA591007DAE78 /* SettingsViewModel.swift in Sources */,
@@ -685,6 +703,7 @@
 				96D58AC92F55281E0037922F /* WordType.swift in Sources */,
 				96AE7E472B4A991C00862861 /* ConjugationViewer.swift in Sources */,
 				96D58ACD2F5530790037922F /* SearchDictionaryListView.swift in Sources */,
+				96600A1E2F5EA03F003588FD /* DefinitionContentLoadUtility.swift in Sources */,
 				96CAAABA2F5BF101007DAE78 /* ScriptExecutor.swift in Sources */,
 				96600A112F5E4F2F003588FD /* KanjiDefinitionUtilities.swift in Sources */,
 				96CAAACC2F5BF84D007DAE78 /* DefinitionFallbackView.swift in Sources */,
@@ -697,6 +716,7 @@
 				96600A172F5E6A55003588FD /* DictionaryMetadata.swift in Sources */,
 				96D58ABA2F5434620037922F /* DictionaryProtocol.swift in Sources */,
 				96D58AE82F5A8CFC0037922F /* MdictOptimized.swift in Sources */,
+				96600A1C2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift in Sources */,
 				96D58AD62F5542D90037922F /* NoResults.swift in Sources */,
 				96CAAAE02F5CA619007DAE78 /* Settings.swift in Sources */,
 				96CAAB062F5CBB0A007DAE78 /* PreferencesSection.swift in Sources */,
