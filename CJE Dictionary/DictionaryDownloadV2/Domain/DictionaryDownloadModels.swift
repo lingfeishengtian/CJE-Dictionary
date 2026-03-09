@@ -21,6 +21,7 @@ struct DictionaryID: RawRepresentable, Hashable, Codable, Sendable {
 struct DictionaryManifestItem: Hashable, Codable, Sendable {
     let id: DictionaryID
     let displayName: String
+    let description: String?
     let downloadURL: URL
     let artifactType: DictionaryArtifactType
     let version: Int

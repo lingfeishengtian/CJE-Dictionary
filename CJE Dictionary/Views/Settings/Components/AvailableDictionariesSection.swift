@@ -11,6 +11,14 @@ struct AvailableDictionariesSection: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(item.displayName)
+
+                        if let description = item.description,
+                           !description.isEmpty {
+                            Text(description)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+
                         Text("v\(item.version) • \(item.artifactType.rawValue)")
                             .font(.caption)
                             .foregroundStyle(.secondary)

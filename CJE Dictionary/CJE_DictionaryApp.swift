@@ -19,6 +19,8 @@ struct CJE_DictionaryApp: App {
 struct AppView: View {
     @State var selectedMenu: String? = "dictionary"
     @State private var dictionaryReloadToken = UUID()
+    @State private var migrationNotice: AppMigrationNotice?
+    @State private var hasCheckedMigration = false
     let menus = [
         "dictionary",
         "settings"
@@ -59,6 +61,18 @@ struct AppView: View {
         }
             .onReceive(NotificationCenter.default.publisher(for: .dictionaryCatalogDidChange)) { _ in
                 dictionaryReloadToken = UUID()
+            }
+            .onAppear {
+                guard !hasCheckedMigration else { return }
+                hasCheckedMigration = true
+                migrationNotice = V1ToV2MigrationUtility.runIfNeeded()
+            }
+            .alert(item: $migrationNotice) { notice in
+                Alert(
+                    title: Text(notice.title),
+                    message: Text(notice.message),
+                    dismissButton: .default(Text("OK"))
+                )
             }
     }
 

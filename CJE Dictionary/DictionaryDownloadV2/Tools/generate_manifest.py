@@ -24,6 +24,7 @@ DEFAULT_ARCHIVE_ENTRIES = {
     "jitendex-optimized.zip": {
         "id": "jitendex-optimized",
         "displayName": "jitendex",
+        "description": "General JP/CN dictionary for word meanings and reading-based lookup.",
         "fileName": "jitendex-optimized.zip",
         "artifactType": "zip",
         "version": 1,
@@ -33,6 +34,7 @@ DEFAULT_ARCHIVE_ENTRIES = {
     "kanjidict2.zip": {
         "id": "kanjidict2",
         "displayName": "kanjidict2",
+        "description": "Kanji-focused lookup with character details, readings, and component information.",
         "fileName": "kanjidict2.zip",
         "artifactType": "zip",
         "version": 1,
@@ -193,6 +195,7 @@ def _build_manifest(entries: list[dict[str, Any]], base_url: str) -> dict[str, A
         item = {
             "id": str(entry["id"]),
             "displayName": str(entry["displayName"]),
+            "description": str(entry.get("description", "")),
             "downloadURL": f"{normalized_base}/{file_name}",
             "artifactType": str(entry["artifactType"]),
             "version": int(entry["version"]),

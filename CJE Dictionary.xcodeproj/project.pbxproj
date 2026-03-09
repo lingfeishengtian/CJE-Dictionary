@@ -30,6 +30,7 @@
 		96600A1C2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A1B2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift */; };
 		96600A1E2F5EA03F003588FD /* DefinitionContentLoadUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A1D2F5EA03F003588FD /* DefinitionContentLoadUtility.swift */; };
 		96600A212F5EA0CD003588FD /* DefinitionPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A202F5EA0CD003588FD /* DefinitionPageViewModel.swift */; };
+		96600A262F5EA4A3003588FD /* V1ToV2MigrationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96600A252F5EA4A3003588FD /* V1ToV2MigrationUtility.swift */; };
 		967ECECE2C5F102D009DFD72 /* DictionaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */; };
 		96AE7E2E2B480B0900862861 /* conjo.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E292B480B0900862861 /* conjo.csv */; };
 		96AE7E2F2B480B0900862861 /* types.csv in Resources */ = {isa = PBXBuildFile; fileRef = 96AE7E2A2B480B0900862861 /* types.csv */; };
@@ -135,6 +136,7 @@
 		96600A1B2F5E9FE7003588FD /* CrossDictionarySearchUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossDictionarySearchUtility.swift; sourceTree = "<group>"; };
 		96600A1D2F5EA03F003588FD /* DefinitionContentLoadUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionContentLoadUtility.swift; sourceTree = "<group>"; };
 		96600A202F5EA0CD003588FD /* DefinitionPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionPageViewModel.swift; sourceTree = "<group>"; };
+		96600A252F5EA4A3003588FD /* V1ToV2MigrationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V1ToV2MigrationUtility.swift; sourceTree = "<group>"; };
 		966E61582C75907E00C29CDD /* Shogakukanjcv3DB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Shogakukanjcv3DB.zip; sourceTree = "<group>"; };
 		967670CA2C632DCE008CC50E /* jitendexDB.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = jitendexDB.zip; sourceTree = "<group>"; };
 		967ECECD2C5F102D009DFD72 /* DictionaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryTypes.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				96D58AC52F5524D90037922F /* README.md */,
 				96D58AC62F5524F60037922F /* .mcp_build_log_placeholder */,
 				96D58AC72F55250B0037922F /* .mcp_build_intent_log */,
+				96600A222F5EA46A003588FD /* Utilities */,
 			);
 			sourceTree = "<group>";
 		};
@@ -346,6 +349,21 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		96600A222F5EA46A003588FD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		96600A242F5EA4A3003588FD /* AppMigration */ = {
+			isa = PBXGroup;
+			children = (
+				96600A252F5EA4A3003588FD /* V1ToV2MigrationUtility.swift */,
+			);
+			path = AppMigration;
+			sourceTree = "<group>";
+		};
 		967670C62C62B44B008CC50E /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
@@ -395,6 +413,7 @@
 				96AE7E442B4A926E00862861 /* DictionaryHelperViews.swift */,
 				96AE7E462B4A991C00862861 /* ConjugationViewer.swift */,
 				96CAAADA2F5CA590007DAE78 /* Settings */,
+				96600A242F5EA4A3003588FD /* AppMigration */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -728,6 +747,7 @@
 				96CAAAE42F5CABF3007DAE78 /* DictionaryDownloadServiceProtocols.swift in Sources */,
 				96CAAAE52F5CABF3007DAE78 /* DictionaryDownloadErrors.swift in Sources */,
 				96CAAAE62F5CABF3007DAE78 /* DictionaryDownloadModels.swift in Sources */,
+				96600A262F5EA4A3003588FD /* V1ToV2MigrationUtility.swift in Sources */,
 				96600A042F5E4142003588FD /* KanjiDictSQLiteDictionary.swift in Sources */,
 				96CAAAE72F5CABF3007DAE78 /* DictionaryDownloadCoordinator.swift in Sources */,
 				96D58AEA2F5A8D260037922F /* MdictEnumeratedStream.swift in Sources */,

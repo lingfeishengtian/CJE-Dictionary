@@ -3,6 +3,7 @@
     {
       "id": "jitendex-optimized",
       "displayName": "jitendex",
+      "description": "General JP/CN dictionary for word meanings and reading-based lookup.",
       "downloadURL": "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/jitendex-optimized.zip",
       "artifactType": "zip",
       "version": 1,
@@ -12,6 +13,7 @@
     {
       "id": "kanjidict2",
       "displayName": "kanjidict2",
+      "description": "Kanji-focused lookup with character details, readings, and component information.",
       "downloadURL": "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/kanjidict2.zip",
       "artifactType": "zip",
       "version": 1,

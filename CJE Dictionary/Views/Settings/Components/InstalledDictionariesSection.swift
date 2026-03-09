@@ -7,6 +7,10 @@ struct InstalledDictionariesSection: View {
 
     var body: some View {
         Section("Installed Dictionaries") {
+            Text("These dictionaries are active in search and definitions. Reorder to change search priority.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
             if orderedInstalledRecords.isEmpty {
                 Text("No dictionaries installed yet")
                     .foregroundStyle(.secondary)
@@ -15,6 +19,7 @@ struct InstalledDictionariesSection: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(record.id.rawValue)
+
                             Text("v\(record.installedVersion)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

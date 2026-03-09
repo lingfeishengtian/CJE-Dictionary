@@ -47,6 +47,7 @@ private struct RemoteManifestPayload: Decodable {
 private struct RemoteManifestItem: Decodable {
     let id: String
     let displayName: String
+    let description: String?
     let downloadURL: URL
     let artifactType: DictionaryArtifactType
     let version: Int
@@ -57,6 +58,7 @@ private struct RemoteManifestItem: Decodable {
         DictionaryManifestItem(
             id: DictionaryID(id),
             displayName: displayName,
+            description: description,
             downloadURL: downloadURL,
             artifactType: artifactType,
             version: version,

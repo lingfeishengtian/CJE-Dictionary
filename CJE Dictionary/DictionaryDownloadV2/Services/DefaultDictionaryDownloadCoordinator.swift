@@ -95,6 +95,7 @@ final class DefaultDictionaryDownloadCoordinator: ObservableObject {
         let item = DictionaryManifestItem(
             id: id,
             displayName: inferredName,
+            description: nil,
             downloadURL: url,
             artifactType: artifactType,
             version: 1,
