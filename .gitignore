@@ -95,3 +95,7 @@ iOSInjectionProject/
 *jp-cn.realm
 *jp-cn.realm.zip
 *jp-cn.zip
+
+# Ignore extracted dictionary folders under Dictionaries (keep top-level files like .zip/.json)
+/CJE Dictionary/Dictionaries/*/
+/CJE Dictionary/Dictionaries/*/**

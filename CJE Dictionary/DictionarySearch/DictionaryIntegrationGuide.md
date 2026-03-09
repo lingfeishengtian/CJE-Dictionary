@@ -13,6 +13,8 @@ The implementation introduces a protocol-based approach that allows different di
 
 For metadata-first loading and manifest design, see [docs/dictionary_metadata_spec.md](../../docs/dictionary_metadata_spec.md).
 
+For Script.js parser requirements, see [ScriptJSContract.md](./ScriptJSContract.md).
+
 ## Key Components
 
 ### 1. DictionaryProtocol.swift

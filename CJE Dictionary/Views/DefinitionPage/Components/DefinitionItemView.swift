@@ -11,10 +11,28 @@ struct DefinitionItemView: View {
     let definition: Definition
     let screenWidth: CGFloat
 
+    private var definitionAttributedString: AttributedString {
+        (try? AttributedString(
+            markdown: definition.definition,
+            including: \.cje,
+            options: .init(allowsExtendedAttributes: true)
+        )) ?? AttributedString(definition.definition)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("\(index + 1). \(definition.definition)")
-                .font(.body)
+            HStack(alignment: .top, spacing: 4) {
+                Text("\(index + 1).")
+                    .font(.body)
+
+                RubyDisplay(
+                    attributedString: definitionAttributedString,
+                    screenWidth: screenWidth,
+                    padding: 0,
+                    textColor: .label
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
 
             ForEach(definition.exampleSentences) { sentence in
                 HStack(alignment: .top, spacing: 4) {

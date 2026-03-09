@@ -87,10 +87,15 @@ final class DefinitionPageViewModel: ObservableObject {
 
     func dictionarySelectionChanged(to newID: String) async {
         guard newID != currentDictionaryOptionID else { return }
+        guard crossDictionaryOptions.contains(where: { $0.id == newID }) else { return }
         await ensureCrossDictionaryLoaded(for: newID)
     }
 
     func candidateSelectionChanged(_ candidateID: String, for dictionaryID: String) async {
+        guard dictionaryID == selectedDictionaryOptionID else { return }
+        if selectedCrossCandidateIDByDictionary[dictionaryID] == candidateID {
+            return
+        }
         updateSelectedCrossCandidateID(candidateID, for: dictionaryID)
         await loadCrossDefinition(for: dictionaryID)
     }
@@ -108,7 +113,14 @@ final class DefinitionPageViewModel: ObservableObject {
     }
 
     private func ensureCrossDictionaryLoaded(for dictionaryID: String) async {
-        if crossCandidatesByDictionary[dictionaryID] != nil {
+        guard dictionaryID == selectedDictionaryOptionID else { return }
+
+        if let cachedCandidates = crossCandidatesByDictionary[dictionaryID] {
+            if cachedCandidates.isEmpty {
+                resetCrossDisplayedContent()
+                crossErrorMessage = "No cross-search result in \(crossDictionaryName(for: dictionaryID))."
+                return
+            }
             await loadCrossDefinition(for: dictionaryID)
             return
         }
@@ -122,6 +134,8 @@ final class DefinitionPageViewModel: ObservableObject {
             key: key
         )
 
+        guard dictionaryID == selectedDictionaryOptionID else { return }
+
         crossCandidatesByDictionary[dictionaryID] = candidates
 
         if let top = candidates.first {
@@ -129,14 +143,20 @@ final class DefinitionPageViewModel: ObservableObject {
             await loadCrossDefinition(for: dictionaryID)
         } else {
             resetCrossDisplayedContent()
+            selectedCrossCandidateIDByDictionary[dictionaryID] = nil
             crossErrorMessage = "No cross-search result in \(selectedDictionary.name)."
         }
     }
 
     private func loadCrossDefinition(for dictionaryID: String) async {
+        guard dictionaryID == selectedDictionaryOptionID else { return }
+
         guard let candidates = crossCandidatesByDictionary[dictionaryID],
               let selectedCandidateID = selectedCrossCandidateIDByDictionary[dictionaryID],
               let candidate = candidates.first(where: { $0.id == selectedCandidateID }) else {
+                        resetCrossDisplayedContent()
+                        crossErrorMessage = "No cross-search result in \(crossDictionaryName(for: dictionaryID))."
+                        isLoadingCrossDefinition = false
             return
         }
 
@@ -145,6 +165,13 @@ final class DefinitionPageViewModel: ObservableObject {
         resetCrossDisplayedContent()
 
         let result = await CrossDictionarySearchUtility.loadDefinition(for: candidate)
+
+        guard dictionaryID == selectedDictionaryOptionID,
+              selectedCrossCandidateIDByDictionary[dictionaryID] == selectedCandidateID else {
+            isLoadingCrossDefinition = false
+            return
+        }
+
         crossDefinitionGroups = result.groups
         crossFallbackText = result.fallbackText
         crossErrorMessage = result.errorMessage ?? ""
@@ -176,6 +203,10 @@ final class DefinitionPageViewModel: ObservableObject {
     private func resetCrossDisplayedContent() {
         crossDefinitionGroups = []
         crossFallbackText = nil
+    }
+
+    private func crossDictionaryName(for dictionaryID: String) -> String {
+        crossDictionaryOptions.first(where: { $0.id == dictionaryID })?.name ?? dictionaryID
     }
 
     private func buildConjugations(from groups: [DefinitionGroup], word: String) -> [ConjugatedVerb] {

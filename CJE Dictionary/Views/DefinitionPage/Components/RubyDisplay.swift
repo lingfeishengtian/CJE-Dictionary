@@ -39,12 +39,23 @@ private func scaledAttributedString(
 ) -> NSMutableAttributedString {
     let output = rubyEnabledAttributedString(from: attributedString)
     let fullRange = NSRange(location: 0, length: output.length)
+    var containsRuby = false
 
     output.enumerateAttributes(in: fullRange) { attributes, range, _ in
         let baseFont = (attributes[.font] as? UIFont)
             ?? UIFont.preferredFont(forTextStyle: .body, compatibleWith: traitCollection)
         let scaledFont = UIFontMetrics.default.scaledFont(for: baseFont, compatibleWith: traitCollection)
         output.addAttribute(.font, value: scaledFont, range: range)
+
+        if attributes[.ctRubyAnnotation] != nil {
+            containsRuby = true
+        }
+    }
+
+    if containsRuby {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        output.addAttribute(.paragraphStyle, value: paragraphStyle, range: fullRange)
     }
 
     return output

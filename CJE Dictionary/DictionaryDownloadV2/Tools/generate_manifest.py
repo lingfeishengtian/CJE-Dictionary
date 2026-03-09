@@ -15,6 +15,7 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 import zipfile
 
 
@@ -36,6 +37,16 @@ DEFAULT_ARCHIVE_ENTRIES = {
         "displayName": "kanjidict2",
         "description": "Kanji-focused lookup with character details, readings, and component information.",
         "fileName": "kanjidict2.zip",
+        "artifactType": "zip",
+        "version": 1,
+        "minAppVersion": "2.0.0",
+        "minBuildNumber": 1,
+    },
+    "daijirin2.zip": {
+        "id": "suupaadaijirin",
+        "displayName": "（三省堂）スーパー大辞林 [第四版]",
+        "description": "Comprehensive Japanese dictionary entries from 三省堂 スーパー大辞林 第四版.",
+        "fileName": "daijirin2.zip",
         "artifactType": "zip",
         "version": 1,
         "minAppVersion": "2.0.0",
@@ -82,12 +93,27 @@ DEFAULT_LOCAL_METADATA = {
             "db": "KANJIDIC2_cleaned.db",
         },
     },
+    "daijirin2.zip": {
+        "id": "suupaadaijirin",
+        "displayName": "（三省堂）スーパー大辞林 [第四版]",
+        "backend": "mdictOptimized",
+        "parser": "scriptJS",
+        "searchLanguage": "ja-JP",
+        "resultsLanguage": "ja-JP",
+        "files": {
+            "fst": "daijirin.fst",
+            "readings": "daijirin.rd.txt",
+            "record": "daijirin.def.dat",
+            "script": "Script.js",
+        },
+    },
 }
 
 DEFAULT_EXTRACT_FOLDERS = {
     "jitendex-optimized.zip": "jitendex-optimized",
     "jp-cn.zip": "jp-cn",
     "kanjidict2.zip": "kanjidict2",
+    "daijirin2.zip": "（三省堂）スーパー大辞林 [第四版]",
 }
 
 
@@ -192,11 +218,12 @@ def _build_manifest(entries: list[dict[str, Any]], base_url: str) -> dict[str, A
             raise ValueError(f"Entry missing required fields: {sorted(missing)} in {entry}")
 
         file_name = str(entry["fileName"]).lstrip("/")
+        encoded_file_name = quote(file_name, safe="/")
         item = {
             "id": str(entry["id"]),
             "displayName": str(entry["displayName"]),
             "description": str(entry.get("description", "")),
-            "downloadURL": f"{normalized_base}/{file_name}",
+            "downloadURL": f"{normalized_base}/{encoded_file_name}",
             "artifactType": str(entry["artifactType"]),
             "version": int(entry["version"]),
             "minAppVersion": str(entry["minAppVersion"]),

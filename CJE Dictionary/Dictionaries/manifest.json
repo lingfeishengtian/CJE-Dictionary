@@ -19,6 +19,16 @@
       "version": 1,
       "minAppVersion": "2.0.0",
       "minBuildNumber": 1
+    },
+    {
+      "id": "suupaadaijirin",
+      "displayName": "（三省堂）スーパー大辞林 [第四版]",
+      "description": "Comprehensive Japanese dictionary entries from 三省堂 スーパー大辞林 第四版.",
+      "downloadURL": "https://raw.githubusercontent.com/lingfeishengtian/CJE-Dictionary/main/CJE%20Dictionary/Dictionaries/daijirin2.zip",
+      "artifactType": "zip",
+      "version": 1,
+      "minAppVersion": "2.0.0",
+      "minBuildNumber": 1
     }
   ]
 }
